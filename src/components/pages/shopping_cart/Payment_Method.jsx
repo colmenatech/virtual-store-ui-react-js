@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import './css/Cart.css'; 
-// Importación de dependencias necesarias para usar iconos
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCcVisa, faCcMastercard, faCcPaypal, faApplePay } from '@fortawesome/free-brands-svg-icons';
+import './Cart.css'; 
+import applepay from '../../components/carrito_de_compras/img/applepay.png';
+import visa from '../../components/carrito_de_compras/img/Visa.png';
+import mastercard from '../../components/carrito_de_compras/img/mastercard.png';
+import paypal from '../../components/carrito_de_compras/img/paypal.png';
+import logo from '../../components/carrito_de_compras/img/logo.png';
+import mesa from '../../components/carrito_de_compras/img/mesa.jpg';
+import { useNavigate } from 'react-router-dom';
+
+    
 
 const Cart = () => {
   // Estado inicial de la cantidad seleccionada (inicialmente 1)
@@ -13,14 +19,19 @@ const Cart = () => {
     setQuantity(e.target.value);
   };
 
+  const navigate = useNavigate();
+  // Función para manejar el proceso de compra
+  const handleCheckout = () => {
+    navigate('/factura');  // Cambia esta URL según tu configuración de rutas
+  };
+
+   
+
   return (
     <div className="cart-container">
       {/* Cabecera del carrito con logo */}
       <header className="cart-header">
-        <img src="/images/logo.png" alt="logo" className='logo'/>
-        <nav>
-          <button className="volver">Volver al Inicio</button>
-        </nav>
+        <img src={logo} alt="logo" className='logo' />
       </header>
 
       {/* Mensaje de Descuento */}
@@ -37,7 +48,7 @@ const Cart = () => {
           
           {/* Imagen del artículo en el carrito */}
           <img
-            src="/images/mesa.jpg" 
+            src={mesa} 
             alt="Artículo conforthaven"
             className="cart-item-image"
           />
@@ -48,7 +59,7 @@ const Cart = () => {
             <p>Mesa</p>
             <p>Descripción: Circular</p>
             <p>Precio: ₡50000</p>
-            <br></br>
+            <br />
             <p>Usuarios han dado 5 estrellas</p>
           </div>
 
@@ -73,7 +84,9 @@ const Cart = () => {
         <p>Precio Estimado: </p>
         <p>Premio: 21 Puntos de COMFORT HAVEN</p>
         {/* Botón para proceder a la compra */}
-        <button className="checkout-button">Comprar ahora (1)</button>
+        <button className="checkout-button" onClick={() => handleCheckout()}>Comprar ahora</button>
+       
+        
       </div>
 
       {/* Sección que muestra los métodos de pago aceptados */}
@@ -81,10 +94,10 @@ const Cart = () => {
         <h3>Aceptamos</h3>
         <div className="payment-icons">
           {/* Íconos de los métodos de pago disponibles */}
-          <img src="/images/Visa.png" alt="Visa" className='visa-logo'/>
-          <img src="/images/mastercard.png" alt="MasterCard" className='mastercard-logo'/>
-          <img src="/images/paypal.png" alt="PayPal" className='paypal-logo'/>
-          <img src="/images/applepay.png" alt="Apple Pay" className='applepay-logo'/>
+          <img src={visa} alt="Visa" className='visa-logo' />
+          <img src={mastercard} alt="MasterCard" className='mastercard-logo' />
+          <img src={paypal} alt="PayPal" className='paypal-logo' />
+          <img src={applepay} alt="Apple Pay" className='applepay-logo' />
         </div>
       </div>
     </div>

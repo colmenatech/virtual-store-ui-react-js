@@ -1,36 +1,37 @@
+//Importaciones y depedencias nesecarias 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-/* import Catalogo from './pages/Catalogo';
-import Nosotros from './pages/Nosotros';
-import Contacto from './pages/Contacto'; */
-/*mport IniciarSesion from './components/pages/AddressForm';
-import Carrito from './components/pages/Cart';*/
-/* import Salas from './pages/Salas';
-import Comedores from './pages/Comedores';
-import Dormitorios from './pages/Dormitorios';
-import MueblesDePatio from './pages/MueblesDePatio';
-import MueblesDeOficina from './pages/MueblesDeOficina';
-import Accesorios from './pages/Accesorios'; */
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { CartProvider } from './components/pages//shopping_cart/CartContext';
+// Importamos los proyectos para la navegacion
+import Navbar from './components/Navbar';
+import Login from './components/Login.jsx';
+import SignUp from './components/SignUp.jsx';
+import Contacto from './components/pages/links/Contact.jsx';
+import Nosotros from './components/pages/links/About.jsx';
+import InterfazAdmin from './components/pages/admin_interface/interfazadmin.jsx';
+import InterfazProductos from './components/pages/admin_interface/ProductosList.jsx'
+// Importamos las subcatergorias
+import ProductoEspejos from './components/pages/Espejos.jsx';
 
 function App() {
   return (
-    <Router>
-      <Home />
-      <Routes>
-        {/* <Route path="/catalogo" element={<Catalogo />} />
-        <Route path="/nosotros" element={<Nosotros />} />
-        <Route path="/contacto" element={<Contacto />} /> */}
-         {/*<Route path="/iniciar-sesion" element={<IniciarSesion />} />
-        <Route path="/carrito" element={<Carrito />} />*/}
-        {/* <Route path="/productos/salas" element={<Salas />} />
-        <Route path="/productos/comedores" element={<Comedores />} />
-        <Route path="/productos/dormitorios" element={<Dormitorios />} />
-        <Route path="/productos/muebles-de-patio" element={<MueblesDePatio />} />
-        <Route path="/productos/muebles-de-oficina" element={<MueblesDeOficina />} />
-        <Route path="/productos/accesorios" element={<Accesorios />} /> */}
-      </Routes>
-    </Router>
+    <CartProvider>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          {/* Enlaces del Navbar */}
+          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/nosotros" element={<Nosotros />} />
+          {/* Iniciar Seccion */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/interfazadmin" element={<InterfazAdmin />} />
+          <Route path="/productoslist" element={<InterfazProductos />} />
+          {/* Productos */}
+          <Route path="/espejos" element={<ProductoEspejos />} />
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   );
 }
 
