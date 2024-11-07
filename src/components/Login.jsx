@@ -1,25 +1,35 @@
-// src/components/interfaz inicio de sesion/Login.js
-import React, { useContext } from 'react';
+// src/components/Login.js
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-
+import RandomProducts from './pages/Categorías/RandomProducts';
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { login, showRandomProducts, setShowRandomProducts } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Ocultar productos aleatorios al entrar en la página de login
+  useEffect(() => {
+    setShowRandomProducts(false);
+  }, [setShowRandomProducts]);
+
+  // Función para manejar el inicio de sesión
   const handleLogin = (userType) => {
-    login(userType); // Llama a la función login con el tipo de usuario
-    navigate(userType === 'admin' ? '/interfazadmin' : '/'); // Redirige según el tipo de usuario
-    navigate(userType === 'admin' ? '/interfazadmin' : '/home');
+    login(userType);
+  if (userType === 'admin') {
+     navigate('/interfazadmin'); // Redirige a la interfaz de administración
+      } else {
+      navigate('/navbar'); // Redirige a la página de cliente
+    }
   };
 
+  // Función para redirigir al registro
   const handleSignUpClick = () => {
     navigate('/signup'); // Redirige al usuario a la página de registro
   };
 
   return (
-    <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center relative z-50">
+    <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">
       <h1 className="text-3xl mb-5">Bienvenidos</h1>
       <h2 className="text-xl mb-5">Iniciar Sesión</h2>
       <form>
@@ -63,6 +73,14 @@ const Login = () => {
           Registrarse
         </button>
       </form>
+
+      {/* Renderiza RandomProducts si showRandomProducts es true */}
+      {showRandomProducts && (
+        <RandomProducts
+          onHide={() => setShowRandomProducts(false)} // Cierra el componente cuando se hace clic en un producto
+          products={[/* Aquí pasan tus productos */]}
+        />
+      )}
     </div>
   );
 };

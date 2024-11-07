@@ -1,36 +1,24 @@
-import React from 'react';
+// src/components/LoginMenu.js
+import React, { useContext } from 'react';
 import { User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
-const LoginMenu = ({ setShowRandomProducts }) => {
+const LoginMenu = () => {
+  const { logout, setShowRandomProducts } = useContext(AuthContext);
   const navigate = useNavigate();
-  
-  // Función para redirigir a la página de login
-  const setIsLoginClose = () => {
-    navigate('/login'); 
-  };
 
-  // Función para cerrar el componente RandomProducts
-  const handleCategoryClick = () => {
-    if (setShowRandomProducts) {
-      setShowRandomProducts(false); // Cierra el componente de productos aleatorios
-    }
-  };
-
-  // Función combinada para manejar ambos eventos de clic
-  const handleClick = () => {
-    setIsLoginClose(); // Redirige a /login
-    handleCategoryClick(); // Cierra el componente de productos aleatorios
+  const handleLogout = () => {
+    logout(); // Cierra la sesión del usuario
+    setShowRandomProducts(false); // Oculta los productos aleatorios al cerrar sesión
+    navigate('/login');
   };
 
   return (
     <div className="relative">
-      {/* Icono de usuario y botón para abrir el menú */}
-      <button className="p-2 relative flex items-center" onClick={handleClick}>
+      <button className="p-2 flex items-center" onClick={handleLogout}>
         <User size={24} className="text-texto_color" />
-        <span className="ml-2 text-texto_color">
-          Cerrar Sesión
-        </span>
+        <span className="ml-2 text-texto_color">Cerrar Sesión</span>
       </button>
     </div>
   );

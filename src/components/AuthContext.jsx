@@ -4,16 +4,21 @@ import React, { createContext, useState } from 'react';
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // user almacenará el tipo de usuario: 'cliente' o 'admin'
+  const [user, setUser] = useState(null);
+  const [showRandomProducts, setShowRandomProducts] = useState(true);
 
   const login = (userType) => {
-    setUser({ type: userType }); // Almacena un objeto con el tipo de usuario
+    setUser({ type: userType });
+    setShowRandomProducts(false); // Oculta productos aleatorios al iniciar sesión
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    setShowRandomProducts(false); // Asegura que se oculte al cerrar sesión
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, showRandomProducts, setShowRandomProducts }}>
       {children}
     </AuthContext.Provider>
   );
