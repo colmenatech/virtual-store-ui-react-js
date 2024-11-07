@@ -2,15 +2,22 @@
 import React from 'react';
 import './SillasEstudio.css';
 import { FaShoppingCart } from 'react-icons/fa';
+import { useCart } from '../../../../shopping_cart/CartContext';
 // Componente ProductoItem
 const ProductoItem = ({ producto }) => {
+    const { dispatch } = useCart();
+    
+    // Función para agregar un producto al carrito
+    const addToCart = () => {
+        dispatch({ type: 'ADD_TO_CART', payload: producto });
+    };
     return (
         <div className="product-card">
             <img src={producto.img} alt={producto.nombre} />
             <h3>{producto.nombre}</h3>
             <p>{producto.descripcion}</p>
             <p>${producto.precio}</p>
-            <button className="add-to-cart-button">
+            <button onClick={addToCart} className="add-to-cart-button">
                 <FaShoppingCart /> Agregar al carrito
             </button>
         </div>
