@@ -19,7 +19,7 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">
+    <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center relative z-50">
       <h1 className="text-3xl mb-5">Bienvenidos</h1>
       <h2 className="text-xl mb-5">Iniciar Sesión</h2>
       <form>

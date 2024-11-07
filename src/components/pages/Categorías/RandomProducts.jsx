@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { FaShoppingCart } from 'react-icons/fa'; // Icono de carrito
 import { useCart } from '../shopping_cart/CartContext'; // Asegúrate de tener el contexto de carrito configurado
 
-const RandomProducts = ({ onHide, producto }) => {
+const RandomProducts = ({ onHide }) => {
   const { dispatch } = useCart(); // Accedemos al dispatch del contexto del carrito
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const defaultImage = "https://via.placeholder.com/250"; // URL de la imagen predeterminada
+    
     const sampleProducts = [
       { id: 1, nombre: 'Espejo baño cuadrado', precio: 500, },
       { id: 2, nombre: 'Espejo champague italiano', precio: 300, },
@@ -44,7 +44,7 @@ const RandomProducts = ({ onHide, producto }) => {
       { id: 33, nombre: 'Reloj con forma de pluma decorativo', precio: 350, },
       { id: 34, nombre: 'Reloj estilo romano color negro', precio: 90, },
       { id: 35, nombre: 'Reloj estilo romano', precio: 50, },
-      { id: 36, nombre: 'Reloj grande de pared estilo sencillo', precio: 200, },
+      { id: 6, nombre: 'Reloj grande de pared estilo sencillo', precio: 200, },
     ];
 
     const randomProducts = sampleProducts.sort(() => 0.5 - Math.random()).slice(0, 20);
