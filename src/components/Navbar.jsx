@@ -8,63 +8,64 @@ import Logo from './assets/img/logo_2.png'
 export default function Navbar() {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
 
-  // Definición de categorías y subcategorías para el menú de navegación
+ 
   const categories = [
     {
       name: 'Accesorios',
-      to: '/accesorios',
-      subcategories: [
-        { name: 'Relojes', to: '/accesorios/relojes' },
-        { name: 'Lamparas', to: '/accesorios/lamparas' },
-        { name: 'Espejos', to: '/espejos' }
-      ]
-    },
-    {
-      name: 'Sala',
-      to: '/sala',
-      subcategories: [
-        { name: 'Sofas', to: '/sala/sofas' },
-        { name: 'Muebles TV', to: '/sala/muebles-tv' },
-        { name: 'Mesas de centro', to: '/sala/mesas-de-centro' }
-      ]
-    },
-    {
-      name: 'Muebles de patio',
-      to: '/muebles-de-patio',
-      subcategories: [
-        { name: 'Mesas de exterior', to: '/muebles-de-patio/mesas-de-exterior' },
-        { name: 'Sillas de exterior', to: '/muebles-de-patio/sillas-de-exterior' },
-        { name: 'Toldos', to: '/muebles-de-patio/toldos' }
-      ]
-    },
-    {
-      name: 'Muebles de oficina',
-      to: '/muebles-de-oficina',
-      subcategories: [
-        { name: 'Escritorios', to: '/muebles-de-oficina/escritorios' },
-        { name: 'Libreros', to: '/muebles-de-oficina/libreros' },
-        { name: 'Sillas de estudio', to: '/muebles-de-oficina/sillas-de-estudio' }
-      ]
-    },
-    {
-      name: 'Comedores',
-      to: '/comedores',
-      subcategories: [
-        { name: 'Juego de comedor', to: '/comedores/juego-de-comedor' },
-        { name: 'Mesas', to: '/comedores/mesas' },
-        { name: 'Sillas', to: '/comedores/sillas' }
-      ]
-    },
-    {
-      name: 'Dormitorios',
-      to: '/dormitorios',
-      subcategories: [
-        { name: 'Camas', to: '/dormitorios/camas' },
-        { name: 'Comodas con espejo', to: '/dormitorios/comodas-con-espejo' },
-        { name: 'Mesas de noche', to: '/dormitorios/mesas-de-noche' }
-      ]
-    }
+    to: '/productos/accesorios', // Esto puede ser una ruta que muestre todos los accesorios, si existe.
+    subcategories: [
+      { name: 'Relojes', to: '/productos/accesorios/relojes' },
+      { name: 'Lámparas', to: '/productos/accesorios/lámparas' },
+      { name: 'Espejos', to: '/productos/accesorios/espejos' }
+    ]
+  },
+  {
+    name: 'Sala',
+    to: '/productos/salas', // Esto puede ser una ruta que muestre todos los productos de sala.
+    subcategories: [
+      { name: 'Sofás', to: '/productos/salas/sofás' },
+      { name: 'Muebles TV', to: '/productos/salas/muebles-para-tv' },
+      { name: 'Mesas de centro', to: '/productos/salas/mesas-de-centro' }
+    ]
+  },
+  {
+    name: 'Muebles de patio',
+    to: '/productos/muebles-de-patio', // Esto puede ser una ruta que muestre todos los muebles de patio.
+    subcategories: [
+      { name: 'Mesas de exterior', to: '/productos/muebles-de-patio/mesas-de-exterior' },
+      { name: 'Sillas de exterior', to: '/productos/muebles-de-patio/sillas-de-exterior' },
+      { name: 'Toldos', to: '/productos/muebles-de-patio/toldos' }
+    ]
+  },
+  {
+    name: 'Muebles de oficina',
+    to: '/productos/muebles-de-oficina', // Esto puede ser una ruta que muestre todos los muebles de oficina.
+    subcategories: [
+      { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios' },
+      { name: 'Libreros', to: '/productos/muebles-de-oficina/libreros' },
+      { name: 'Sillas de estudio', to: '/productos/muebles-de-oficina/sillas-de-estudio' }
+    ]
+  },
+  {
+    name: 'Comedores',
+    to: '/productos/comedores', // Esto puede ser una ruta que muestre todos los comedores.
+    subcategories: [
+      { name: 'Juego de comedor', to: '/productos/comedores/juego-comedor' },
+      { name: 'Mesas', to: '/productos/comedores/mesas' },
+      { name: 'Sillas', to: '/productos/comedores/sillas' }
+    ]
+  },
+  {
+    name: 'Dormitorios',
+    to: '/productos/dormitorios', // Esto puede ser una ruta que muestre todos los dormitorios.
+    subcategories: [
+      { name: 'Camas', to: '/productos/dormitorios/camas' },
+      { name: 'Comodas con espejo', to: '/productos/dormitorios/comodas-con-espejo' },
+      { name: 'Mesas de noche', to: '/productos/dormitorios/mesas-de-noche' }
+    ]
+  }
   ];
+
 
   return (
     <header className="bg-fondo shadow-md flex flex-col">
@@ -131,7 +132,7 @@ export default function Navbar() {
               </div>
             )}
           </div>
-          <Link to="/catalogo" className="text-texto_color hover:text-primario px-3 py-2">Catálogo</Link>
+          <Link to="/user" className="text-texto_color hover:text-primario px-3 py-2">Mi Perfil</Link>
           <Link to="/nosotros" className="text-texto_color hover:text-primario px-3 py-2">Nosotros</Link>
           <Link to="/contacto" className="text-texto_color hover:text-primario px-3 py-2">Contacto</Link>
         </nav>

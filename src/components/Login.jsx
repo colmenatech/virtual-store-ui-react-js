@@ -1,11 +1,22 @@
+// src/components/interfaz inicio de sesion/Login.js
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
+
 
 const Login = () => {
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const loginAdmin =  () => {  navigate('/interfazadmin'); };
-  const handleSignUpClick = () => {navigate('/profileuser'); };
-  const handleNavbarClick = () => { navigate('/navbar')}
+
+  const handleLogin = (userType) => {
+    login(userType); // Llama a la función login con el tipo de usuario
+    navigate(userType === 'admin' ? '/interfazadmin' : '/'); // Redirige según el tipo de usuario
+    navigate(userType === 'admin' ? '/interfazadmin' : '/home');
+  };
+
+  const handleSignUpClick = () => {
+    navigate('/signup'); // Redirige al usuario a la página de registro
+  };
 
   return (
     <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">
@@ -32,15 +43,14 @@ const Login = () => {
         </div>
         <button
           type="button"
-          onClick={loginAdmin}
+          onClick={() => handleLogin('admin')}
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
         >
           Iniciar sesión como Administrador
         </button>
-
         <button
           type="button"
-          onClick={handleNavbarClick}
+          onClick={() => handleLogin('cliente')}
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
         >
           Iniciar sesión como Cliente
