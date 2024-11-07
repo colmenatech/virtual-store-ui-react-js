@@ -17,7 +17,6 @@ const ProductoItem = ({ producto }) => {
         <div className="product-card">
             <img src={producto.img} alt={producto.nombre} />
             <h3>{producto.nombre}</h3>
-            <p>{producto.descripcion}</p>
             <p>${producto.precio}</p>
             <button onClick={addToCart} className="add-to-cart-button">
                 <FaShoppingCart /> Agregar al carrito

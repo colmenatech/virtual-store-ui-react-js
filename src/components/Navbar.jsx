@@ -4,9 +4,11 @@ import { ChevronDown, Search } from 'lucide-react';
 import CartMenu from './pages/shopping_cart/CartMenu';
 import LoginMenu from './LoginContext';
 import Logo from './assets/img/logo_2.png'
+import RandomProducts from './pages/Categorías/RandomProducts';
 
 export default function Navbar() {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar/ocultar RandomProducts
 
  
   const categories = [
@@ -64,14 +66,20 @@ export default function Navbar() {
       { name: 'Mesas de noche', to: '/productos/dormitorios/mesas-de-noche' }
     ]
   }
+  
   ];
+   // Función para ocultar los productos aleatorios
+   const handleProductClick = () => {
+    setShowRandomProducts(false);
+  };
+
 
 
   return (
     <header className="bg-fondo shadow-md flex flex-col">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Enlace al inicio con logo y nombre de la tienda */}
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center" onClick={() => setShowRandomProducts(true)}>
           {/* Imagen del logo */}
           <img src={Logo} alt="Logo" className="w-8 h-8 mr-2" />
           {/* Nombre de la tienda con diferentes colores */}
@@ -114,14 +122,14 @@ export default function Navbar() {
                 {categories.map((category, index) => (
                   <div key={index} className="min-w-[200px]">
                     <h3 className="font-semibold text-texto_color mb-2">
-                      <Link to={category.to} className="hover:text-primario">
+                      <Link to={category.to} className="hover:text-primario" onClick={handleProductClick}>
                         {category.name}
                       </Link>
                     </h3>
                     <ul>
                       {category.subcategories.map((subcategory, subIndex) => (
                         <li key={subIndex}>
-                          <Link to={subcategory.to} className="text-secundario hover:text-primario block py-1">
+                          <Link to={subcategory.to} className="text-secundario hover:text-primario block py-1" onClick={handleProductClick}>
                             {subcategory.name}
                           </Link>
                         </li>
@@ -137,6 +145,8 @@ export default function Navbar() {
           <Link to="/contacto" className="text-texto_color hover:text-primario px-3 py-2">Contacto</Link>
         </nav>
       </div>
+       {/* Mostrar RandomProducts solo si showRandomProducts es verdadero */}
+       {showRandomProducts && <RandomProducts onHide={handleProductClick} />}
     </header>
   );
 }
