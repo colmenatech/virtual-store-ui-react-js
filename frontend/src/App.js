@@ -89,7 +89,6 @@ function ClienteRoutes() {
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/carrito" element={<Cart />} />
         <Route path="/factura" element={<Factura />} />
-     
     
         {/* Rutas de subcategorías */}
         {/* Accesorios */}
