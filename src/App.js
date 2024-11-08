@@ -1,11 +1,10 @@
-//Importaciones y depedencias nesecarias 
-import { useRef, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+//Importaciones y dependencias necesarias
+import { useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import InterfazAdmin from './components/interfazadmin';
-//import Home from './components/Home';
 import User from './components/pages/user/Profileuser';
 import Nosotros from './components/pages/links/About';
 import Contacto from './components/pages/links/Contact';
@@ -16,7 +15,6 @@ import ActualizarProducto from './components/pages/admin_interface/FormularioAct
 import Cart from './components/pages/shopping_cart/CartMenu';
 import Factura from './components/pages/shopping_cart/Factura';
 import { CartProvider } from './components/pages/shopping_cart/CartContext';
-
 
 // Importar componentes de subcategorías
 import Relojes from './components/pages/Categorías/Accesorios/Subcategorias/Relojes/relojes';
@@ -38,7 +36,6 @@ import Camas from './components/pages/Categorías/Dormitorios/Subcategorias/Cama
 import ComodasConEspejo from './components/pages/Categorías/Dormitorios/Subcategorias/Comodas con espejo/ComodaEspejoProductos';
 import MesasNoche from './components/pages/Categorías/Dormitorios/Subcategorias/Mesas de Noche/MesasNocheProducto';
 
-
 function App() {
   return (
     <AuthProvider>
@@ -53,14 +50,16 @@ function App() {
 
 function MainRoutes() {
   const { user } = useContext(AuthContext);
+  const location = useLocation();
+
+  // Rutas donde el Navbar no debe mostrarse
+  const noNavbarRoutes = ["/Login", "/SignUp", "/interfazadmin"];
+  const showNavbar = !noNavbarRoutes.includes(location.pathname) && user;
 
   return (
     <>
       {/* Renderizar Navbar solo si no estamos en Login, SignUp o InterfazAdmin */}
-      {window.location.pathname !== "/Login" &&
-       window.location.pathname !== "/SignUp" &&
-       window.location.pathname !== "/interfazadmin" && 
-       user && <Navbar />}
+      {showNavbar && <Navbar />}
 
       <Routes>
         {/* Ruta inicial que redirige a Login */}

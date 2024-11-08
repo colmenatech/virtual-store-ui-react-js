@@ -50,6 +50,15 @@ const SignUp = () => {
             className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
           />
         </div>
+        <div className="mb-5">
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Confirmar Contraseña"
+            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+          />
+        </div>
         <button
           type="submit"
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
