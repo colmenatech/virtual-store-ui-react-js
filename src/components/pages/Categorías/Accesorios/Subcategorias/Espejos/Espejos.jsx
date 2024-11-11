@@ -16,7 +16,7 @@ const ProductoItem = ({ producto }) => {
     return (
         <div className="product-card">
             <img src={producto.img} alt={producto.nombre} />
-            <h3>{producto.nombre}</h3>
+            <h3>{producto.descripcion}</h3>
             <p>${producto.precio}</p>
             <button onClick={addToCart} className="add-to-cart-button">
                 <FaShoppingCart /> Agregar al carrito
@@ -29,7 +29,7 @@ const ProductoItem = ({ producto }) => {
 const EspejosProducto = () => {
     // Define una lista de productos con sus propiedades id, nombre, precio e imagen.
     const productos = [
-        { id: 1, nombre: 'Espejo baño cuadrado', precio: 500, descripcion: 'Espejo cuadrado para baño', img: require('./img/espejo_baño_cuadrado.jpg') },
+        { id: 1, name: 'Espejo baño cuadrado', price: 500, description: 'Espejo cuadrado para baño', img: require('./img/espejo_baño_cuadrado.jpg') },
         { id: 2, nombre: 'Espejo champague italiano', precio: 300, descripcion: 'Espejo elegante de estilo italiano', img: require('./img/espejo_champague_italiano.jpg') },
         { id: 3, nombre: 'Espejo cuadrado negro', precio: 150, descripcion: 'Espejo cuadrado de marco negro', img: require('./img/espejo_cuadrado_negro.jpg') },
         { id: 4, nombre: 'Espejo para escritorio', precio: 400, descripcion: 'Espejo pequeño para escritorio', img: require('./img/espejo_de_escritorio.jpg') },

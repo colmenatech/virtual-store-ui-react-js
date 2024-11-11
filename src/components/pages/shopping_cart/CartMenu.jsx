@@ -8,7 +8,7 @@ const CartMenu = () => {
   const { cart, dispatch } = useCart();
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0); // Calcula el número total de artículos en el carrito
-  const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0); // Calcula el precio total de los artículos en el carrito
+  const totalPrice = cart.reduce((acc, item) => acc + item.precio * item.quantity, 0); // Calcula el precio total de los artículos en el carrito
 
   return (
     <div className="relative">
@@ -32,14 +32,14 @@ const CartMenu = () => {
                 <ul className="mt-4 space-y-4">
                   {cart.map((item) => (
                     <li key={item.id} className="flex justify-between items-center">
-                      <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded" /> {/* Imagen del producto */}
+                      <img src={item.img} alt={item.nombre} className="w-12 h-12 object-cover rounded" /> {/* Imagen del producto */}
                       <div className="ml-4 flex-1">
-                        <h3 className="text-sm font-semibold text-texto_color">{item.name}</h3>
-                        <p className="text-xs text-secundario">{item.description}</p>
+                        <h3 className="text-sm font-semibold text-texto_color">{item.nombre}</h3>
+                        <p className="text-xs text-secundario">{item.descripcion}</p>
                       </div>
                       <div className="text-right">
                         <span className="font-semibold text-texto_color">x{item.quantity}</span>
-                        <p className="text-sm text-texto_color">₡{item.price}</p>
+                        <p className="text-sm text-texto_color">₡{item.precio}</p>
                         <button onClick={() => dispatch({ type: 'REMOVE_FROM_CART', payload: item })} className="text-primario text-sm">Eliminar</button>
                       </div>
                     </li>
