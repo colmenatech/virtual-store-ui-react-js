@@ -1,0 +1,92 @@
+.cart-container {
+    width: 80%;
+    margin: 0 auto;
+    font-family: Georgia, Times, 'Times New Roman', serif;
+   
+  }
+  
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #ffffff;
+  }
+  .logo{
+    width: 190px;
+    height: 170px;
+    margin-right: 20px;
+  }
+
+ 
+  .discount-message {
+    background-color: #5d0909;
+    padding: 10px;
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  .cart-items {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+  }
+  
+  .cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .cart-item-image {
+    width: 150px;
+    height: 150px;
+    margin-right: 20px;
+  }
+  
+  .cart-item-details {
+    flex: 1;
+  }
+  
+  .cart-item-quantity {
+    display: flex;
+    align-items: center;
+  }
+  
+  .order-summary {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+  }
+  
+  .checkout-button {
+    background-color: #381008;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+  button:hover{
+    background-color: #DFCCC8;
+  }
+  
+  .payment-methods {
+    margin-top: 3px;
+  }
+  
+  .payment-icons img {
+    width: 50px;
+    margin-right: 10px;
+  }
+  .mastercard-logo{
+    transform: translateY(-4px);
+  }
+  .visa-logo{
+    transform: translateY(17px) translateX(60px);
+  }
+  .applepay-logo{
+    transform: translateY(-90px) translateX(125px);
+  }
+  .paypal-logo{
+    transform: translateY(-45px) translateX(185px);
+  }

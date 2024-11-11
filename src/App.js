@@ -13,7 +13,9 @@ import ListaProductos from './components/pages/admin_interface/ProductosList';
 import CrearProducto from './components/pages/admin_interface/FormularioCrearProducto';
 import ActualizarProducto from './components/pages/admin_interface/FormularioActualizarProd';
 import Cart from './components/pages/shopping_cart/CartMenu';
+import Cartt from './components/pages/shopping_cart/Payment_Method';
 import Factura from './components/pages/shopping_cart/Factura';
+import ResultadosBusqueda from './components/ResultadosBusqueda';
 import { CartProvider } from './components/pages/shopping_cart/CartContext';
 
 // Importar componentes de subcategorías
@@ -53,7 +55,7 @@ function MainRoutes() {
   const location = useLocation();
 
   // Rutas donde el Navbar no debe mostrarse
-  const noNavbarRoutes = ["/Login", "/SignUp", "/interfazadmin"];
+  const noNavbarRoutes = ["/Login", "/SignUp", "/interfazadmin", "/productoslist", "/crearproducto", "/actproducto"];
   const showNavbar = !noNavbarRoutes.includes(location.pathname) && user;
 
   return (
@@ -101,7 +103,9 @@ function ClienteRoutes() {
       <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/contacto" element={<Contacto />} />
       <Route path="/carrito" element={<Cart />} />
+      <Route path="/carritoo" element={<Cartt />} />
       <Route path="/factura" element={<Factura />} />
+      <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
 
       {/* Rutas de productos agrupadas por categorías */}
       <Route path="/productos/accesorios/relojes" element={<Relojes />} />

@@ -44,7 +44,7 @@ const RandomProducts = ({ onHide }) => {
       { id: 33, nombre: 'Reloj con forma de pluma decorativo', precio: 350, },
       { id: 34, nombre: 'Reloj estilo romano color negro', precio: 90, },
       { id: 35, nombre: 'Reloj estilo romano', precio: 50, },
-      { id: 6, nombre: 'Reloj grande de pared estilo sencillo', precio: 200, },
+      { id: 36, nombre: 'Reloj grande de pared estilo sencillo', precio: 200, },
     ];
 
     const randomProducts = sampleProducts.sort(() => 0.5 - Math.random()).slice(0, 20);

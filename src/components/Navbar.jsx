@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronDown, Search } from 'lucide-react';
 import CartMenu from './pages/shopping_cart/CartMenu';
 import LoginMenu from './LoginContext';
@@ -11,8 +11,12 @@ export default function Navbar() {
   const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar/ocultar RandomProducts
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false); // Estado para controlar si mostrar los resultados
 
- 
+  const navigate = useNavigate();
+  const location = useLocation(); 
+  const searchRef = useRef(null); // Referencia para la barra de búsqueda
+
   const categories = [
     {
       name: 'Accesorios',
@@ -70,6 +74,14 @@ export default function Navbar() {
   }
   
   ];
+
+  useEffect(() => {
+    // Oculta los productos aleatorios en las páginas de factura y carrito
+    if (location.pathname === '/factura' || location.pathname === '/carritoo') {
+      setShowRandomProducts(false);
+    }
+  }, [location.pathname]);
+
    // Función para ocultar los productos aleatorios
   const handleProductClick = () => {
     setShowRandomProducts(false);
@@ -77,8 +89,8 @@ export default function Navbar() {
   const handleCategoryClick = () => {
     setShowRandomProducts(false); // Cierra el componente cuando se haga clic en categorías u otros elementos
   };
-   // Función de búsqueda
-   const handleSearch = (event) => {
+  // Función de búsqueda
+  const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
 
@@ -92,10 +104,35 @@ export default function Navbar() {
         });
       });
       setSearchResults(results);
+      setShowSearchResults(true); // Mostrar resultados si hay algo
     } else {
       setSearchResults([]);
+      setShowSearchResults(false); // Ocultar resultados si no hay término de búsqueda
     }
   };
+
+  // Función para manejar el clic en el ícono de búsqueda
+  const handleSearchIconClick = () => {
+    navigate('/resultados-busqueda', { state: { results: searchResults } });
+    setShowRandomProducts(false);
+  };
+   // Función para cerrar el menú de recomendaciones al hacer clic fuera
+   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResults([false]); // Cerrar las recomendaciones de búsqueda si el clic es fuera
+      }
+    };
+
+    // Agregar el event listener para clics fuera
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Limpiar el event listener cuando el componente se desmonte
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="bg-fondo shadow-md flex flex-col relative">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -104,9 +141,9 @@ export default function Navbar() {
           <span className="text-xl font-bold text-acento">Comfort</span>
           <span className="text-xl font-bold text-primario ml-1">Haven</span>
         </Link>
-        
+
         {/* Barra de búsqueda */}
-        <div className="flex-grow mx-4 relative">
+        <div ref={searchRef} className="flex-grow mx-4 relative">
           <input
             type="text"
             placeholder="Buscar en toda la tienda..."
@@ -114,10 +151,15 @@ export default function Navbar() {
             value={searchTerm}
             onChange={handleSearch}
           />
-          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-secundario" size={20} />
+          <Search
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-secundario cursor-pointer"
+            size={20}
+            onClick={handleSearchIconClick}
+            
+          />
 
           {/* Resultados de búsqueda */}
-          {searchTerm && (
+          {showSearchResults && searchTerm && (
             <div className="absolute top-full mt-1 w-full bg-white border border-secundario rounded-md shadow-md max-h-60 overflow-y-auto z-50">
               {searchResults.length > 0 ? (
                 searchResults.map((result, index) => (
@@ -125,7 +167,7 @@ export default function Navbar() {
                     to={result.to}
                     key={index}
                     className="block px-4 py-2 text-sm text-texto_color hover:bg-secundario hover:text-white"
-                    onClick={handleProductClick} // Llamada a handleProductClick
+                    onClick={handleProductClick}
                   >
                     {result.category} - {result.name}
                   </Link>
@@ -195,6 +237,7 @@ export default function Navbar() {
             <Link to="/contacto" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
               Contacto
             </Link>
+            
           </div>
         </nav>
       </div>
@@ -203,7 +246,7 @@ export default function Navbar() {
       {showRandomProducts && (
         <RandomProducts
           onHide={() => setShowRandomProducts(false)}
-          products={[]}
+          products={[]} // Asegúrate de pasar los productos aleatorios reales
           className="relative z-40"
         />
       )}

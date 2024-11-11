@@ -59,7 +59,7 @@ const CartMenu = () => {
                 </div>
 
                 {/* Botón de confirmar */}
-                <Link to="/factura" className="block mt-4 text-center py-2 bg-primario text-white font-semibold rounded">
+                <Link to="/carritoo" className="block mt-4 text-center py-2 bg-primario text-white font-semibold rounded">
                   CONFIRMAR
                 </Link>
               </>
