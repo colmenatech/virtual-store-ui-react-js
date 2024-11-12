@@ -1,19 +1,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './login.css';
 
 const SignUp = () => {
-  const navigate = useNavigate(); // Hook para manejar la navegación entre rutas
+  const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    navigate('/login'); // Función que redirige a la página de inicio de sesión
+    navigate('/login');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+    // Aquí podrías agregar cualquier lógica adicional antes de redirigir al perfil
+    navigate('/user'); // Redirige a la página de perfil
   };
 
   return (
     <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">
-      <h1 className="text-3xl mb-5">Bienvenidos</h1> {/* Título principal */}
-      <h2 className="text-xl mb-5">Registrarse</h2> {/* Subtítulo para el formulario */}
-      
-      <form> {/* Formulario de registro */}
+      <h1 className="text-3xl mb-5">Bienvenidos</h1>
+      <h2 className="text-xl mb-5">Registrarse</h2>
+
+      <form onSubmit={handleSubmit}>
         <div className="mb-5">
           <input
             type="text"
@@ -55,7 +62,7 @@ const SignUp = () => {
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
         >
           Registrarse
-        </button> {/* Botón para enviar el formulario */}
+        </button>
 
         <button
           type="button"
@@ -63,7 +70,7 @@ const SignUp = () => {
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300"
         >
           Regresar
-        </button> {/* Botón que redirige al inicio de sesión */}
+        </button>
       </form>
     </div>
   );

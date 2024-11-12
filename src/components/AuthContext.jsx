@@ -1,15 +1,17 @@
-// src/components/AuthContext.js
 import React, { createContext, useState } from 'react';
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // user almacenará el tipo de usuario: 'cliente' o 'admin'
+  // user almacenará un objeto con la información del usuario
+  const [user, setUser] = useState(null); 
 
-  const login = (userType) => {
-    setUser({ type: userType }); // Almacena un objeto con el tipo de usuario
+  // Función para iniciar sesión, guardando la información del usuario
+  const login = (username, userType) => {
+    setUser({ username, type: userType }); // Almacena el nombre de usuario y el tipo de usuario
   };
 
+  // Función para cerrar sesión
   const logout = () => setUser(null);
 
   return (
