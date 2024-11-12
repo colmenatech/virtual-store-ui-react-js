@@ -1,4 +1,4 @@
-import React from 'react';  // Se importa React y el useState
+import React from 'react';
 import { jsPDF } from "jspdf";  // Importar la librería jsPDF para generar el PDF
 import logo from './img/logo.png';  // Importar el logo de la empresa
 
@@ -57,60 +57,62 @@ function Factura() {  // Se define el componente funcional Factura
   }
 
   return ( 
-    <div id='principal' className="bg-no-repeat bg-right bg-cover h-screen p-4">  {/* Contenedor principal */}    
+    <div id='principal'>  {/* Contenedor principal con id "principal" */}
       
-      <div className="max-w-4xl mx-auto p-6 bg-white border-4 border-gray-300 rounded-lg shadow-xl font-sans">  {/* Estilo de la factura */}        
-        <h1 className="text-center text-3xl font-bold text-black mb-4">Su factura</h1>  {/* Título de la factura */}
+      <div className="factura">  {/* Div con la clase CSS "factura" */}
+        <h1>Factura número 123</h1>  {/* Título de la factura */}
         
-        <div className="mb-6">  {/* Bloque de información del cliente */}
-          <h2 className="text-xl font-semibold">Cliente:</h2>  {/* Subtítulo para la sección del cliente */}
+        <div className="factura-info">  {/* Bloque de información del cliente */}
+          <h2>Cliente:</h2>  {/* Subtítulo para la sección del cliente */}
           <p>Nombre del Cliente</p>  {/* Información del cliente */}
           <p>Dirección: Calle Ejemplo 123</p>  {/* Dirección del cliente */}
           <p>Teléfono: (123) 456-7890</p>  {/* Teléfono del cliente */}
         </div>
         
-        <div className="mb-6">  {/* Bloque para los detalles de los productos */}
-          <h2 className="text-xl font-semibold">Detalle</h2>  {/* Subtítulo para la sección de detalles */}
+        <div className="factura-items">  {/* Bloque para los detalles de los productos */}
+          <h2>Detalle</h2>  {/* Subtítulo para la sección de detalles */}
           
-          <table className="w-full border-collapse text-sm">  {/* Tabla para listar los productos */}
+          <table>  {/* Tabla para listar los productos */}
             <thead>  {/* Encabezado de la tabla */}
               <tr>
-                <th className="border border-gray-700 p-3 text-left">Descripción</th>  {/* Columna para la descripción del producto */}
-                <th className="border border-gray-700 p-3 text-left">Cantidad</th>  {/* Columna para la cantidad del producto */}
-                <th className="border border-gray-700 p-3 text-left">Precio</th>  {/* Columna para el precio del producto */}
+                <th>Descripción</th>  {/* Columna para la descripción del producto */}
+                <th>Cantidad</th>  {/* Columna para la cantidad del producto */}
+                <th>Precio</th>  {/* Columna para el precio del producto */}
               </tr>
             </thead>
             <tbody>  {/* Cuerpo de la tabla con los productos */}
               <tr>
-                <td className="border border-gray-700 p-3">Producto 1</td>  {/* Primer producto */}
-                <td className="border border-gray-700 p-3">2</td>  {/* Cantidad del primer producto */}
-                <td className="border border-gray-700 p-3">$10.00</td>  {/* Precio del primer producto */}
+                <td>Producto 1</td>  {/* Primer producto */}
+                <td>2</td>  {/* Cantidad del primer producto */}
+                <td>$10.00</td>  {/* Precio del primer producto */}
               </tr>
               <tr>
-                <td className="border border-gray-700 p-3">Producto 2</td>  {/* Segundo producto */}
-                <td className="border border-gray-700 p-3">1</td>  {/* Cantidad del segundo producto */}
-                <td className="border border-gray-700 p-3">$15.00</td>  {/* Precio del segundo producto */}
+                <td>Producto 2</td>  {/* Segundo producto */}
+                <td>1</td>  {/* Cantidad del segundo producto */}
+                <td>$15.00</td>  {/* Precio del segundo producto */}
               </tr>
             </tbody>
           </table>
         </div>
         
-        <div className="mb-6">  {/* Sección para mostrar el total */}
-          <h2 className="text-xl font-semibold">Total: $35.00</h2>  {/* Se muestra el total de la factura */}
+        <div className="factura-total">  {/* Sección para mostrar el total */}
+          <h2>Total: $35.00</h2>  {/* Se muestra el total de la factura */}
         </div>
         
-        <div className="flex justify-center items-center mb-6">  {/* Contenedor para los botones */}
-          <button 
-            className="bg-[#381008] text-white px-6 py-3 rounded-md hover:bg-[#960500] mb-4"
-            onClick={generarFacturaPDF}
-          >
-            Descargar Factura
-          </button>  {/* Botón para descargar la factura */}
+        <br />  {/* Salto de línea */}
+        
+        <div className="Buttoncontainer">  {/* Contenedor para los botones */}
+          <button id="button" onClick={generarFacturaPDF}> {/* Botón que llama a la función para generar el PDF */}
+            Descargar factura
+          </button>
+          <button id="inicio">Inicio</button>  {/* Botón para volver a la página de inicio */}
         </div>
 
       </div>
       
-      <div className="text-center italic text-white font-extrabold text-3xl mt-6">  {/* Bloque para el mensaje de agradecimiento */}
+      <br />  {/* Salto de línea */}
+      
+      <div className="gracias">  {/* Bloque para el mensaje de agradecimiento */}
         <p>¡Gracias por su compra!</p>  {/* Mensaje de agradecimiento */}
       </div>
 
@@ -118,4 +120,4 @@ function Factura() {  // Se define el componente funcional Factura
   );
 }
 
-export default Factura;  // Se exporta el componente Factura
+export default Factura;  // Exporta el componente Factura

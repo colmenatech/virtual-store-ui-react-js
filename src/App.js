@@ -58,28 +58,20 @@ function MainRoutes() {
   const noNavbarRoutesForAdmin = ["/Login", "/interfazadmin", "/productoslist", "/crearproducto", "/actproducto"];
   
    // Determina si se debe mostrar el Navbar
-  const showNavbar = !user || (user.type === "cliente" && !noNavbarRoutesForAdmin.includes(location.pathname));
-  const isAuthPage = ['/login', '/signup'].includes(location.pathname.toLowerCase());
-
-  if (isAuthPage) {
-    return (
-      <div className="auth-layout">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-      </div>
-    );
-  }
+   const showNavbar = !user || (user.type === "cliente" && !noNavbarRoutesForAdmin.includes(location.pathname));
 
   return (
     <>
       {/* Renderiza el Navbar según el tipo de usuario */}
       {showNavbar && <Navbar />}
       <Routes>
-          <Route path="/" element={<Navbar />} />
-          <Route path="/nosotros" element={<Nosotros />} />
-          <Route path="/contacto" element={<Contacto />} />
+        {/* Ruta inicial para mostrar el Navbar sin autenticación */}
+        <Route path="/" element={<Navigate to={!user ? "/navbar" : "/user"} replace />} />
+
+        {/* Rutas públicas */}
+
+        <Route path="/Login" element={<Login />} />
+        <Route path="/SignUp" element={<SignUp />} />
         
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
         <Route path="/interfazadmin" element={<ProtectedRoute userType="admin"><InterfazAdmin /></ProtectedRoute>} />

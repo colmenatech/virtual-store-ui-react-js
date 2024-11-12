@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Importa el componente Link para navegación entre rutas
+//import { Link } from 'react-router-dom'; // Importa el componente Link para navegación entre rutas
 
 const SobreNosotros = () => {
   return (

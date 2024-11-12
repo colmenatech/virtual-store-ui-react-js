@@ -80,10 +80,10 @@ export default function Navbar() {
     if (!user) {
       alert("Debes iniciar sesión para acceder al carrito.");
     } else {
-      navigate('/carrito');
+      navigate('/carritoo');
     }
   };
-
+  
   const handleLogout = () => {
     logout();
     navigate('/');
