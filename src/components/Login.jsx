@@ -1,4 +1,3 @@
-// src/components/Login.js
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
@@ -15,10 +14,10 @@ const Login = () => {
 
   // Función para manejar el inicio de sesión
   const handleLogin = (userType) => {
-    login(userType);
-  if (userType === 'admin') {
-     navigate('/interfazadmin'); // Redirige a la interfaz de administración
-      } else {
+    login('username', userType); // Aquí deberías reemplazar 'username' por el valor real
+    if (userType === 'admin') {
+      navigate('/interfazadmin'); // Redirige a la interfaz de administración
+    } else {
       navigate('/navbar'); // Redirige a la página de cliente
     }
   };

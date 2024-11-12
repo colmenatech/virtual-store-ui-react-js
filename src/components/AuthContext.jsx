@@ -1,20 +1,19 @@
-// src/components/AuthContext.js
 import React, { createContext, useState } from 'react';
 
+// Crea el contexto de autenticación
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [showRandomProducts, setShowRandomProducts] = useState(true);
 
-  const login = (userType) => {
-    setUser({ type: userType });
-    setShowRandomProducts(false); // Oculta productos aleatorios al iniciar sesión
+  const login = (username, userType) => {
+    setUser({ username, type: userType });
   };
 
   const logout = () => {
     setUser(null);
-    setShowRandomProducts(false); // Asegura que se oculte al cerrar sesión
+    setShowRandomProducts(true);
   };
 
   return (

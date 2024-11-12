@@ -54,22 +54,32 @@ function MainRoutes() {
   const { user } = useContext(AuthContext);
   const location = useLocation();
 
-  // Rutas donde el Navbar no debe mostrarse
-  const noNavbarRoutes = ["/Login", "/SignUp", "/interfazadmin", "/productoslist", "/crearproducto", "/actproducto"];
-  const showNavbar = !noNavbarRoutes.includes(location.pathname) && user;
+  // Rutas donde el Navbar no debe mostrarse para admin
+  const noNavbarRoutesForAdmin = ["/Login", "/interfazadmin", "/productoslist", "/crearproducto", "/actproducto"];
+  
+   // Determina si se debe mostrar el Navbar
+  const showNavbar = !user || (user.type === "cliente" && !noNavbarRoutesForAdmin.includes(location.pathname));
+  const isAuthPage = ['/login', '/signup'].includes(location.pathname.toLowerCase());
+
+  if (isAuthPage) {
+    return (
+      <div className="auth-layout">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+      </div>
+    );
+  }
 
   return (
     <>
-      {/* Renderizar Navbar solo si no estamos en Login, SignUp o InterfazAdmin */}
+      {/* Renderiza el Navbar según el tipo de usuario */}
       {showNavbar && <Navbar />}
-
       <Routes>
-        {/* Ruta inicial que redirige a Login */}
-        <Route path="/" element={<Navigate to="/Login" replace />} />
-        
-        {/* Rutas públicas */}
-        <Route path="/Login" element={<Login />} />
-        <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/" element={<Navbar />} />
+          <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/contacto" element={<Contacto />} />
         
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
         <Route path="/interfazadmin" element={<ProtectedRoute userType="admin"><InterfazAdmin /></ProtectedRoute>} />
@@ -81,19 +91,18 @@ function MainRoutes() {
         
         {/* Rutas protegidas para cliente */}
         <Route path="/*" element={<ProtectedRoute userType="cliente"><ClienteRoutes /></ProtectedRoute>} />
-      </Routes>
-    </>
+        
+      </Routes></>
   );
 }
 
 function ProtectedRoute({ userType, children }) {
   const { user } = useContext(AuthContext);
-  
-  if (!user) return <Navigate to="/Login" />;
-  if (user.type !== userType) return <Navigate to="/" />;
-  
+  if (!user) return <Navigate to="/login" />;
+  if (userType && user.type !== userType) return <Navigate to="/" />;
   return children;
 }
+
 
 function ClienteRoutes() {
   return (
@@ -106,27 +115,27 @@ function ClienteRoutes() {
       <Route path="/carritoo" element={<Cartt />} />
       <Route path="/factura" element={<Factura />} />
       <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
-
+      
       {/* Rutas de productos agrupadas por categorías */}
-      <Route path="/productos/accesorios/relojes" element={<Relojes />} />
-      <Route path="/productos/accesorios/lámparas" element={<Lamparas />} />
-      <Route path="/productos/accesorios/espejos" element={<Espejos />} />
-      <Route path="/productos/salas/sofás" element={<Sofas />} />
-      <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
-      <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
-      <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />
-      <Route path="/productos/muebles-de-patio/sillas-de-exterior" element={<SillasExterior />} />
-      <Route path="/productos/muebles-de-patio/toldos" element={<Toldos />} />
-      <Route path="/productos/muebles-de-oficina/escritorios" element={<Escritorios />} />
-      <Route path="/productos/muebles-de-oficina/libreros" element={<Libreros />} />
-      <Route path="/productos/muebles-de-oficina/sillas-de-estudio" element={<SillasEstudio />} />
-      <Route path="/productos/comedores/juego-comedor" element={<JuegoComedor />} />
-      <Route path="/productos/comedores/mesas" element={<MesasComedor />} />
-      <Route path="/productos/comedores/sillas" element={<SillasComedor />} />
-      <Route path="/productos/dormitorios/camas" element={<Camas />} />
-      <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
-      <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
-    </Routes>
+          <Route path="/productos/accesorios/relojes" element={<Relojes />} />
+          <Route path="/productos/accesorios/lámparas" element={<Lamparas />} />
+          <Route path="/productos/accesorios/espejos" element={<Espejos />} />
+          <Route path="/productos/salas/sofás" element={<Sofas />} />
+          <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
+          <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
+          <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />
+          <Route path="/productos/muebles-de-patio/sillas-de-exterior" element={<SillasExterior />} />
+          <Route path="/productos/muebles-de-patio/toldos" element={<Toldos />} />
+          <Route path="/productos/muebles-de-oficina/escritorios" element={<Escritorios />} />
+          <Route path="/productos/muebles-de-oficina/libreros" element={<Libreros />} />
+          <Route path="/productos/muebles-de-oficina/sillas-de-estudio" element={<SillasEstudio />} />
+          <Route path="/productos/comedores/juego-comedor" element={<JuegoComedor />} />
+          <Route path="/productos/comedores/mesas" element={<MesasComedor />} />
+          <Route path="/productos/comedores/sillas" element={<SillasComedor />} />
+          <Route path="/productos/dormitorios/camas" element={<Camas />} />
+          <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
+          <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
+          </Routes>
   );
 }
 

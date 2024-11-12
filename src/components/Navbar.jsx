@@ -1,14 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search, User } from 'lucide-react';
+import { AuthContext } from './AuthContext';
 import CartMenu from './pages/shopping_cart/CartMenu';
-import LoginMenu from './LoginContext';
 import Logo from './assets/img/logo_2.png'
 import RandomProducts from './pages/Categorías/RandomProducts';
 
 export default function Navbar() {
-  const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext); // Accede a user y logout desde el contexto
   const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar/ocultar RandomProducts
+  const [openCategoryIndex, setOpenCategoryIndex] = useState(null); // Estado para manejar el hover en categorías
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false); // Estado para controlar si mostrar los resultados
@@ -74,6 +75,27 @@ export default function Navbar() {
   }
   
   ];
+  // Función para gestionar el acceso al carrito
+  const handleCartClick = () => {
+    if (!user) {
+      alert("Debes iniciar sesión para acceder al carrito.");
+    } else {
+      navigate('/carrito');
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/signup');
+  };
 
   useEffect(() => {
     // Oculta los productos aleatorios en las páginas de factura y carrito
@@ -181,65 +203,91 @@ export default function Navbar() {
 
         {/* Icono del carrito de compras y enlace de inicio de sesión */}
         <div className="flex items-center space-x-4">
-          <CartMenu />
-          <LoginMenu />
+          <button onClick={handleCartClick}>
+            <CartMenu />
+          </button>
+
+          {user ? (
+            <>
+              <Link to="/user" className="flex items-center text-texto_color hover:text-primario">
+                <User size={24} className="mr-2" />
+                <span onClick={handleCategoryClick}>Mi Perfil</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-texto_color hover:text-primario"
+              >
+                <User size={24} className="mr-2" />
+                <span>Cerrar Sesión</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleLoginClick}
+                className="flex items-center text-texto_color hover:text-primario"
+              >
+                <User size={24} className="mr-2" />
+                <span>Iniciar Sesión</span>
+              </button>
+              <button
+                onClick={handleRegisterClick}
+                className="flex items-center text-texto_color hover:text-primario"
+              >
+                <User size={24} className="mr-2" />
+                <span>Registrarse</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Menú de navegación principal */}
-      <div className="container mx-auto px-4 py-2 flex items-center justify-between border-t border-secundario">
+      <div className="container mx-auto px-4 py-2 flex items-center justify-between border-t border-secundario"onClick={handleCategoryClick}>
         <nav className="flex items-center">
-          {/* Menú desplegable de productos */}
-          <div className="relative group">
-            <button
-              className="flex items-center text-texto_color hover:text-primario px-3 py-2"
-              onClick={() => setIsProductsOpen(!isProductsOpen)}
+          {categories.map((category, index) => (
+            <div
+              key={category.name}
+              className="relative"
+              onMouseEnter={() => setOpenCategoryIndex(index)}
+              onMouseLeave={() => setTimeout(() => setOpenCategoryIndex(null), 10000)} // Agrega un retraso de 200 ms
             >
-              Productos
-              <ChevronDown size={16} className="ml-1" />
-            </button>
-            {isProductsOpen && (
-              <div className="absolute top-full left-0 bg-fondo shadow-md rounded-md py-4 px-6 grid grid-cols-3 gap-6 w-max z-50">
-                {categories.map((category, index) => (
-                  <div key={index} className="min-w-[200px]">
-                    <h3 className="font-semibold text-texto_color mb-2">
-                      <Link to={category.to} className="hover:text-primario" onClick={handleCategoryClick}>
-                        {category.name}
-                      </Link>
-                    </h3>
-                    <ul>
-                      {category.subcategories.map((subcategory, subIndex) => (
-                        <li key={subIndex}>
-                          <Link
-                            to={subcategory.to}
-                            className="text-secundario hover:text-primario block py-1"
-                            onClick={handleProductClick}
-                          >
-                            {subcategory.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Enlaces de navegación */}
-          <div className="flex space-x-4">
-            <Link to="/user" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
-              Mi Perfil
-            </Link>
-            <Link to="/nosotros" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
-              Nosotros
-            </Link>
-            <Link to="/contacto" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
-              Contacto
-            </Link>
-            
-          </div>
+              <Link
+                to={category.to}
+                className="text-texto_color hover:text-primario px-3 py-2 flex items-center"
+                onClick={handleCategoryClick}
+              >
+                {category.name}
+                <ChevronDown size={16} className="ml-2" />
+              </Link>
+              {openCategoryIndex === index && (
+                <div className="absolute bg-white shadow-lg py-2 w-48 mt-1 rounded-md z-10">
+                  {category.subcategories.map((subcategory) => (
+                    <Link
+                      key={subcategory.name}
+                      to={subcategory.to}
+                      className="block px-4 py-2 text-texto_color hover:bg-primario hover:text-white"
+                      onClick={handleCategoryClick}
+                    >
+                      {subcategory.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </nav>
+
+      
+
+        {/* Enlaces de navegación adicionales */}
+        <div className="flex space-x-4">
+          <Link to="/nosotros" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
+            Nosotros
+          </Link>
+          <Link to="/contacto" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
+            Contacto
+          </Link>
+        </div>
       </div>
 
       {/* Renderiza RandomProducts si showRandomProducts es true */}
