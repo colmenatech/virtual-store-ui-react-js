@@ -1,58 +1,119 @@
-import React from 'react';  // Se importa React y el useState
+import React from 'react';
+import './Factura.css';  // Se importa el archivo de estilos CSS para la factura
+import { jsPDF } from "jspdf";  // Importar la librería jsPDF para generar el PDF
+import logo from './imagenes/logo.jpg';  // Importar el logo de la empresa
 
 function Factura() {  // Se define el componente funcional Factura
+
+  // Función para generar la factura en PDF
+  function generarFacturaPDF() {
+    const doc = new jsPDF();
+
+    // Agregar el logo de la empresa
+    doc.addImage(logo, 'JPEG', 20, 10, 30, 30);  // Coloca el logo en la esquina superior izquierda
+
+    // Información de la empresa en la parte superior
+    doc.setFontSize(14);  // Establece el tamaño de fuente para el nombre de la empresa
+    doc.text('Comfort Haven', 105, 10, null, null, 'center');  // Muestra el nombre de la empresa centrado en la parte superior
+    doc.setFontSize(10);  // Cambia el tamaño de fuente para el teléfono y el correo electrónico
+    doc.text('Teléfono: +506 1234-5678', 105, 15, null, null, 'center');  // Muestra el teléfono de la empresa
+    doc.text('Email: comforthaven@gmail.com', 105, 20, null, null, 'center');  // Muestra el correo electrónico de la empresa
+    
+    // Información de la factura
+    doc.setFontSize(16);  // Cambia el tamaño de fuente para el título de la factura
+    doc.text('Factura número 123', 105, 40, null, null, 'center');  // Título centrado de la factura
+    
+    doc.setFontSize(12);  // Cambia el tamaño de fuente para la información del cliente
+    doc.text('Cliente:', 10, 50);  // Etiqueta de "Cliente"
+    doc.text('Nombre del Cliente', 30, 60);  // Muestra el nombre del cliente
+    doc.text('Dirección: Calle Ejemplo 123', 30, 70);  // Dirección del cliente
+    doc.text('Teléfono: (123) 456-7890', 30, 80);  // Teléfono del cliente
+    
+    doc.text('Detalle', 10, 100);  // Título de la sección de detalles
+    
+    // Tabla de productos
+    doc.text('Descripción', 10, 110);  // Columna de descripción
+    doc.text('Cantidad', 100, 110);  // Columna de cantidad
+    doc.text('Precio', 150, 110);  // Columna de precio
+    
+    doc.text('Producto 1', 10, 120);  // Nombre del primer producto
+    doc.text('2', 100, 120);  // Cantidad del primer producto
+    doc.text('$10.00', 150, 120);  // Precio del primer producto
+
+    doc.text('Producto 2', 10, 130);  // Nombre del segundo producto
+    doc.text('1', 100, 130);  // Cantidad del segundo producto
+    doc.text('$15.00', 150, 130);  // Precio del segundo producto
+
+    doc.text('Total: $35.00', 10, 150);  // Muestra el total de la compra
+
+    // Fecha y hora de la compra
+    const fechaActual = new Date();  // Crea un objeto de fecha actual
+    const fecha = fechaActual.toLocaleDateString();  // Convierte la fecha a una cadena legible
+    const hora = fechaActual.toLocaleTimeString();  // Convierte la hora a una cadena legible
+    doc.text(`Fecha de compra: ${fecha}`, 10, 170);  // Muestra la fecha de la compra
+    doc.text(`Hora de compra: ${hora}`, 10, 180);  // Muestra la hora de la compra
+
+    // Generar el PDF
+    doc.save('factura.pdf');  // Guarda el archivo PDF con el nombre 'factura.pdf'
+  }
+
   return ( 
-    <div id='principal' className="bg-no-repeat bg-right bg-cover h-screen">  {/* Contenedor principal */}
+    <div id='principal'>  {/* Contenedor principal con id "principal" */}
       
-      <div className="max-w-xl bg-aliceblue mx-auto p-5 border-4 border-white rounded-lg shadow-md font-sans">  {/* Estilo de la factura */}
-        <h1 className="text-center text-black">Su factura</h1>  {/* Título de la factura */}
+      <div className="factura">  {/* Div con la clase CSS "factura" */}
+        <h1>Factura número 123</h1>  {/* Título de la factura */}
         
-        <div className="mb-5">  {/* Bloque de información del cliente */}
-          <h2 className="text-lg font-semibold">Cliente:</h2>  {/* Subtítulo para la sección del cliente */}
+        <div className="factura-info">  {/* Bloque de información del cliente */}
+          <h2>Cliente:</h2>  {/* Subtítulo para la sección del cliente */}
           <p>Nombre del Cliente</p>  {/* Información del cliente */}
           <p>Dirección: Calle Ejemplo 123</p>  {/* Dirección del cliente */}
           <p>Teléfono: (123) 456-7890</p>  {/* Teléfono del cliente */}
         </div>
         
-        <div className="mb-5">  {/* Bloque para los detalles de los productos */}
-          <h2 className="text-lg font-semibold">Detalle</h2>  {/* Subtítulo para la sección de detalles */}
+        <div className="factura-items">  {/* Bloque para los detalles de los productos */}
+          <h2>Detalle</h2>  {/* Subtítulo para la sección de detalles */}
           
-          <table className="w-full border-collapse">  {/* Tabla para listar los productos */}
+          <table>  {/* Tabla para listar los productos */}
             <thead>  {/* Encabezado de la tabla */}
               <tr>
-                <th className="border border-gray-700 p-2">Descripción</th>  {/* Columna para la descripción del producto */}
-                <th className="border border-gray-700 p-2">Cantidad</th>  {/* Columna para la cantidad del producto */}
-                <th className="border border-gray-700 p-2">Precio</th>  {/* Columna para el precio del producto */}
+                <th>Descripción</th>  {/* Columna para la descripción del producto */}
+                <th>Cantidad</th>  {/* Columna para la cantidad del producto */}
+                <th>Precio</th>  {/* Columna para el precio del producto */}
               </tr>
             </thead>
             <tbody>  {/* Cuerpo de la tabla con los productos */}
               <tr>
-                <td className="border border-gray-700 p-2">Producto 1</td>  {/* Primer producto */}
-                <td className="border border-gray-700 p-2">2</td>  {/* Cantidad del primer producto */}
-                <td className="border border-gray-700 p-2">$10.00</td>  {/* Precio del primer producto */}
+                <td>Producto 1</td>  {/* Primer producto */}
+                <td>2</td>  {/* Cantidad del primer producto */}
+                <td>$10.00</td>  {/* Precio del primer producto */}
               </tr>
               <tr>
-                <td className="border border-gray-700 p-2">Producto 2</td>  {/* Segundo producto */}
-                <td className="border border-gray-700 p-2">1</td>  {/* Cantidad del segundo producto */}
-                <td className="border border-gray-700 p-2">$15.00</td>  {/* Precio del segundo producto */}
+                <td>Producto 2</td>  {/* Segundo producto */}
+                <td>1</td>  {/* Cantidad del segundo producto */}
+                <td>$15.00</td>  {/* Precio del segundo producto */}
               </tr>
             </tbody>
           </table>
         </div>
         
-        <div className="mb-5">  {/* Sección para mostrar el total */}
-          <h2 className="text-lg font-semibold">Total: $35.00</h2>  {/* Se muestra el total de la factura */}
+        <div className="factura-total">  {/* Sección para mostrar el total */}
+          <h2>Total: $35.00</h2>  {/* Se muestra el total de la factura */}
         </div>
         
-        <div className="flex justify-center items-center mb-5">  {/* Contenedor para los botones */}
-          <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500] mb-4">
-            Descargar Factura
-          </button>  {/* Botón para descargar la factura */}
+        <br />  {/* Salto de línea */}
+        
+        <div className="Buttoncontainer">  {/* Contenedor para los botones */}
+          <button id="button" onClick={generarFacturaPDF}> {/* Botón que llama a la función para generar el PDF */}
+            Descargar factura
+          </button>
+          <button id="inicio">Inicio</button>  {/* Botón para volver a la página de inicio */}
         </div>
 
       </div>
       
-      <div className="text-center italic text-white font-extrabold text-3xl my-5">  {/* Bloque para el mensaje de agradecimiento */}
+      <br />  {/* Salto de línea */}
+      
+      <div className="gracias">  {/* Bloque para el mensaje de agradecimiento */}
         <p>¡Gracias por su compra!</p>  {/* Mensaje de agradecimiento */}
       </div>
 
@@ -60,4 +121,4 @@ function Factura() {  // Se define el componente funcional Factura
   );
 }
 
-export default Factura;  // Se exporta el componente Factura
+export default Factura;  // Exporta el componente Factura
