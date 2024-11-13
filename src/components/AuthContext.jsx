@@ -1,18 +1,18 @@
 import React, { createContext, useState } from 'react';
 
-// Crea el contexto de autenticación
 export const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [showRandomProducts, setShowRandomProducts] = useState(true);
 
-  const login = (username, userType) => {
-    setUser({ username, type: userType });
+  const login = (username, type) => {
+    setUser({ username, type });
+    setShowRandomProducts(false);
   };
 
   const logout = () => {
-    setUser(null);
+    setUser(null); 
     setShowRandomProducts(true);
   };
 
@@ -21,4 +21,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};

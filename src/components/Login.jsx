@@ -1,27 +1,24 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-import RandomProducts from './pages/Categorías/RandomProducts';
 
 const Login = () => {
-  const { login, showRandomProducts, setShowRandomProducts } = useContext(AuthContext);
+  const { login, setShowRandomProducts } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Ocultar productos aleatorios al entrar en la página de login
+  // Ocultar productos aleatorios en la página de login
   useEffect(() => {
     setShowRandomProducts(false);
   }, [setShowRandomProducts]);
 
-  // Función para manejar el inicio de sesión
   const handleLogin = (userType) => {
-    login('username', userType); // Aquí deberías reemplazar 'username' por el valor real
+    login('username', userType); // Aquí reemplaza 'username' por el valor real
     if (userType === 'admin') {
       navigate('/interfazadmin'); // Redirige a la interfaz de administración
     } else {
-      navigate('/navbar'); // Redirige a la página de cliente
+      navigate('/user'); // Redirige a la página de cliente
     }
   };
-
   // Función para redirigir al registro
   const handleSignUpClick = () => {
     navigate('/signup'); // Redirige al usuario a la página de registro
@@ -73,13 +70,7 @@ const Login = () => {
         </button>
       </form>
 
-      {/* Renderiza RandomProducts si showRandomProducts es true */}
-      {showRandomProducts && (
-        <RandomProducts
-          onHide={() => setShowRandomProducts(false)} // Cierra el componente cuando se hace clic en un producto
-          products={[/* Aquí pasan tus productos */]}
-        />
-      )}
+
     </div>
   );
 };

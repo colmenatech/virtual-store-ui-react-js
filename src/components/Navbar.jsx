@@ -199,7 +199,7 @@ export default function Navbar() {
             <CartMenu />
           {user ? (
             <>
-              <Link to="/user" className="flex items-center text-texto_color hover:text-primario">
+              <Link to="/perfil" className="flex items-center text-texto_color hover:text-primario">
                 <User size={24} className="mr-2" />
                 <span onClick={handleCategoryClick}>Mi Perfil</span>
               </Link>

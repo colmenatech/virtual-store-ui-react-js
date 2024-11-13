@@ -5,7 +5,7 @@ import { AuthProvider, AuthContext } from './components/AuthContext';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import InterfazAdmin from './components/interfazadmin';
-import User from './components/pages/user/Profileuser';
+import MiPerfil from './components/pages/user/Profileuser';
 import Nosotros from './components/pages/links/About';
 import Contacto from './components/pages/links/Contact';
 import Navbar from './components/Navbar';
@@ -54,23 +54,31 @@ function MainRoutes() {
   const { user } = useContext(AuthContext);
   const location = useLocation();
 
-  // Rutas donde el Navbar no debe mostrarse para admin
-  const noNavbarRoutesForAdmin = ["/Login", "/interfazadmin", "/productoslist", "/crearproducto", "/actproducto"];
-  
-   // Determina si se debe mostrar el Navbar
-   const showNavbar = !user || (user.type === "cliente" && !noNavbarRoutesForAdmin.includes(location.pathname));
+  // Define las rutas donde el Navbar no debe mostrarse
+  const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
+
+  // Solo mostrar el Navbar si no estamos en las rutas donde no debería aparecer
+  const showNavbar = !noNavbarRoutes.includes(location.pathname) && user;
 
   return (
     <>
-      {/* Renderiza el Navbar según el tipo de usuario */}
+      {/* Solo renderiza el Navbar si se debe mostrar */}
       {showNavbar && <Navbar />}
       <Routes>
         {/* Ruta inicial para mostrar el Navbar sin autenticación */}
-        <Route path="/" element={<Navigate to={!user ? "/!user" : "/user"} replace />} />
-
+        <Route
+          path="/"
+          element={
+            !user ? (
+              <Navbar />
+            ) : (
+              <Navigate to={user.type === 'admin' ? "/interfazadmin" : "/user"} replace />
+            )
+          }
+        />
         {/* Rutas públicas */}
 
-        <Route path="/Login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
         
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
@@ -100,7 +108,7 @@ function ClienteRoutes() {
   return (
     <Routes>
       {/* Rutas de cliente */}
-      <Route path="/user" element={<User />} />
+      <Route path="/perfil" element={<MiPerfil />} />
       <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/contacto" element={<Contacto />} />
       <Route path="/carrito" element={<Cart />} />

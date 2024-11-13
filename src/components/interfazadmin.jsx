@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 function InterfazAdmin() {
     const navigate = useNavigate();
-    const handleLogout = () => navigate('/Login');
+    const handleLogout = () => navigate('/login');
 
     const [subcategories, setSubcategories] = useState([
         { id: 1, name: 'Sofas', categoryId: 1 },
