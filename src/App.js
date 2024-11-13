@@ -13,7 +13,7 @@ import ListaProductos from './components/pages/admin_interface/ProductosList';
 import CrearProducto from './components/pages/admin_interface/FormularioCrearProducto';
 import ActualizarProducto from './components/pages/admin_interface/FormularioActualizarProd';
 import Cart from './components/pages/shopping_cart/CartMenu';
-import Cartt from './components/pages/shopping_cart/Payment_Method';
+import CartPay from './components/pages/shopping_cart/Payment_Method';
 import Factura from './components/pages/shopping_cart/Factura';
 import ResultadosBusqueda from './components/ResultadosBusqueda';
 import { CartProvider } from './components/pages/shopping_cart/CartContext';
@@ -66,7 +66,7 @@ function MainRoutes() {
       {showNavbar && <Navbar />}
       <Routes>
         {/* Ruta inicial para mostrar el Navbar sin autenticación */}
-        <Route path="/" element={<Navigate to={!user ? "/navbar" : "/user"} replace />} />
+        <Route path="/" element={<Navigate to={!user ? "/!user" : "/user"} replace />} />
 
         {/* Rutas públicas */}
 
@@ -104,7 +104,7 @@ function ClienteRoutes() {
       <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/contacto" element={<Contacto />} />
       <Route path="/carrito" element={<Cart />} />
-      <Route path="/carritoo" element={<Cartt />} />
+      <Route path="/carrito-checkout" element={<CartPay />} />
       <Route path="/factura" element={<Factura />} />
       <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
       

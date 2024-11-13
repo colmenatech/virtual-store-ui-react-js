@@ -75,14 +75,7 @@ export default function Navbar() {
   }
   
   ];
-  // Función para gestionar el acceso al carrito
-  const handleCartClick = () => {
-    if (!user) {
-      alert("Debes iniciar sesión para acceder al carrito.");
-    } else {
-      navigate('/carritoo');
-    }
-  };
+  
   
   const handleLogout = () => {
     logout();
@@ -99,7 +92,7 @@ export default function Navbar() {
 
   useEffect(() => {
     // Oculta los productos aleatorios en las páginas de factura y carrito
-    if (location.pathname === '/factura' || location.pathname === '/carritoo') {
+    if (location.pathname === '/factura' || location.pathname === '/carrito-checkout') {
       setShowRandomProducts(false);
     }
   }, [location.pathname]);
@@ -203,10 +196,7 @@ export default function Navbar() {
 
         {/* Icono del carrito de compras y enlace de inicio de sesión */}
         <div className="flex items-center space-x-4">
-          <button onClick={handleCartClick}>
             <CartMenu />
-          </button>
-
           {user ? (
             <>
               <Link to="/user" className="flex items-center text-texto_color hover:text-primario">
