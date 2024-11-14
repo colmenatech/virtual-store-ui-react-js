@@ -1,96 +1,194 @@
-import React, { useState, useEffect } from 'react';
-import { FaShoppingCart } from 'react-icons/fa'; // Icono de carrito
-import { useCart } from '../shopping_cart/CartContext'; // Asegúrate de tener el contexto de carrito configurado
+// Importamos los hooks necesarios de React y los iconos de Lucide
+import { useState, useEffect } from "react"
+import { ChevronLeft, ChevronRight, ShoppingCart, Heart, Star, ArrowRight } from "lucide-react"
+// Importamos las imagenes necesarias para el banner
+import ImgSlide1 from '../../assets/img/banner1.jpg'
+import ImgSlide2 from '../../assets/img/banner2.jpg'
+import ImgSlide3 from '../../assets/img/banner3.jpg'
 
-const RandomProducts = ({ onHide }) => {
-  const { dispatch } = useCart(); // Accedemos al dispatch del contexto del carrito
-  const [products, setProducts] = useState([]);
+export default function Component() {
+  // Estado para controlar qué slide se muestra actualmente
+  const [currentSlide, setCurrentSlide] = useState(0)
 
+  // Datos de los slides del carrusel
+  const slides = [
+    {
+      title: "Comfort Haven",
+      subtitle: '"Hogar que Inspira"',
+      description: '"Descubre muebles únicos que transforma tu espacio en un hogar lleno de confort y estilo. Encuentra tu inspiración hoy en Comfort Haven!"',
+      image: ImgSlide1,
+    },
+    {
+      title: "Comfort Haven",
+      subtitle: '"Renueva tu Estilo"',
+      description: '"Desde sofás elegantes hasta mesas modernas, tenemos todo lo que necesitas para un cambio de ambiente. Dale vida a tu hogar con nuestras colecciones exclusivas"',
+      image: ImgSlide2,
+    },
+    {
+      title: "Comfort Haven",
+      subtitle: '"Diseño y Comodidad"',
+      description: '"Haz de cada rincón un lugar especial con muebles que combinan diseño, calidad y comodidad. Visítanos y crea el hogar de tus sueños"',
+      image: ImgSlide3,
+    },
+  ]
+
+  // Datos de los productos destacados
+  const products = [
+    { id: 1, name: "Elegant Watch", price: 199.99, image: "/placeholder.svg?height=200&width=200" },
+    { id: 2, name: "Leather Bag", price: 89.99, image: "/placeholder.svg?height=200&width=200" },
+    { id: 3, name: "Sunglasses", price: 59.99, image: "/placeholder.svg?height=200&width=200" },
+    { id: 4, name: "Wireless Earbuds", price: 129.99, image: "/placeholder.svg?height=200&width=200" },
+  ]
+
+  // Función para avanzar al siguiente slide
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+  }
+
+  // Función para retroceder al slide anterior
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+  }
+
+  // Efecto para cambiar automáticamente los slides cada 5 segundos
   useEffect(() => {
-    
-    const sampleProducts = [
-      { id: 1, nombre: 'Espejo baño cuadrado', precio: 500, },
-      { id: 2, nombre: 'Espejo champague italiano', precio: 300, },
-      { id: 3, nombre: 'Espejo cuadrado negro', precio: 150, },
-      { id: 4, nombre: 'Espejo para escritorio', precio: 400, },
-      { id: 5, nombre: 'Espejo de pie', precio: 250, },
-      { id: 6, nombre: 'Espejo irregular negro', precio: 700, },
-      { id: 7, nombre: 'Espejo irregular rosado', precio: 120, },
-      { id: 8, nombre: 'Espejo con marco de madera', precio: 400, },
-      { id: 9, nombre: 'Espejo moderno para recibidor', precio: 350, },
-      { id: 10, nombre: 'Espejo redondo dorado', precio: 90, },
-      { id: 11, nombre: 'Espejo redondo con luz led', precio: 50, },
-      { id: 12, nombre: 'Espejo redondo sencillo', precio: 200, },
-      { id: 13, nombre: 'Lámpara Biconica', precio: 500, },
-      { id: 14, nombre: 'Lámpara Blanca', precio: 300, },
-      { id: 15, nombre: 'Lámpara Cuadrada', precio: 150, },
-      { id: 16, nombre: 'Lámpara de Luna', precio: 400, },
-      { id: 17, nombre: 'Lámpara de Mesa', precio: 250, },
-      { id: 18, nombre: 'Lámpara Flor', precio: 700, },
-      { id: 19, nombre: 'Lámpara Irregular Blanca', precio: 120, },
-      { id: 20, nombre: 'Lámpara Larga', precio: 400, },
-      { id: 21, nombre: 'Lámpara de Madera', precio: 350, },
-      { id: 22, nombre: 'Lámpara Negra', precio: 90, },
-      { id: 23, nombre: 'Lámpara Pie', precio: 50, },
-      { id: 24, nombre: 'Trio Lámparas de Madera', precio: 200, },
-      { id: 25, nombre: 'Reloj digital de mesa', precio: 500, },
-      { id: 26, nombre: 'Reloj con forma de luna decorativo', precio: 300, },
-      { id: 27, nombre: 'Reloj con forma de gato decorativo', precio: 150, },
-      { id: 28, nombre: 'Reloj moderno nordico color azul', precio: 400, },
-      { id: 29, nombre: 'Reloj moderno nordico color dorado', precio: 250, },
-      { id: 30, nombre: 'Reloj moderno nordico color negro', precio: 700, },
-      { id: 31, nombre: 'Reloj digital grande de pared', precio: 120, },
-      { id: 32, nombre: 'Reloj de pared con pendulo', precio: 400, },
-      { id: 33, nombre: 'Reloj con forma de pluma decorativo', precio: 350, },
-      { id: 34, nombre: 'Reloj estilo romano color negro', precio: 90, },
-      { id: 35, nombre: 'Reloj estilo romano', precio: 50, },
-      { id: 36, nombre: 'Reloj grande de pared estilo sencillo', precio: 200, },
-    ];
-
-    const randomProducts = sampleProducts.sort(() => 0.5 - Math.random()).slice(0, 20);
-    setProducts(randomProducts);
-  }, []);
-
-  // Función para agregar un producto al carrito
-  const addToCart = (producto, e) => {
-    e.stopPropagation(); // Evita que el clic en el botón propague y cierre el componente
-    dispatch({ type: 'ADD_TO_CART', payload: producto });
-  };
+    const timer = setInterval(nextSlide, 5000)
+    return () => clearInterval(timer)
+  }, [])
 
   return (
-    <section className="p-8 text-center">
-      <div className="bg-[#5d0909] rounded-lg py-4 px-6 mb-8 shadow-lg">
-        <h2 className="text-3xl text-white font-semibold mb-2">Productos Recomendados</h2>
-        <div className="w-10 h-1 bg-white mx-auto mt-2 rounded"></div>
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      {/* Sección del Carrusel */}
+      <div className="relative h-[600px] w-full overflow-hidden bg-background pt-20">
+        {/* Contenedor de slides con animación de transición */}
+        <div
+          className="flex h-full transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className="min-w-full px-4 md:px-8"
+            >
+              <div className="mx-auto grid h-full max-w-6xl grid-cols-1 items-center gap-8 md:grid-cols-2">
+                <div className="space-y-4">
+                  {/* Título del carrusel con colores diferentes */}
+                  <h2 className="text-4xl font-light tracking-tight">
+                    <span className="text-acento">Comfort</span>{' '}
+                    <span className="text-primario">Haven</span>
+                  </h2>
+                  <h3 className="text-2xl font-light text-gray-600">{slide.subtitle}</h3>
+                  <p className="text-muted-foreground">{slide.description}</p>
+                </div>
+                <div className="relative h-[400px]">
+                  <img
+                    src={slide.image}
+                    alt="Slide image"
+                    className="h-full w-full object-cover rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Botón para slide anterior */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 transform rounded-full bg-white/80 p-2 text-primario shadow-lg transition-all hover:bg-white"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+
+        {/* Botón para siguiente slide */}
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 transform rounded-full bg-white/80 p-2 text-primario shadow-lg transition-all hover:bg-white"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+
+        {/* Indicadores de posición del slide */}
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform space-x-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-2 w-2 rounded-full transition-all ${currentSlide === index ? "bg-primary w-6" : "bg-primario"}`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8"> {/* Cambié aquí para tener 4 columnas en pantallas grandes */}
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 cursor-pointer"
-            onClick={onHide} // Solo cierra el componente cuando se hace clic fuera del botón
-          >
-            <div className="p-4">
-              <img 
-                src={product.img || "https://via.placeholder.com/250"} 
-                alt={product.nombre} 
-                className="w-full h-48 object-cover mb-4" // Ajusta la imagen al tamaño adecuado
-              />
-              <p className="text-gray-600 mb-2 text-xl">{product.nombre}</p>
-              <p className="text-black-600 text-m">${product.precio}</p>
-              <button
-                onClick={(e) => addToCart(product, e)} // Pasa el evento para detener la propagación
-                className="bg-[#381008] text-white rounded-md py-2 px-4 flex items-center justify-center gap-2 hover:bg-[#bc5353] transition-colors mx-auto block"
-              >
-                <FaShoppingCart /> 
-                <span>Agregar al carrito</span>
-              </button>
+
+      {/* Sección de Productos Aleatorios */}
+      <section className="py-16 px-4 md:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-semibold text-gray-800">Random Products</h2>
+          </div>
+
+          {/* Banner al inicio de la sección de productos random */}
+          <div className="relative w-full mb-8 h-[400px]">
+            <img
+              src={ImgSlide1}
+              alt="Banner Image"
+              className="h-full w-full object-cover rounded-lg shadow-lg"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <h3 className="text-4xl text-white font-bold">Shop Our Random Products!</h3>
             </div>
           </div>
-        ))}
-      </div>
-    </section>
-  );
-};
 
-export default RandomProducts;
+          {/* Grid de productos random */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {products.map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-xl font-bold text-gray-800">${product.price.toFixed(2)}</span>
+                    <button className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors">
+                      <ShoppingCart className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contender de Productos*/}
+      <section className="py-16 px-4 md:px-8 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-semibold text-gray-800">New Arrivals</h2>
+            <a href="#" className="text-blue-600 hover:text-blue-700 flex items-center gap-2">
+              Ver más <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[/* Lista de nuevos productos */].map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-xl font-bold text-gray-800">${product.price.toFixed(2)}</span>
+                    <button className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors">
+                      <ShoppingCart className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

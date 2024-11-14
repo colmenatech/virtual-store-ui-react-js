@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight, ShoppingCart, Heart, Star, ArrowRight } from "lucide-react"
 // Importamos las imagenes necesarias para el banner
-import ImgSlide1 from './assets/img/banner1.jpg'
-import ImgSlide2 from './assets/img/banner2.jpg'
-import ImgSlide3 from './assets/img/banner3.jpg'
+import ImgSlide1 from '../../assets/img/banner1.jpg'
+import ImgSlide2 from '../../assets/img/banner2.jpg'
+import ImgSlide3 from '../../assets/img/banner3.jpg'
 
 export default function Component() {
   // Estado para controlar qué slide se muestra actualmente

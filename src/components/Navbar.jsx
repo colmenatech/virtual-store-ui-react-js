@@ -6,6 +6,8 @@ import CartMenu from './pages/shopping_cart/CartMenu';
 import Logo from './assets/img/logo_2.png'
 import RandomProducts from './pages/Categorías/RandomProducts';
 
+
+
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext); // Accede a user y logout desde el contexto
   const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar/ocultar RandomProducts
@@ -21,62 +23,60 @@ export default function Navbar() {
   const categories = [
     {
       name: 'Accesorios',
-    to: '/productos/accesorios', // Esto puede ser una ruta que muestre todos los accesorios, si existe.
-    subcategories: [
-      { name: 'Relojes', to: '/productos/accesorios/relojes' },
-      { name: 'Lámparas', to: '/productos/accesorios/lámparas' },
-      { name: 'Espejos', to: '/productos/accesorios/espejos' }
-    ]
-  },
-  {
-    name: 'Sala',
-    to: '/productos/salas', // Esto puede ser una ruta que muestre todos los productos de sala.
-    subcategories: [
-      { name: 'Sofás', to: '/productos/salas/sofás' },
-      { name: 'Muebles TV', to: '/productos/salas/muebles-para-tv' },
-      { name: 'Mesas de centro', to: '/productos/salas/mesas-de-centro' }
-    ]
-  },
-  {
-    name: 'Muebles de patio',
-    to: '/productos/muebles-de-patio', // Esto puede ser una ruta que muestre todos los muebles de patio.
-    subcategories: [
-      { name: 'Mesas de exterior', to: '/productos/muebles-de-patio/mesas-de-exterior' },
-      { name: 'Sillas de exterior', to: '/productos/muebles-de-patio/sillas-de-exterior' },
-      { name: 'Toldos', to: '/productos/muebles-de-patio/toldos' }
-    ]
-  },
-  {
-    name: 'Muebles de oficina',
-    to: '/productos/muebles-de-oficina', // Esto puede ser una ruta que muestre todos los muebles de oficina.
-    subcategories: [
-      { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios' },
-      { name: 'Libreros', to: '/productos/muebles-de-oficina/libreros' },
-      { name: 'Sillas de estudio', to: '/productos/muebles-de-oficina/sillas-de-estudio' }
-    ]
-  },
-  {
-    name: 'Comedores',
-    to: '/productos/comedores', // Esto puede ser una ruta que muestre todos los comedores.
-    subcategories: [
-      { name: 'Juego de comedor', to: '/productos/comedores/juego-comedor' },
-      { name: 'Mesas', to: '/productos/comedores/mesas' },
-      { name: 'Sillas', to: '/productos/comedores/sillas' }
-    ]
-  },
-  {
-    name: 'Dormitorios',
-    to: '/productos/dormitorios', // Esto puede ser una ruta que muestre todos los dormitorios.
-    subcategories: [
-      { name: 'Camas', to: '/productos/dormitorios/camas' },
-      { name: 'Comodas con espejo', to: '/productos/dormitorios/comodas-con-espejo' },
-      { name: 'Mesas de noche', to: '/productos/dormitorios/mesas-de-noche' }
-    ]
-  }
-  
+      to: '/productos/accesorios', 
+      subcategories: [
+        { name: 'Relojes', to: '/productos/accesorios/relojes' },
+        { name: 'Lámparas', to: '/productos/accesorios/lámparas' },
+        { name: 'Espejos', to: '/productos/accesorios/espejos' }
+      ]
+    },
+    {
+      name: 'Sala',
+      to: '/productos/salas',
+      subcategories: [
+        { name: 'Sofás', to: '/productos/salas/sofás' },
+        { name: 'Muebles TV', to: '/productos/salas/muebles-para-tv' },
+        { name: 'Mesas de centro', to: '/productos/salas/mesas-de-centro' }
+      ]
+    },
+    {
+      name: 'Muebles de patio',
+      to: '/productos/muebles-de-patio',
+      subcategories: [
+        { name: 'Mesas de exterior', to: '/productos/muebles-de-patio/mesas-de-exterior' },
+        { name: 'Sillas de exterior', to: '/productos/muebles-de-patio/sillas-de-exterior' },
+        { name: 'Toldos', to: '/productos/muebles-de-patio/toldos' }
+      ]
+    },
+    {
+      name: 'Muebles de oficina',
+      to: '/productos/muebles-de-oficina',
+      subcategories: [
+        { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios' },
+        { name: 'Libreros', to: '/productos/muebles-de-oficina/libreros' },
+        { name: 'Sillas de estudio', to: '/productos/muebles-de-oficina/sillas-de-estudio' }
+      ]
+    },
+    {
+      name: 'Comedores',
+      to: '/productos/comedores',
+      subcategories: [
+        { name: 'Juego de comedor', to: '/productos/comedores/juego-comedor' },
+        { name: 'Mesas', to: '/productos/comedores/mesas' },
+        { name: 'Sillas', to: '/productos/comedores/sillas' }
+      ]
+    },
+    {
+      name: 'Dormitorios',
+      to: '/productos/dormitorios',
+      subcategories: [
+        { name: 'Camas', to: '/productos/dormitorios/camas' },
+        { name: 'Comodas con espejo', to: '/productos/dormitorios/comodas-con-espejo' },
+        { name: 'Mesas de noche', to: '/productos/dormitorios/mesas-de-noche' }
+      ]
+    }
   ];
-  
-  
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -91,21 +91,20 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    // Oculta los productos aleatorios en las páginas de factura y carrito
     if (location.pathname === '/factura' || location.pathname === '/carrito-checkout') {
       setShowRandomProducts(false);
     }
   }, [location.pathname]);
 
-   // Función para ocultar los productos aleatorios
   const handleProductClick = () => {
     setShowRandomProducts(false);
   };
+
   const handleCategoryClick = () => {
-    setShowRandomProducts(false); // Cierra el componente cuando se haga clic en categorías u otros elementos
+    setShowRandomProducts(false);
   };
-   // Función de búsqueda
-   const handleSearch = (event) => {
+
+  const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
 
@@ -119,31 +118,25 @@ export default function Navbar() {
         });
       });
       setSearchResults(results);
-      setShowSearchResults(results.length > 0); // Mostrar resultados si hay coincidencias
+      setShowSearchResults(results.length > 0);
     } else {
       setSearchResults([]);
-      setShowSearchResults(false); // Ocultar resultados si no hay término de búsqueda
+      setShowSearchResults(false);
     }
   };
 
-  // Función para manejar el clic en el ícono de búsqueda
   const handleSearchIconClick = () => {
     navigate('/resultados-busqueda', { state: { results: searchResults } });
-    setShowSearchResults(false); // Cerrar el menú después de la búsqueda
+    setShowSearchResults(false);
   };
 
-  // Función para cerrar el menú de recomendaciones al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchResults(false); // Oculta el menú sin modificar los resultados
+        setShowSearchResults(false);
       }
     };
-
-    // Agregar el event listener para clics fuera
     document.addEventListener('mousedown', handleClickOutside);
-
-    // Limpiar el event listener cuando el componente se desmonte
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -280,15 +273,8 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-
-      {/* Renderiza RandomProducts si showRandomProducts es true */}
-      {showRandomProducts && (
-        <RandomProducts
-          onHide={() => setShowRandomProducts(false)}
-          products={[]} // Asegúrate de pasar los productos aleatorios reales
-          className="relative z-40"
-        />
-      )}
+      {/* Mostrar productos aleatorios debajo del Navbar */}
+      {showRandomProducts && <RandomProducts />}
     </header>
   );
 }
