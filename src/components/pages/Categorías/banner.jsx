@@ -15,7 +15,7 @@ export default function Component() {
     {
       title: "Comfort Haven",
       subtitle: '"Hogar que Inspira"',
-      description: '"Descubre muebles únicos que transforma tu espacio en un hogar lleno de confort y estilo. Encuentra tu inspiración hoy en Comfort Haven!"',
+      description: '"Descubre muebles únicos que transforma tu espacio en un hogar lleno de confort y estilo. Encuentra tu inspiración hoy en en Comfort Haven!"',
       image: ImgSlide1,
     },
     {
@@ -27,7 +27,7 @@ export default function Component() {
     {
       title: "Comfort Haven",
       subtitle: '"Diseño y Comodidad"',
-      description: '"Haz de cada rincón un lugar especial con muebles que combinan diseño, calidad y comodidad. Visítanos y crea el hogar de tus sueños"',
+      description: '"Haz de cada rincón un lugar especial con muebles que combinan diseño, calidad y comodida. Visítanos y crear el hogar de tus sueños"',
       image: ImgSlide3,
     },
   ]
@@ -45,12 +45,12 @@ export default function Component() {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
   }
 
-  // Función para retroceder al slide anterior
+   // Función para retroceder al slide anterior
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
   }
 
-  // Efecto para cambiar automáticamente los slides cada 5 segundos
+   // Efecto para cambiar automáticamente los slides cada 5 segundos
   useEffect(() => {
     const timer = setInterval(nextSlide, 5000)
     return () => clearInterval(timer)
@@ -116,33 +116,25 @@ export default function Component() {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`h-2 w-2 rounded-full transition-all ${currentSlide === index ? "bg-primary w-6" : "bg-primario"}`}
+              className={`h-2 w-2 rounded-full transition-all ${
+                currentSlide === index ? "bg-primary w-6" : "bg-primario"
+              }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
       </div>
 
-      {/* Sección de Productos Aleatorios */}
+      {/* Sección de Productos Destacados */}
       <section className="py-16 px-4 md:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-semibold text-gray-800">Random Products</h2>
+            <h2 className="text-3xl font-semibold text-gray-800">Featured Products</h2>
+            <a href="#" className="text-blue-600 hover:text-blue-700 flex items-center gap-2">
+              Ver más <ArrowRight className="w-4 h-4" />
+            </a>
           </div>
-
-          {/* Banner al inicio de la sección de productos random */}
-          <div className="relative w-full mb-8 h-[400px]">
-            <img
-              src={ImgSlide1}
-              alt="Banner Image"
-              className="h-full w-full object-cover rounded-lg shadow-lg"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <h3 className="text-4xl text-white font-bold">Shop Our Random Products!</h3>
-            </div>
-          </div>
-
-          {/* Grid de productos random */}
+          {/* Grid de productos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {products.map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -167,18 +159,64 @@ export default function Component() {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-semibold text-gray-800">New Arrivals</h2>
+            {/* Enlace para ver más productos */}
             <a href="#" className="text-blue-600 hover:text-blue-700 flex items-center gap-2">
               Ver más <ArrowRight className="w-4 h-4" />
             </a>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[/* Lista de nuevos productos */].map((product) => (
+            {/* Mapeo de los productos para la sección de nuevas llegadas */}
+            {[
+              { id: 5, name: "Smart Speaker", price: 79.99, image: "/placeholder.svg?height=200&width=200" },
+              { id: 6, name: "Fitness Tracker", price: 49.99, image: "/placeholder.svg?height=200&width=200" },
+              { id: 7, name: "Wireless Charger", price: 29.99, image: "/placeholder.svg?height=200&width=200" },
+              { id: 8, name: "Bluetooth Headphones", price: 159.99, image: "/placeholder.svg?height=200&width=200" },
+            ].map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                {/* Cada producto se presenta en una tarjeta */}
                 <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
                   <div className="mt-4 flex items-center justify-between">
                     <span className="text-xl font-bold text-gray-800">${product.price.toFixed(2)}</span>
+                    {/* Botón para agregar el producto al carrito */}
+                    <button className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors">
+                      <ShoppingCart className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contender de Productos*/}
+      <section className="py-16 px-4 md:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-semibold text-gray-800">Best Sellers</h2>
+            {/* Enlace para ver más productos */}
+            <a href="#" className="text-blue-600 hover:text-blue-700 flex items-center gap-2">
+              Ver más <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Mapeo de los productos para la sección de nuevas llegadas */}
+            {[
+              { id: 9, name: "Coffee Maker", price: 89.99, image: "/placeholder.svg?height=200&width=200" },
+              { id: 10, name: "Smart Watch", price: 199.99, image: "/placeholder.svg?height=200&width=200" },
+              { id: 11, name: "Portable Speaker", price: 69.99, image: "/placeholder.svg?height=200&width=200" },
+              { id: 12, name: "Tablet Stand", price: 24.99, image: "/placeholder.svg?height=200&width=200" },
+            ].map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                {/* Cada producto se presenta en una tarjeta */}
+                <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-xl font-bold text-gray-800">${product.price.toFixed(2)}</span>
+                    {/* Botón para agregar el producto al carrito */}
                     <button className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors">
                       <ShoppingCart className="w-5 h-5" />
                     </button>
