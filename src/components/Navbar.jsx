@@ -104,22 +104,22 @@ export default function Navbar() {
   const handleCategoryClick = () => {
     setShowRandomProducts(false); // Cierra el componente cuando se haga clic en categorías u otros elementos
   };
-  // Función de búsqueda
-  const handleSearch = (event) => {
+   // Función de búsqueda
+   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
 
     if (term) {
       const results = [];
-      categories.forEach(category => {
-        category.subcategories.forEach(subcategory => {
+      categories.forEach((category) => {
+        category.subcategories.forEach((subcategory) => {
           if (subcategory.name.toLowerCase().includes(term)) {
             results.push({ ...subcategory, category: category.name });
           }
         });
       });
       setSearchResults(results);
-      setShowSearchResults(true); // Mostrar resultados si hay algo
+      setShowSearchResults(results.length > 0); // Mostrar resultados si hay coincidencias
     } else {
       setSearchResults([]);
       setShowSearchResults(false); // Ocultar resultados si no hay término de búsqueda
@@ -129,13 +129,14 @@ export default function Navbar() {
   // Función para manejar el clic en el ícono de búsqueda
   const handleSearchIconClick = () => {
     navigate('/resultados-busqueda', { state: { results: searchResults } });
-    setShowRandomProducts(false);
+    setShowSearchResults(false); // Cerrar el menú después de la búsqueda
   };
-   // Función para cerrar el menú de recomendaciones al hacer clic fuera
-   useEffect(() => {
+
+  // Función para cerrar el menú de recomendaciones al hacer clic fuera
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchResults([false]); // Cerrar las recomendaciones de búsqueda si el clic es fuera
+        setShowSearchResults(false); // Oculta el menú sin modificar los resultados
       }
     };
 
@@ -175,21 +176,21 @@ export default function Navbar() {
 
           {/* Resultados de búsqueda */}
           {showSearchResults && searchTerm && (
-            <div className="absolute top-full mt-1 w-full bg-white border border-secundario rounded-md shadow-md max-h-60 overflow-y-auto z-50">
-              {searchResults.length > 0 ? (
-                searchResults.map((result, index) => (
-                  <Link
-                    to={result.to}
-                    key={index}
-                    className="block px-4 py-2 text-sm text-texto_color hover:bg-secundario hover:text-white"
-                    onClick={handleProductClick}
-                  >
-                    {result.category} - {result.name}
-                  </Link>
-                ))
-              ) : (
-                <p className="px-4 py-2 text-sm text-secundario">No se encontraron resultados</p>
-              )}
+        <div className="absolute top-full mt-1 w-full bg-white border border-secundario rounded-md shadow-md max-h-60 overflow-y-auto z-50">
+          {searchResults.length > 0 ? (
+            searchResults.map((result, index) => (
+              <Link
+                to={result.to}
+                key={index}
+                className="block px-4 py-2 text-sm text-texto_color hover:bg-secundario hover:text-white"
+                onClick={handleProductClick}
+              >
+                {result.category} - {result.name}
+              </Link>
+            ))
+          ) : (
+            <p className="px-4 py-2 text-sm text-secundario">No se encontraron resultados</p>
+          )}
             </div>
           )}
         </div>
@@ -239,7 +240,7 @@ export default function Navbar() {
               key={category.name}
               className="relative"
               onMouseEnter={() => setOpenCategoryIndex(index)}
-              onMouseLeave={() => setTimeout(() => setOpenCategoryIndex(null), 10000)} // Agrega un retraso de 200 ms
+              onMouseLeave={() => setTimeout(() => setOpenCategoryIndex(null), 1000)} // Agrega un retraso de 200 ms
             >
               <Link
                 to={category.to}
