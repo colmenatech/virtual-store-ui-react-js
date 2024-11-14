@@ -10,7 +10,7 @@ const SignUp = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    password_confirmation: ''  // Asegúrate de que coincida con el atributo name en tu campo de entrada.
   });
   const [error, setError] = useState('');
 
@@ -30,7 +30,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.password_confirmation) {
       setError("Las contraseñas no coinciden.");
       return;
     }
@@ -43,7 +43,8 @@ const SignUp = () => {
       const response = await axios.post('http://localhost:8000/api/register', {
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        password_confirmation: formData.password_confirmation
       });
       console.log(response.data); // Muestra la respuesta de la API en consola
 
@@ -63,50 +64,54 @@ const SignUp = () => {
       {error && <p className="text-red-600 mb-4">{error}</p>} {/* Muestra el mensaje de error */}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-5">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            placeholder="Nombre Completo"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
-          />
-        </div>
-        <div className="mb-5">
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            placeholder="Correo Electrónico"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
-          />
-        </div>
-        <div className="mb-5">
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            placeholder="Contraseña"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
-          />
-        </div>
-        <div className="mb-5">
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-            placeholder="Confirmar Contraseña"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
-          />
-        </div>
+      <div className="mb-5">
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          placeholder="Nombre Completo"
+          autocomplete="off" // Añadido aquí para desactivar el autocompletado
+          className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        />
+      </div>
+      <div className="mb-5">
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          placeholder="Correo Electrónico"
+          autocomplete="off" // Añadido aquí para desactivar el autocompletado
+          className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        />
+      </div>
+      <div className="mb-5">
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          placeholder="Contraseña"
+          autocomplete="off" // Añadido aquí para desactivar el autocompletado
+          className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        />
+      </div>
+      <div className="mb-5">
+        <input
+          type="password"
+          name="password_confirmation"
+          value={formData.password_confirmation}
+          onChange={handleChange}
+          required
+          placeholder="Confirmar Contraseña"
+          autocomplete="off" // Añadido aquí para desactivar el autocompletado
+          className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        />
+      </div>
         <button
           type="submit"
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
