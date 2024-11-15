@@ -26,7 +26,7 @@ export default function Navbar() {
       to: '/productos/accesorios', 
       subcategories: [
         { name: 'Relojes', to: '/productos/accesorios/relojes' },
-        { name: 'Lámparas', to: '/productos/accesorios/lámparas' },
+        { name: 'Lámparas', to: '/productos/accesorios/lamparas' },
         { name: 'Espejos', to: '/productos/accesorios/espejos' }
       ]
     },
@@ -34,7 +34,7 @@ export default function Navbar() {
       name: 'Sala',
       to: '/productos/salas',
       subcategories: [
-        { name: 'Sofás', to: '/productos/salas/sofás' },
+        { name: 'Sofás', to: '/productos/salas/sofas' },
         { name: 'Muebles TV', to: '/productos/salas/muebles-para-tv' },
         { name: 'Mesas de centro', to: '/productos/salas/mesas-de-centro' }
       ]

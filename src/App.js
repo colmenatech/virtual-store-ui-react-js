@@ -118,9 +118,9 @@ function ClienteRoutes() {
       
       {/* Rutas de productos agrupadas por categorías */}
           <Route path="/productos/accesorios/relojes" element={<Relojes />} />
-          <Route path="/productos/accesorios/lámparas" element={<Lamparas />} />
+          <Route path="/productos/accesorios/lamparas" element={<Lamparas />} />
           <Route path="/productos/accesorios/espejos" element={<Espejos />} />
-          <Route path="/productos/salas/sofás" element={<Sofas />} />
+          <Route path="/productos/salas/sofas" element={<Sofas />} />
           <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
           <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
           <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />

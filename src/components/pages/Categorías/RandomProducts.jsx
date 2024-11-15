@@ -45,14 +45,14 @@ const RandomProductsWithBanner = () => {
 
   
   const categories = [
-    { nombre: 'Relojes', to: '/productos/accesorios/relojes', img: require('../../assets/img/reloj.png')},
-    { nombre: 'Sofás', to: '/productos/salas/sofás', img: require('../../assets/img/sofa.png')},
-    { nombre: 'Toldos', to: '/productos/muebles-de-patio/toldos', img: require('../../assets/img/toldo.png') },
-    { nombre: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios', img: require('../../assets/img/escritorio.png') },
-    { nombre: 'Camas', to: '/productos/dormitorios/camas', img: require('../../assets/img/cama.png') },
-    { nombre: 'Mesas', to: '/productos/comedores/mesas', img: require('../../assets/img/mesa.png')},
-    { nombre: 'Sillas', to: '/productos/comedores/sillas', img: require('../../assets/img/silla.png')},
-    { nombre: 'Lámparas', to: '/productos/accesorios/lámparas', img: require('../../assets/img/lampara.png')},
+    { name: 'Relojes', to: '/productos/accesorios/relojes', img: require('../../assets/img/reloj.png')},
+    { name: 'Sofás', to: '/productos/salas/sofas', img: require('../../assets/img/sofa.png')},
+    { name: 'Toldos', to: '/productos/muebles-de-patio/toldos', img: require('../../assets/img/toldo.png') },
+    { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios', img: require('../../assets/img/escritorio.png') },
+    { name: 'Camas', to: '/productos/dormitorios/camas', img: require('../../assets/img/cama.png') },
+    { name: 'Mesas', to: '/productos/comedores/mesas', img: require('../../assets/img/mesa.png')},
+    { name: 'Sillas', to: '/productos/comedores/sillas', img: require('../../assets/img/silla.png')},
+    { name: 'Lámparas', to: '/productos/accesorios/lamparas', img: require('../../assets/img/lampara.png')},
   ]
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
@@ -107,13 +107,12 @@ useEffect(() => {
 
 
 
-  useEffect(() => {
-    // Al cambiar la ruta, restauramos la visibilidad a true
-    if (location.pathname !== "/nosotros") {
-      setIsVisible(true);
-    } 
-  }, [location.pathname]); // Dependemos de la ruta para restaurar la visibilidad
-
+useEffect(() => {
+  // Al cambiar la ruta, restauramos la visibilidad a true
+  if (location.pathname !== "/nosotros" && !categories.some(category => location.pathname === category.to)) {
+    setIsVisible(true);
+  } 
+}, [location.pathname]); // Dependemos de la ruta para restaurar la visibilidad
 
   // Función para ocultar la interfaz cuando se hace clic en el enlace
   const handleLinkClick = () => {
@@ -202,20 +201,22 @@ useEffect(() => {
               >
                 {categories.map((category, index) => (
                   <div key={index} className="min-w-[20%] px-4">
-                    <a
-                      href={category.to}
-                      className="group flex flex-col items-center gap-4 no-underline transition-all duration-300 hover:transform hover:scale-105"
-                      aria-label={`Ver productos en la categoría ${category.nombre}`}
-                    >
-                      <div className="relative aspect-square w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100 p-4 transition-all duration-300 group-hover:shadow-lg">
+                    <Link
+                        to={category.to}
+                        className="group flex flex-col items-center gap-4 no-underline transition-all duration-300 hover:transform hover:scale-105"
+                        aria-label={`Ver productos en la categoría ${category.name}`}
+                        onClick={handleLinkClick}
+                        >
+                        <div className="relative aspect-square w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100 p-4 transition-all duration-300 group-hover:shadow-lg">
                         <img
-                          src={category.img}
-                          alt=""
-                          className="h-full w-full object-contain transition-all duration-300 group-hover:scale-110"
-                        />
-                      </div>
+                        src={category.img}
+                        alt=""
+                        className="h-full w-full object-contain transition-all duration-300 group-hover:scale-110"
+                         />
+                        </div>
                       <h3 className="text-center text-sm font-medium mt-2 transition-colors duration-300 group-hover:text-primary">{category.name}</h3>
-                    </a>
+                    </Link>
+
                   </div>
                 ))}
               </div>
