@@ -59,7 +59,7 @@ const Login = () => {
           onClick={() => handleLogin('cliente')}
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
         >
-          Iniciar sesión como Cliente
+          Iniciar sesión 
         </button>
         <button
           type="button"
