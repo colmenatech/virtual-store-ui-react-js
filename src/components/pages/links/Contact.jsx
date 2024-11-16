@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
 
-
+// Define el componente funcional ContactForm
 const ContacForm = () => {
+  // Estado para manejar los datos del formulario
   const [formData, setFormData] = useState({
-    name: '',
-    lastname: '',
-    phone: '',
-    email: '',
-    message: '',
+    name: '',         // Almacena el nombre del usuario
+    lastname: '',     // Almacena los apellidos del usuario
+    phone: '',        // Almacena el teléfono del usuario
+    email: '',        // Almacena el correo electrónico del usuario
+    message: '',      // Almacena el mensaje del usuario
   });
 
+  // Estado para manejar los errores de validación
   const [errors, setErrors] = useState({});
 
+  // Maneja los cambios en los campos del formulario
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value } = e.target; // Extrae el nombre y valor del campo modificado
+    setFormData({ ...formData, [name]: value }); // Actualiza el estado correspondiente
   };
 
+  // Función para validar los datos del formulario
   const validate = () => {
-    let newErrors = {};
+    let newErrors = {}; // Objeto para almacenar errores detectados
 
     // Validación del nombre y apellido
     if (formData.name.length < 3) newErrors.name = 'El nombre debe tener más de 3 letras';

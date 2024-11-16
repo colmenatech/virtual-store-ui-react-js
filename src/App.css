@@ -1,38 +1,44 @@
+/* Estilo principal de la aplicación */
 .App {
-  text-align: center;
+  text-align: center; /* Centra el contenido dentro de este contenedor */
 }
 
+/* Estilo del logo de la aplicación */
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+  height: 40vmin; /* Define la altura del logo como el 40% de la altura de la ventana */
+  pointer-events: none; /* Deshabilita la interacción del puntero con el logo */
 }
 
+/* Animación del logo si la preferencia de reducción de movimiento está desactivada */
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: App-logo-spin infinite 20s linear; /* Aplica una animación de rotación infinita con duración de 20 segundos */
   }
 }
 
+/* Encabezado principal de la aplicación */
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: #282c34; /* Establece un color de fondo oscuro */
+  min-height: 100vh; /* Define la altura mínima como el 100% de la altura de la ventana */
+  display: flex; /* Utiliza flexbox para organizar los elementos */
+  flex-direction: column; /* Ordena los elementos en una columna */
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: center; /* Centra los elementos verticalmente */
+  font-size: calc(10px + 2vmin); /* Ajusta dinámicamente el tamaño de fuente en función del ancho de la ventana */
+  color: white; /* Define el color del texto como blanco */
 }
 
+/* Estilo de los enlaces en la aplicación */
 .App-link {
-  color: #61dafb;
+  color: #61dafb; /* Establece un color azul claro para los enlaces */
 }
 
+/* Animación para el logo */
 @keyframes App-logo-spin {
   from {
-    transform: rotate(0deg);
+    transform: rotate(0deg); /* Inicia en una rotación de 0 grados */
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(360deg); /* Gira completamente 360 grados */
   }
 }
