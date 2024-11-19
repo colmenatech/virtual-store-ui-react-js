@@ -31,12 +31,12 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
 
     // Objeto que define las subcategorías por cada categoría.
     const subcategorias = {
-        Accesorios: ['Relojes', 'Lampáras', 'Espejos'],
-        Sala: ['Sofas', 'Muebles para TV', 'Mesas de centro'],
-        Mueblesdepatio: ['Mesas de exterior', 'Sillas de exterior', 'Toldos'],
-        Mueblesdeoficina: ['Escritorios', 'Libreros', 'Sillas de estudio'],
-        Comedores: ['Juegos de comedor', 'Mesas', 'Sillas'],
-        Dormitorios: ['Camas', 'Cómodas con espejo', 'Mesas de noche'],
+        Accesorios: ['Relojes', 'Lampáras', 'Espejos'], // Categoría: "Accesorios". Contiene subcategorías relacionadas con accesorios decorativos y funcionales.
+        Sala: ['Sofas', 'Muebles para TV', 'Mesas de centro'], // Categoría: "Sala". Subcategorías con elementos típicos para salas de estar.
+        Mueblesdepatio: ['Mesas de exterior', 'Sillas de exterior', 'Toldos'], // Categoría: "Muebles de patio". Subcategorías enfocadas en muebles para uso al aire libre.
+        Mueblesdeoficina: ['Escritorios', 'Libreros', 'Sillas de estudio'],  // Categoría: "Muebles de oficina". Subcategorías que agrupan muebles utilizados en espacios de trabajo.
+        Comedores: ['Juegos de comedor', 'Mesas', 'Sillas'], // Categoría: "Comedores". Subcategorías relacionadas con muebles y accesorios para comedores.
+        Dormitorios: ['Camas', 'Cómodas con espejo', 'Mesas de noche'], // Categoría: "Dormitorios". Subcategorías que incluyen elementos comunes para habitaciones.
     };
 
     // Lista de estados posibles para el producto.
@@ -70,14 +70,15 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
 
         // Crea un objeto FormData para enviar datos, incluidos archivos.
         const formData = new FormData();
-        formData.append('id', producto.id);
-        formData.append('nombre', producto.nombre);
-        formData.append('descripcion', producto.descripcion);
-        formData.append('precio', producto.precio);
-        formData.append('stock', producto.stock);
-        formData.append('categoria', producto.categoria);
-        formData.append('subcategoria', producto.subcategoria);
-        formData.append('estado', producto.estado);
+        formData.append('id', producto.id); // Identificador único del producto.
+        formData.append('nombre', producto.nombre); // Nombre del producto.
+        formData.append('descripcion', producto.descripcion); // Descripción del producto.
+        formData.append('precio', producto.precio);  // Precio del producto.
+        formData.append('stock', producto.stock); // Cantidad de unidades disponibles.
+        formData.append('categoria', producto.categoria); // Categoría a la que pertenece el producto.
+        formData.append('subcategoria', producto.subcategoria); // Subcategoría del producto.
+        formData.append('estado', producto.estado); // Estado del producto.
+        // Se verifica si el producto incluye una imagen. Esto es importante para evitar errores al intentar añadir un archivo que podría no existir.
         if (producto.imagen) { // Solo agrega la imagen si está definida.
             formData.append('imagen', producto.imagen);
         }
@@ -86,6 +87,7 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
 
     // Retorna el formulario para actualizar los datos del producto.
     return (
+        // El formulario está configurado con un evento `onSubmit` que ejecutará la función `handleSubmit` cuando se envíe.
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-5 bg-white rounded-lg shadow-lg">
             {/* Botón para regresar a la lista de productos */}
             <nav className="absolute top-4 right-0 -translate-x-0 px-4">
@@ -95,14 +97,13 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
             </nav>
 
             <h2 className="text-center text-2xl mb-5 text-red-800">Actualizar Producto</h2>
-
             {/* Campo para seleccionar una imagen */}
             <label className="block mb-2 font-bold text-gray-800">Producto (Imagen):
                 <input 
-                    type="file"
-                    name="imagen"
-                    accept="image/*"
-                    onChange={handleImageChange}
+                    type="file"// Especifica que este campo acepta archivos.
+                    name="imagen" // Nombre del campo, útil para identificarlo en el backend.
+                    accept="image/*" // Restringe el tipo de archivos aceptados a imágenes (jpg, png, etc.).
+                    onChange={handleImageChange} // Asocia un evento `onChange` para manejar la selección de la imagen.
                     className="w-full p-2 mb-4 border border-red-900 rounded bg-red-100 text-gray-800"
                 />
             </label>
