@@ -15,6 +15,7 @@ export default function Navbar() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false); // Estado para controlar si mostrar los resultados
+  const categoryRef = useRef(null); // Referencia para el contenedor de la categoría
 
   const navigate = useNavigate();
   const location = useLocation(); 
@@ -68,7 +69,7 @@ export default function Navbar() {
     },
     {
       name: 'Dormitorios',
-      to: '/productos/dormitorios',
+     
       subcategories: [
         { name: 'Camas', to: '/productos/dormitorios/camas' },
         { name: 'Comodas con espejo', to: '/productos/dormitorios/comodas-con-espejo' },
@@ -76,7 +77,10 @@ export default function Navbar() {
       ]
     }
   ];
-
+  const handleCategoryClickkk = (index) => {
+    // Alterna entre abrir y cerrar el menú al hacer clic en una categoría
+    setOpenCategoryIndex(openCategoryIndex === index ? null : index);
+  };
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -132,13 +136,19 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Verificar si el clic está fuera del input de búsqueda
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchResults(false);
+        setShowSearchResults(false); // Oculta los resultados de búsqueda
+      }
+  
+      // Verificar si el clic está fuera del menú de categorías
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setOpenCategoryIndex(null); // Oculta el menú de categorías
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside); // Limpiar el event listener
     };
   }, []);
 
@@ -226,34 +236,33 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-2 flex items-center justify-between border-t border-secundario"onClick={handleCategoryClick}>
+      <div className="container mx-auto px-4 py-2 flex items-center justify-between border-t border-secundario">
         <nav className="flex items-center">
-          {categories.map((category, index) => (
-            <div
-              key={category.name}
-              className="relative"
-              onMouseEnter={() => setOpenCategoryIndex(index)}
-              onMouseLeave={() => setTimeout(() => setOpenCategoryIndex(null), 1000)} // Agrega un retraso de 200 ms
+        {categories.map((category, index) => (
+    <div
+      key={category.name}
+      className="relative"
+      ref={index === openCategoryIndex ? categoryRef : null} // Solo asigna la referencia al menú desplegable abierto
+    >
+      {/* Cambié el Link a un botón para evitar redirección */}
+      <button
+        className="text-texto_color hover:text-primario px-3 py-2 flex items-center"
+        onClick={() => handleCategoryClickkk(index)} // Alterna el menú al hacer clic
+      >
+        {category.name}
+        <ChevronDown size={16} className="ml-2" />
+      </button>
+      {openCategoryIndex === index && (
+        <div className="absolute bg-white shadow-lg py-2 w-48 mt-1 rounded-md z-10">
+          {category.subcategories.map((subcategory) => (
+            <Link
+              key={subcategory.name}
+              to={subcategory.to} // Mantengo los enlaces funcionales para las subcategorías
+              className="block px-4 py-2 text-texto_color hover:bg-primario hover:text-white"
+              onClick={handleProductClick} // Cierra el menú al seleccionar una subcategoría
             >
-              <Link
-                to={category.to}
-                className="text-texto_color hover:text-primario px-3 py-2 flex items-center"
-                onClick={handleCategoryClick}
-              >
-                {category.name}
-                <ChevronDown size={16} className="ml-2" />
-              </Link>
-              {openCategoryIndex === index && (
-                <div className="absolute bg-white shadow-lg py-2 w-48 mt-1 rounded-md z-10">
-                  {category.subcategories.map((subcategory) => (
-                    <Link
-                      key={subcategory.name}
-                      to={subcategory.to}
-                      className="block px-4 py-2 text-texto_color hover:bg-primario hover:text-white"
-                      onClick={handleCategoryClick}
-                    >
-                      {subcategory.name}
-                    </Link>
+              {subcategory.name}
+            </Link>
                   ))}
                 </div>
               )}

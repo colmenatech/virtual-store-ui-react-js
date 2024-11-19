@@ -80,6 +80,27 @@ function MainRoutes() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
+
+        {/* Rutas de productos agrupadas por categorías */}
+        <Route path="/productos/accesorios/relojes" element={<Relojes />} />
+          <Route path="/productos/accesorios/lamparas" element={<Lamparas />} />
+          <Route path="/productos/accesorios/espejos" element={<Espejos />} />
+          <Route path="/productos/salas/sofas" element={<Sofas />} />
+          <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
+          <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
+          <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />
+          <Route path="/productos/muebles-de-patio/sillas-de-exterior" element={<SillasExterior />} />
+          <Route path="/productos/muebles-de-patio/toldos" element={<Toldos />} />
+          <Route path="/productos/muebles-de-oficina/escritorios" element={<Escritorios />} />
+          <Route path="/productos/muebles-de-oficina/libreros" element={<Libreros />} />
+          <Route path="/productos/muebles-de-oficina/sillas-de-estudio" element={<SillasEstudio />} />
+          <Route path="/productos/comedores/juego-comedor" element={<JuegoComedor />} />
+          <Route path="/productos/comedores/mesas" element={<MesasComedor />} />
+          <Route path="/productos/comedores/sillas" element={<SillasComedor />} />
+          <Route path="/productos/dormitorios/camas" element={<Camas />} />
+          <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
+          <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
+          
         
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
         <Route path="/interfazadmin" element={<ProtectedRoute userType="admin"><InterfazAdmin /></ProtectedRoute>} />
@@ -116,26 +137,7 @@ function ClienteRoutes() {
       <Route path="/factura" element={<Factura />} />
       <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
       
-      {/* Rutas de productos agrupadas por categorías */}
-          <Route path="/productos/accesorios/relojes" element={<Relojes />} />
-          <Route path="/productos/accesorios/lamparas" element={<Lamparas />} />
-          <Route path="/productos/accesorios/espejos" element={<Espejos />} />
-          <Route path="/productos/salas/sofas" element={<Sofas />} />
-          <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
-          <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
-          <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />
-          <Route path="/productos/muebles-de-patio/sillas-de-exterior" element={<SillasExterior />} />
-          <Route path="/productos/muebles-de-patio/toldos" element={<Toldos />} />
-          <Route path="/productos/muebles-de-oficina/escritorios" element={<Escritorios />} />
-          <Route path="/productos/muebles-de-oficina/libreros" element={<Libreros />} />
-          <Route path="/productos/muebles-de-oficina/sillas-de-estudio" element={<SillasEstudio />} />
-          <Route path="/productos/comedores/juego-comedor" element={<JuegoComedor />} />
-          <Route path="/productos/comedores/mesas" element={<MesasComedor />} />
-          <Route path="/productos/comedores/sillas" element={<SillasComedor />} />
-          <Route path="/productos/dormitorios/camas" element={<Camas />} />
-          <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
-          <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
-          </Routes>
+      </Routes>
   );
 }
 
