@@ -4,87 +4,87 @@
     padding: 0;
   }
   
+  /* Estilo global del cuerpo del documento. Define fuente y color de fondo. */
   body {
-    font-family: Georgia, Times, 'Times New Roman', serif;
-    background-color: #f9f9f9;
+    font-family: Georgia, Times, 'Times New Roman', serif; /* Fuente serif clásica. */
+    background-color: #f9f9f9; /* Fondo claro para una apariencia limpia. */
   }
   
-  /* Estilo del contenedor principal */
+  /* Contenedor principal de la sección 'sala-productos'. */
   .sala-productos {
-    padding: 20px;
-    text-align: center;
+    padding: 20px; /* Espaciado interno del contenedor. */
+    text-align: center; /* Centra el texto en su contenido. */
   }
   
   /* Estilo del título */
-  .sala-productos h1 {
-    font-size: 2.5em;
-    color: #ffffff;
-    margin-bottom: 20px;
-    transform: translateY(10px);
+  .sala-productos h1 { /* Tamaño grande para destacar el título. */
+    color: #ffffff; /* Color blanco del texto. */
+    margin-bottom: 20px; /* Espaciado inferior del título. */
+    transform: translateY(10px); /* Desplaza ligeramente el título hacia abajo. */
   
   }
   
   /* Estilo de la cuadrícula de productos */
-  .productos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 0 10px;
+  .productos-grid { /* Activa el diseño de cuadrícula. */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajusta columnas dinámicamente con un tamaño mínimo. */
+    gap: 20px; /* Espaciado entre los elementos de la cuadrícula. */
+    padding: 0 10px; /* Espaciado interno lateral. */
   }
   
   /* Estilo de las tarjetas de producto */
   .product-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s;
+    background-color: #fff; /* Fondo blanco para destacar el producto. */
+    border-radius: 8px; /* Bordes redondeados para suavizar el diseño. */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad. */
+    overflow: hidden; /* Oculta contenido que sobresale del contenedor. */
+    transition: transform 0.3s; /* Suaviza las transformaciones al pasar el cursor. */
   }
   
+  /* Escala la tarjeta ligeramente al pasar el cursor. */
   .product-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Incrementa el tamaño de la tarjeta. */
   }
   
   /* Estilo de las imágenes de producto */
   .product-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    aspect-ratio: 1920 / 1361;
-    border-bottom: 1px solid #eee;
+    width: 100%; /* Ocupa el ancho completo del contenedor. */
+    height: auto; /* Mantiene la proporción original de la imagen. */
+    object-fit: cover; /* Ajusta la imagen sin distorsionarla. */
+    aspect-ratio: 1920 / 1361; /* Define la proporción de aspecto para las imágenes. */
+    border-bottom: 1px solid #eee; /* Línea separadora entre la imagen y el contenido. */
   }
   
   /* Estilo del contenido del producto */
   .product-card h3 {
-    font-size: 1.2em;
-    color: #333;
-    margin: 10px;
+    font-size: 1.2em; /* Tamaño de fuente mediano para el nombre del producto. */
+    color: #333; /* Texto oscuro para mejor legibilidad. */
+    margin: 10px; /* Espaciado interno. */
   }
   
   .product-card p {
-    color: #666;
-    margin: 5px 10px;
+    color: #666; /* Texto gris para diferenciar la descripción del título. */
+    margin: 5px 10px; /* Espaciado interno. */
   }
   
   .product-card p.price {
-    font-size: 1.5em;
-    color: #ff3d00;
-    margin: 5px 10px;
+    font-size: 1.5em; /* Tamaño de fuente grande para destacar el precio. */
+    color: #ff3d00; /* Color rojo vibrante para resaltar. */
+    margin: 5px 10px; /* Espaciado interno. */
   }
   /* Estilo del botón de agregar al carrito */
   .add-to-cart-button {
-    background-color: rgb(56, 16, 8); 
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1em;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px; /* Espacio alrededor del botón */
-    transition: background-color 0.3s;
+    background-color: rgb(56, 16, 8);  /* Fondo oscuro que contrasta. */
+    color: white; /* Texto blanco para contraste. */
+    border: none; /* Sin bordes visibles. */
+    border-radius: 5px; /* Bordes redondeados. */
+    padding: 10px; /* Espaciado interno del botón. */
+    font-size: 1em; /* Tamaño estándar de texto. */
+    cursor: pointer; /* Cambia el cursor a mano al pasar el mouse. */
+    display: inline-flex; /* Diseño flexible en línea para centrar contenido. */
+    align-items: center; /* Centra verticalmente el contenido del botón. */
+    justify-content: center; /* Centra horizontalmente el contenido del botón. */
+    margin: 10px; /* Espaciado externo alrededor del botón. */
+    transition: background-color 0.3s; /* Suaviza el cambio de color de fondo en interacciones. */
   }
   
   .add-to-cart-button:hover {

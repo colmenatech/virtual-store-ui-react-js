@@ -12,13 +12,17 @@ const ProductoItem = ({ producto }) => {
         dispatch({ type: 'ADD_TO_CART', payload: producto });
     };
     return (
+        // Contenedor de la tarjeta de un producto
         <div className="product-card">
-            <img src={producto.img} alt={producto.nombre} />
-            <h3>{producto.nombre}</h3>
-            <p>{producto.descripcion}</p>
-            <p>${producto.precio}</p>
+            <img src={producto.img} alt={producto.nombre} /> {/* Imagen del producto */}
+            <h3>{producto.nombre}</h3> {/* Nombre del producto */}
+            <p>{producto.descripcion}</p> {/* Descripción del producto */} 
+            <p>${producto.precio}</p>  {/* Precio del producto */}
+            {/* Botón para agregar el producto al carrito */}
+            {/* El botón ejecuta la función 'addToCart' al ser presionado */}
             <button onClick={addToCart} className="add-to-cart-button">
-                <FaShoppingCart /> Agregar al carrito
+                <FaShoppingCart /> {/* Icono de carrito de compras */}
+                Agregar al carrito {/* Texto del botón */}
             </button>
         </div>
     );
@@ -28,6 +32,11 @@ const ProductoItem = ({ producto }) => {
 const SillasProducto = () => {
     // Define una lista de productos con sus propiedades id, nombre, precio e imagen.
     const productos = [
+        // Cada objeto representa una silla con sus propiedades:
+    // id: identificador único del producto
+    // nombre: nombre del modelo de silla
+    // precio: precio de la silla
+    // img: ruta de la imagen asociada a la silla
         { id: 1, nombre: 'Sillas Berringer', precio: 40000, img: require('./img/silla_berringer.jpg') },
         { id: 2, nombre: 'Sillas Bolanburg', precio: 30000, img: require('./img/silla_bolanburg.jpg') },
         { id: 3, nombre: 'Sillas Centiar', precio: 90000, img: require('./img/silla_centiar.jpg') },
@@ -60,5 +69,4 @@ const SillasProducto = () => {
     );
 };
 
-// Exporta el componente SillasProducto para que pueda ser utilizado en otras partes de la aplicación.
-export default SillasProducto;
+export default SillasProducto; // Exporta el componente SillasProducto para que pueda ser utilizado en otras partes de la aplicación.

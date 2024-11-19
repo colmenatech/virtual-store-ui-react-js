@@ -1,90 +1,95 @@
+/* Resetea el estilo de todos los elementos para evitar márgenes y rellenos predeterminados */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    box-sizing: border-box; /* Asegura que el padding y el borde no afecten el tamaño total del elemento */
+    margin: 0; /* Elimina el margen por defecto */
+    padding: 0; /* Elimina el padding por defecto */
   }
   
+  /* Estilos generales para el cuerpo de la página */
   body {
-    font-family: Georgia, Times, 'Times New Roman', serif;
-    background-color: #f9f9f9;
+    font-family: Georgia, Times, 'Times New Roman', serif; /* Establece la fuente de texto para todo el cuerpo */
+    background-color: #f9f9f9; /* Establece un color de fondo muy claro */
   }
   
   /* Estilo del contenedor principal */
   .sala-productos {
-    padding: 20px;
-    text-align: center;
+    padding: 20px; /* Agrega un espaciado interior de 20px */
+    text-align: center; /* Centra el contenido dentro del contenedor */
   }
   
   /* Estilo del título */
   .sala-productos h1 {
-    font-size: 2.5em;
-    color: #ffffff;
-    margin-bottom: 20px;
-    transform: translateY(10px);
+    font-size: 2.5em; /* Define el tamaño de la fuente para el título */
+    color: #ffffff; /* Establece el color del texto como blanco */
+    margin-bottom: 20px; /* Agrega un margen de 20px debajo del título */
+    transform: translateY(10px); /* Mueve el título 10px hacia abajo */
   
   }
   
   /* Estilo de la cuadrícula de productos */
   .productos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 0 10px;
+    display: grid; /* Utiliza el modelo de diseño de cuadrícula */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Crea columnas que se ajustan automáticamente al ancho */
+    gap: 20px; /* Establece un espacio de 20px entre los elementos de la cuadrícula */
+    padding: 0 10px; /* Agrega un relleno de 10px a los lados de la cuadrícula */
   }
   
   /* Estilo de las tarjetas de producto */
   .product-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s;
+    background-color: #fff; /* Establece el fondo de la tarjeta como blanco */
+    border-radius: 8px; /* Redondea los bordes de la tarjeta */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil alrededor de la tarjeta */
+    overflow: hidden; /* Oculta cualquier contenido que se desborde de la tarjeta */
+    transition: transform 0.3s; /* Agrega una transición suave al transformar la tarjeta */
   }
   
+  /* Efecto cuando el mouse pasa sobre la tarjeta */
   .product-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.05);  /* Aumenta ligeramente el tamaño de la tarjeta al pasar el mouse sobre ella */
   }
   
   /* Estilo de las imágenes de producto */
   .product-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    aspect-ratio: 1920 / 1361;
-    border-bottom: 1px solid #eee;
+    width: 100%; /* Hace que la imagen ocupe el 100% del ancho de la tarjeta */
+    height: auto; /* Mantiene la altura de la imagen proporcional */
+    object-fit: cover; /* Asegura que la imagen cubra el área disponible sin distorsionarse */
+    aspect-ratio: 1920 / 1361; /* Mantiene la proporción de la imagen */
+    border-bottom: 1px solid #eee; /* Añade una línea sutil debajo de la imagen */
   }
   
   /* Estilo del contenido del producto */
   .product-card h3 {
-    font-size: 1.2em;
-    color: #333;
-    margin: 10px;
+    font-size: 1.2em; /* Establece el tamaño de la fuente para el nombre del producto */
+    color: #333; /* Establece el color del texto como gris oscuro */
+    margin: 10px; /* Agrega un margen alrededor del nombre */
   }
   
+  /* Estilo de los párrafos de la descripción dentro de la tarjeta */
   .product-card p {
-    color: #666;
-    margin: 5px 10px;
+    color: #666; /* Establece el color del texto como gris */
+    margin: 5px 10px; /* Agrega un margen de 5px arriba y abajo, y 10px a los lados */
   }
-  
+
+  /* Estilo del precio dentro de la tarjeta */
   .product-card p.price {
-    font-size: 1.5em;
-    color: #ff3d00;
-    margin: 5px 10px;
+    font-size: 1.5em; /* Establece un tamaño de fuente mayor para el precio */
+    color: #ff3d00; /* Establece el color del texto como un tono de naranja */
+    margin: 5px 10px; /* Agrega un margen de 5px arriba y abajo, y 10px a los lados */
   }
   /* Estilo del botón de agregar al carrito */
   .add-to-cart-button {
-    background-color: rgb(56, 16, 8); 
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1em;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px; /* Espacio alrededor del botón */
-    transition: background-color 0.3s;
+    background-color: rgb(56, 16, 8);  /* Establece el color de fondo del botón */
+    color: white; /* Establece el color del texto como blanco */
+    border: none; /* Elimina cualquier borde predeterminado */
+    border-radius: 5px; /* Redondea los bordes del botón */
+    padding: 10px; /* Agrega un relleno de 10px dentro del botón */
+    font-size: 1em; /* Establece el tamaño de la fuente dentro del botón */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar por encima del botón */
+    display: inline-flex; /* Hace que el botón sea un contenedor flexible en línea */
+    align-items: center; /* Alinea verticalmente el contenido del botón */
+    justify-content: center; /* Alinea horizontalmente el contenido del botón */
+    margin: 10px; /* Agrega un margen alrededor del botón */
+    transition: background-color 0.3s; /* Agrega una transición suave al cambiar el color de fondo */
   }
   
   .add-to-cart-button:hover {
@@ -111,6 +116,4 @@
     margin: 10px auto; /* Centra la línea y agrega espacio arriba y abajo */
     border-radius: 5px; /* Bordes redondeados en la línea */ 
   }
-  
-  
   
