@@ -57,8 +57,32 @@ function MainRoutes() {
   // Define las rutas donde el Navbar no debe mostrarse
   const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
 
+  const publicRoutes = [
+    "/productos/accesorios/relojes",
+    "/productos/accesorios/lamparas",
+    "/productos/accesorios/espejos",
+    "/productos/salas/sofas",
+    "/productos/salas/muebles-para-tv",
+    "/productos/salas/mesas-de-centro",
+    "/productos/muebles-de-patio/mesas-de-exterior",
+    "/productos/muebles-de-patio/sillas-de-exterior",
+    "/productos/muebles-de-patio/toldos",
+    "/productos/muebles-de-oficina/escritorios",
+    "/productos/muebles-de-oficina/libreros",
+    "/productos/muebles-de-oficina/sillas-de-estudio",
+    "/productos/comedores/juego-comedor",
+    "/productos/comedores/mesas",
+    "/productos/comedores/sillas",
+    "/productos/dormitorios/camas",
+    "/productos/dormitorios/comodas-con-espejo",
+    "/productos/dormitorios/mesas-de-noche",
+    "/nosotros",
+    "/contacto",
+    "/resultados-busqueda",
+  ];
+
   // Solo mostrar el Navbar si no estamos en las rutas donde no debería aparecer
-  const showNavbar = !noNavbarRoutes.includes(location.pathname) && user;
+  const showNavbar = (!noNavbarRoutes.includes(location.pathname) && (user || publicRoutes.includes(location.pathname)));
 
   return (
     <>
@@ -66,15 +90,15 @@ function MainRoutes() {
       {showNavbar && <Navbar />}
       <Routes>
         {/* Ruta inicial para mostrar el Navbar sin autenticación */}
-        <Route
-          path="/"
-          element={
-            !user ? (
-              <Navbar />
-            ) : (
-              <Navigate to={user.type === 'admin' ? "/interfazadmin" : "/user"} replace />
-            )
-          }
+        <Route 
+        path="/" 
+        element={
+          !user ? (
+            <Navigate to="/nosotros" replace />
+          ) : (
+            <Navigate to={user.type === 'admin' ? "/interfazadmin" : "/user"} replace />
+          )
+        } 
         />
         {/* Rutas públicas */}
 
@@ -100,7 +124,9 @@ function MainRoutes() {
           <Route path="/productos/dormitorios/camas" element={<Camas />} />
           <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
           <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
-          
+          <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
         
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
         <Route path="/interfazadmin" element={<ProtectedRoute userType="admin"><InterfazAdmin /></ProtectedRoute>} />
