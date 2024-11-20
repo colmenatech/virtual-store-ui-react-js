@@ -38,95 +38,98 @@ import Camas from './components/pages/Categorías/Dormitorios/Subcategorias/Cama
 import ComodasConEspejo from './components/pages/Categorías/Dormitorios/Subcategorias/Comodas con espejo/ComodaEspejoProductos';
 import MesasNoche from './components/pages/Categorías/Dormitorios/Subcategorias/Mesas de Noche/MesasNocheProducto';
 
-function App() {
-  return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <MainRoutes />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
-  );
-}
+function App() { 
+return ( 
+  <AuthProvider> 
+    <CartProvider> 
+      <Router> 
+        <MainRoutes /> 
+      </Router> 
+    </CartProvider> 
+  </AuthProvider> ); }
+    
+  function MainRoutes() { 
+    const { user } = useContext(AuthContext); 
 
-function MainRoutes() {
-  const { user } = useContext(AuthContext);
-  const location = useLocation();
+    const location = useLocation();
 
-  // Define las rutas donde el Navbar no debe mostrarse
-  const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
+    const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
 
-  const publicRoutes = [
-    "/productos/accesorios/relojes",
-    "/productos/accesorios/lamparas",
-    "/productos/accesorios/espejos",
-    "/productos/salas/sofas",
-    "/productos/salas/muebles-para-tv",
-    "/productos/salas/mesas-de-centro",
-    "/productos/muebles-de-patio/mesas-de-exterior",
-    "/productos/muebles-de-patio/sillas-de-exterior",
-    "/productos/muebles-de-patio/toldos",
-    "/productos/muebles-de-oficina/escritorios",
-    "/productos/muebles-de-oficina/libreros",
-    "/productos/muebles-de-oficina/sillas-de-estudio",
-    "/productos/comedores/juego-comedor",
-    "/productos/comedores/mesas",
-    "/productos/comedores/sillas",
-    "/productos/dormitorios/camas",
-    "/productos/dormitorios/comodas-con-espejo",
-    "/productos/dormitorios/mesas-de-noche",
-    "/nosotros",
-    "/contacto",
-    "/resultados-busqueda",
-  ];
+  // Verifica si la ruta actual es una de las que no debe mostrar el Navbar
+  const isNoNavbarRoute = noNavbarRoutes.includes(location.pathname);
 
-  // Solo mostrar el Navbar si no estamos en las rutas donde no debería aparecer
-  const showNavbar = (!noNavbarRoutes.includes(location.pathname) && (user || publicRoutes.includes(location.pathname)));
+  // Mostrar el Navbar solo si no estamos en una ruta prohibida
+  // Aseguramos que el Navbar siempre se muestre en cualquier ruta de productos, incluso si no hay usuario autenticado
 
-  return (
-    <>
-      {/* Solo renderiza el Navbar si se debe mostrar */}
-      {showNavbar && <Navbar />}
-      <Routes>
-        {/* Ruta inicial para mostrar el Navbar sin autenticación */}
-        <Route 
-        path="/" 
-        element={
-          !user ? (
-            <Navigate to="/nosotros" replace />
-          ) : (
-            <Navigate to={user.type === 'admin' ? "/interfazadmin" : "/user"} replace />
-          )
-        } 
-        />
-        {/* Rutas públicas */}
+    const publicRoutes = [
+      "/productos/accesorios/relojes",
+      "/productos/accesorios/lamparas",
+      "/productos/accesorios/espejos",
+      "/productos/salas/sofas",
+      "/productos/salas/muebles-para-tv",
+      "/productos/salas/mesas-de-centro",
+      "/productos/muebles-de-patio/mesas-de-exterior",
+      "/productos/muebles-de-patio/sillas-de-exterior",
+      "/productos/muebles-de-patio/toldos",
+      "/productos/muebles-de-oficina/escritorios",
+      "/productos/muebles-de-oficina/libreros",
+      "/productos/muebles-de-oficina/sillas-de-estudio",
+      "/productos/comedores/juego-comedor",
+      "/productos/comedores/mesas",
+      "/productos/comedores/sillas",
+      "/productos/dormitorios/camas",
+      "/productos/dormitorios/comodas-con-espejo",
+      "/productos/dormitorios/mesas-de-noche",
+      "/nosotros",
+      "/contacto",
+      "/resultados-busqueda",
+    ];
+    const showNavbar = !isNoNavbarRoute || location.pathname.startsWith(publicRoutes);
+  
+    return (
+      <>
+        {/* Solo renderiza el Navbar si se debe mostrar */}
+        {showNavbar && <Navbar />}
+        <Routes>
+                    {/* Ruta inicial para mostrar el Navbar sin autenticación */}
+                    <Route
+  path="/"
+  element={
+    user === undefined
+      ? null
+      : !user
+      ? null // No renderizamos otro Navbar aquí
+      : (<Navigate to={user.type === 'admin' ? "/interfazadmin" : "/user"} replace />)
+  }
+/>
 
+
+          {/* Rutas públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
-
+        <Route path="/nosotros" element={<Nosotros />} />
+        <Route path="/contacto" element={<Contacto />} />
+        <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
+        
         {/* Rutas de productos agrupadas por categorías */}
         <Route path="/productos/accesorios/relojes" element={<Relojes />} />
-          <Route path="/productos/accesorios/lamparas" element={<Lamparas />} />
-          <Route path="/productos/accesorios/espejos" element={<Espejos />} />
-          <Route path="/productos/salas/sofas" element={<Sofas />} />
-          <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
-          <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
-          <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />
-          <Route path="/productos/muebles-de-patio/sillas-de-exterior" element={<SillasExterior />} />
-          <Route path="/productos/muebles-de-patio/toldos" element={<Toldos />} />
-          <Route path="/productos/muebles-de-oficina/escritorios" element={<Escritorios />} />
-          <Route path="/productos/muebles-de-oficina/libreros" element={<Libreros />} />
-          <Route path="/productos/muebles-de-oficina/sillas-de-estudio" element={<SillasEstudio />} />
-          <Route path="/productos/comedores/juego-comedor" element={<JuegoComedor />} />
-          <Route path="/productos/comedores/mesas" element={<MesasComedor />} />
-          <Route path="/productos/comedores/sillas" element={<SillasComedor />} />
-          <Route path="/productos/dormitorios/camas" element={<Camas />} />
-          <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
-          <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
-          <Route path="/nosotros" element={<Nosotros />} />
-          <Route path="/contacto" element={<Contacto />} />
-          <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
+        <Route path="/productos/accesorios/lamparas" element={<Lamparas />} />
+        <Route path="/productos/accesorios/espejos" element={<Espejos />} />
+        <Route path="/productos/salas/sofas" element={<Sofas />} />
+        <Route path="/productos/salas/muebles-para-tv" element={<MueblesTV />} />
+        <Route path="/productos/salas/mesas-de-centro" element={<MesasCentro />} />
+        <Route path="/productos/muebles-de-patio/mesas-de-exterior" element={<MesasExterior />} />
+        <Route path="/productos/muebles-de-patio/sillas-de-exterior" element={<SillasExterior />} />
+        <Route path="/productos/muebles-de-patio/toldos" element={<Toldos />} />
+        <Route path="/productos/muebles-de-oficina/escritorios" element={<Escritorios />} />
+        <Route path="/productos/muebles-de-oficina/libreros" element={<Libreros />} />
+        <Route path="/productos/muebles-de-oficina/sillas-de-estudio" element={<SillasEstudio />} />
+        <Route path="/productos/comedores/juego-comedor" element={<JuegoComedor />} />
+        <Route path="/productos/comedores/mesas" element={<MesasComedor />} />
+        <Route path="/productos/comedores/sillas" element={<SillasComedor />} />
+        <Route path="/productos/dormitorios/camas" element={<Camas />} />
+        <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
+        <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
         
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
         <Route path="/interfazadmin" element={<ProtectedRoute userType="admin"><InterfazAdmin /></ProtectedRoute>} />
@@ -138,8 +141,8 @@ function MainRoutes() {
         
         {/* Rutas protegidas para cliente */}
         <Route path="/*" element={<ProtectedRoute userType="cliente"><ClienteRoutes /></ProtectedRoute>} />
-        
-      </Routes></>
+      </Routes>
+    </>
   );
 }
 
@@ -150,20 +153,15 @@ function ProtectedRoute({ userType, children }) {
   return children;
 }
 
-
 function ClienteRoutes() {
   return (
     <Routes>
       {/* Rutas de cliente */}
       <Route path="/perfil" element={<MiPerfil />} />
-      <Route path="/nosotros" element={<Nosotros />} />
-      <Route path="/contacto" element={<Contacto />} />
       <Route path="/carrito" element={<Cart />} />
       <Route path="/carrito-checkout" element={<CartPay />} />
       <Route path="/factura" element={<Factura />} />
-      <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
-      
-      </Routes>
+    </Routes>
   );
 }
 

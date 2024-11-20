@@ -78,9 +78,9 @@ export default function Navbar() {
     }
   ];
   const handleCategoryClickkk = (index) => {
-    // Alterna entre abrir y cerrar el menú al hacer clic en una categoría
-    setOpenCategoryIndex(openCategoryIndex === index ? null : index);
+    setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
   };
+  
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -101,12 +101,17 @@ export default function Navbar() {
   }, [location.pathname]);
 
   const handleProductClick = () => {
-    setShowRandomProducts(false);
+    //setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
+    setShowRandomProducts(false); // Oculta los productos aleatorios
   };
 
-  const handleCategoryClick = () => {
-    setShowRandomProducts(false);
+  const handleCategoryClick = (index) => {
+    setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
+    setShowRandomProducts(false); // Oculta los productos aleatorios
   };
+  
+  
+  
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -133,6 +138,15 @@ export default function Navbar() {
     navigate('/resultados-busqueda', { state: { results: searchResults } });
     setShowSearchResults(false);
   };
+  useEffect(() => {
+    // Muestra RandomProducts en las rutas deseadas
+    if (location.pathname === '/' || location.pathname === '/user') {
+      setShowRandomProducts(true);
+    } else {
+      setShowRandomProducts(false);
+    }
+  }, [location.pathname]);
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -259,7 +273,9 @@ export default function Navbar() {
               key={subcategory.name}
               to={subcategory.to} // Mantengo los enlaces funcionales para las subcategorías
               className="block px-4 py-2 text-texto_color hover:bg-primario hover:text-white"
-              onClick={handleProductClick} // Cierra el menú al seleccionar una subcategoría
+              onClick={() => {
+                handleCategoryClick(); // Cierra el menú y oculta los productos aleatorios
+              }}
             >
               {subcategory.name}
             </Link>

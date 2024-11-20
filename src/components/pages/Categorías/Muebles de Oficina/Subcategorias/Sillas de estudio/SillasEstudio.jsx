@@ -31,8 +31,8 @@ const ProductoItem = ({ producto }) => {
 const SillasProducto = () => {
     // Lista de productos para la sección "Sillas de Estudio".
 const productos = [
-    { id: 1, nombre: 'Silla Gamer Blanca', precio: 500, img: require('./img/silla_gamer_blanca.jpg') },  // Producto 1: Silla Gamer Blanca, precio 500, con imagen especificada.
-    { id: 2, nombre: 'Silla Gris con Ruedas', precio: 400, img: require('./img/silla_gris_ruedas.jpg') }, // Producto 2: Silla Gris con Ruedas, precio 400, con imagen especificada.
+    { id: 1, nombre: 'Silla Gamer Blanca', precio: 500, img: require('./img/silla_ gamer_blanca.jpg') },  // Producto 1: Silla Gamer Blanca, precio 500, con imagen especificada.
+    { id: 2, nombre: 'Silla Gris con Ruedas', precio: 400, img: require('./img/silla_ gris_ruedas.jpg') }, // Producto 2: Silla Gris con Ruedas, precio 400, con imagen especificada.
     { id: 3, nombre: 'Silla Acolchada', precio: 300, img: require('./img/silla_acolchada.jpg') }, // Producto 3: Silla Acolchada, precio 300, con imagen especificada.
     { id: 4, nombre: 'Silla Blanca con Ruedas', precio: 450, img: require('./img/silla_blanca_ruedas.jpg') },  // Producto 4: Silla Blanca con Ruedas, precio 450, con imagen especificada.
     { id: 5, nombre: 'Silla Gamer Negra', precio: 350, img: require('./img/silla_gamer_negra.jpg') },  // Producto 5: Silla Gamer Negra, precio 350, con imagen especificada.
