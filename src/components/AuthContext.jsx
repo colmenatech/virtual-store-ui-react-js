@@ -1,18 +1,10 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-export const AuthContext = createContext(); // Creación del contexto de autenticación
+export const AuthContext = createContext();
 
-<<<<<<< Updated upstream
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Estado para el usuario autenticado
   const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar productos aleatorios
-=======
-export function AuthProvider({ children }) {
-  // Estado que almacena la información del usuario autenticado
-  const [user, setUser] = useState(null);
-  // Estado que controla la visibilidad de los productos aleatorios
-  const [showRandomProducts, setShowRandomProducts] = useState(true);
->>>>>>> Stashed changes
 
   useEffect(() => {
     // Verifica si hay un token en el localStorage y establece el usuario en el estado
@@ -39,7 +31,6 @@ export function AuthProvider({ children }) {
   };
 
   return (
-<<<<<<< Updated upstream
     <AuthContext.Provider
       value={{
         user,
@@ -50,11 +41,6 @@ export function AuthProvider({ children }) {
       }}
     >
       {children}
-=======
-    // Proveedor del contexto de autenticación
-    <AuthContext.Provider value={{ user, login, logout, showRandomProducts, setShowRandomProducts }}>
-      {children} // Renderiza los componentes hijos que necesitan acceso al contexto
->>>>>>> Stashed changes
     </AuthContext.Provider>
   );
 };

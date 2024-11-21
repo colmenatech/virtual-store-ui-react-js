@@ -70,7 +70,6 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
 
         // Crea un objeto FormData para enviar datos, incluidos archivos.
         const formData = new FormData();
-<<<<<<< Updated upstream
         formData.append('id', producto.id); // Identificador único del producto.
         formData.append('nombre', producto.nombre); // Nombre del producto.
         formData.append('descripcion', producto.descripcion); // Descripción del producto.
@@ -80,16 +79,6 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
         formData.append('subcategoria', producto.subcategoria); // Subcategoría del producto.
         formData.append('estado', producto.estado); // Estado del producto.
         // Se verifica si el producto incluye una imagen. Esto es importante para evitar errores al intentar añadir un archivo que podría no existir.
-=======
-        formData.append('id', producto.id);
-        formData.append('nombre', producto.nombre);
-        formData.append('descripcion', producto.descripcion);
-        formData.append('precio', producto.precio);
-        formData.append('stock', producto.stock);
-        formData.append('categoria', producto.categoria);
-        formData.append('subcategoria', producto.subcategoria);
-        formData.append('estado', producto.estado);
->>>>>>> Stashed changes
         if (producto.imagen) { // Solo agrega la imagen si está definida.
             formData.append('imagen', producto.imagen);
         }
@@ -98,10 +87,7 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
 
     // Retorna el formulario para actualizar los datos del producto.
     return (
-<<<<<<< Updated upstream
         // El formulario está configurado con un evento `onSubmit` que ejecutará la función `handleSubmit` cuando se envíe.
-=======
->>>>>>> Stashed changes
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-5 bg-white rounded-lg shadow-lg">
             {/* Botón para regresar a la lista de productos */}
             <nav className="absolute top-4 right-0 -translate-x-0 px-4">
@@ -109,7 +95,6 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
                     Regresar
                 </button>
             </nav>
-<<<<<<< Updated upstream
 
             <h2 className="text-center text-2xl mb-5 text-red-800">Actualizar Producto</h2>
             {/* Campo para seleccionar una imagen */}
@@ -119,18 +104,6 @@ const FormularioActualizarProducto = ({ productoInicial }) => {
                     name="imagen" // Nombre del campo, útil para identificarlo en el backend.
                     accept="image/*" // Restringe el tipo de archivos aceptados a imágenes (jpg, png, etc.).
                     onChange={handleImageChange} // Asocia un evento `onChange` para manejar la selección de la imagen.
-=======
-
-            <h2 className="text-center text-2xl mb-5 text-red-800">Actualizar Producto</h2>
-
-            {/* Campo para seleccionar una imagen */}
-            <label className="block mb-2 font-bold text-gray-800">Producto (Imagen):
-                <input 
-                    type="file"
-                    name="imagen"
-                    accept="image/*"
-                    onChange={handleImageChange}
->>>>>>> Stashed changes
                     className="w-full p-2 mb-4 border border-red-900 rounded bg-red-100 text-gray-800"
                 />
             </label>

@@ -58,7 +58,6 @@ const SignUp = () => {
 
   return (
     <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">
-<<<<<<< Updated upstream
       <h1 className="text-3xl mb-5">Bienvenidos</h1>
       <h2 className="text-xl mb-5">Registrarse</h2>
 
@@ -113,63 +112,16 @@ const SignUp = () => {
           className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
         />
       </div>
-=======
-      <h1 className="text-3xl mb-5">Bienvenidos</h1> {/* Título principal */}
-      <h2 className="text-xl mb-5">Registrarse</h2> {/* Subtítulo para el formulario */}
-      
-      <form> {/* Formulario de registro */}
-        <div className="mb-5">
-          {/* Campo de entrada para el nombre */}
-          <input
-            type="text"
-            name="firstname"
-            required
-            placeholder="Nombre" // Texto de marcador de posición
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600" // Estilo del campo de texto
-          />
-        </div>
-        <div className="mb-5">
-          {/* Campo de entrada para el apellido */}
-          <input
-            type="text"
-            name="lastname"
-            required
-            placeholder="Apellido"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600" // Estilo del campo de texto
-          />
-        </div>
-        <div className="mb-5">
-          {/* Campo de entrada para el correo electrónico */}
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="Correo Electrónico"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600" // Estilo del campo de texto
-          />
-        </div>
-        <div className="mb-5">
-          {/* Campo de entrada para la contraseña */}
-          <input
-            type="password"
-            name="password"
-            required
-            placeholder="Contraseña"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600" // Estilo del campo de texto
-          />
-        </div>
-        {/* Botón para enviar el formulario de registro */}
->>>>>>> Stashed changes
         <button
           type="submit"
-          className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2" 
+          className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300 mb-2"
         >
           Registrarse
         </button>
 
         <button
           type="button"
-          onClick={handleLoginClick} // Ejecuta la función handleLoginClick para redirigir al inicio de sesión
+          onClick={handleLoginClick}
           className="w-full bg-red-800 text-white py-3 rounded-md hover:bg-red-700 transition duration-300"
         >
           Regresar
