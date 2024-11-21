@@ -17,6 +17,10 @@ import CartPay from './components/pages/shopping_cart/Payment_Method';
 import Factura from './components/pages/shopping_cart/Factura';
 import ResultadosBusqueda from './components/ResultadosBusqueda';
 import { CartProvider } from './components/pages/shopping_cart/CartContext';
+<<<<<<< Updated upstream
+=======
+import Footer from './components/pages/shopping_cart/Footer';
+>>>>>>> Stashed changes
 
 // Importar componentes de subcategorías
 import Relojes from './components/pages/Categorías/Accesorios/Subcategorias/Relojes/relojes';
@@ -51,9 +55,30 @@ return (
   function MainRoutes() { 
     const { user } = useContext(AuthContext); 
 
+<<<<<<< Updated upstream
     const location = useLocation();
 
     const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
+=======
+function App() {
+  return (
+    // Proveedor de contexto para autenticación
+    <AuthProvider>
+      {/* Proveedor de contexto para el carrito de compras */}
+      <CartProvider>
+        {/* Configuración de enrutamiento */}
+        <Router>
+          <MainRoutes /> {/* Componente principal que define las rutas de la aplicación */}
+        </Router>
+      </CartProvider>
+    </AuthProvider>
+  );
+}
+
+function MainRoutes() {
+  // Obtención del usuario autenticado desde el contexto de autenticación
+  const { user } = useContext(AuthContext);
+>>>>>>> Stashed changes
 
   // Verifica si la ruta actual es una de las que no debe mostrar el Navbar
   const isNoNavbarRoute = noNavbarRoutes.includes(location.pathname);
@@ -147,10 +172,18 @@ return (
 }
 
 function ProtectedRoute({ userType, children }) {
+  // Obtención del usuario autenticado desde el contexto de autenticación
   const { user } = useContext(AuthContext);
+<<<<<<< Updated upstream
   if (!user) return <Navigate to="/login" />;
   if (userType && user.type !== userType) return <Navigate to="/" />;
   return children;
+=======
+  
+  if (!user) return <Navigate to="/Login" />; // Si no hay un usuario autenticado, redirige a la página de inicio de sesión
+  if (user.type !== userType) return <Navigate to="/" />; // Si el tipo de usuario no coincide con el tipo requerido, redirige a la página principal  
+  return children; // Si se cumplen las condiciones, renderiza los elementos secundarios proporcionados
+>>>>>>> Stashed changes
 }
 
 function ClienteRoutes() {

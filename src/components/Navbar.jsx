@@ -277,6 +277,7 @@ export default function Navbar() {
                 handleCategoryClick(); // Cierra el menú y oculta los productos aleatorios
               }}
             >
+<<<<<<< Updated upstream
               {subcategory.name}
             </Link>
                   ))}
@@ -284,6 +285,62 @@ export default function Navbar() {
               )}
             </div>
           ))}
+=======
+              Productos
+               {/* Icono de flecha hacia abajo que indica el menú desplegable */}
+              <ChevronDown size={16} className="ml-1" />
+            </button>
+            {/* Si isProductsOpen es true, se muestra el menú de categorías */}
+            {isProductsOpen && (
+              <div
+                className="absolute top-full left-0 bg-fondo shadow-md rounded-md py-4 px-6 grid grid-cols-3 gap-6 w-max z-50"
+                style={{ zIndex: 50 }}
+              >
+                {/* Itera sobre las categorías para mostrarlas en el menú */}
+                {categories.map((category, index) => (
+                  <div key={index} className="min-w-[200px]">
+                    <h3 className="font-semibold text-texto_color mb-2">
+                      <Link to={category.to} className="hover:text-primario" onClick={handleProductClick}>
+                        {category.name}
+                      </Link>
+                    </h3>
+                    <ul>
+                      {/* Itera sobre las subcategorías de cada categoría */}
+                      {category.subcategories.map((subcategory, subIndex) => (
+                        <li key={subIndex}>
+                          {/* Enlace a cada subcategoría */}
+                          <Link
+                            to={subcategory.to}
+                            className="text-secundario hover:text-primario block py-1"
+                            onClick={handleProductClick}
+                          >
+                            {subcategory.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+  
+          {/* Enlaces de navegación */}
+          <div className="flex space-x-4">
+            {/* Enlace al perfil del usuario */}
+            <Link to="/user" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
+              Mi Perfil
+            </Link>
+            {/* Enlace a la sección "Nosotros" */}
+            <Link to="/nosotros" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
+              Nosotros
+            </Link>
+            {/* Enlace a la sección "Contacto" */}
+            <Link to="/contacto" className="text-texto_color hover:text-primario px-3 py-2" onClick={handleCategoryClick}>
+              Contacto
+            </Link>
+          </div>
+>>>>>>> Stashed changes
         </nav>
 
       
@@ -298,8 +355,20 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
+<<<<<<< Updated upstream
       {/* Mostrar productos aleatorios debajo del Navbar */}
       {showRandomProducts && <RandomProducts />}
+=======
+  
+      {/* Renderiza RandomProducts si showRandomProducts es true */}
+      {showRandomProducts && (
+        <RandomProducts
+          onHide={() => setShowRandomProducts(false)} // Cierra el componente cuando se hace clic en un producto
+          products={[/* Aquí pasan tus productos */]}
+          className="relative z-40"  // Asegura que este componente tenga la prioridad sobre otros elementos en la capa visual
+        />
+      )}
+>>>>>>> Stashed changes
     </header>
   );
 }
