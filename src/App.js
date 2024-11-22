@@ -1,6 +1,6 @@
 //Importaciones y dependencias necesarias
-import { useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { useContext} from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation} from 'react-router-dom';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
@@ -39,78 +39,83 @@ import ComodasConEspejo from './components/pages/Categorías/Dormitorios/Subcate
 import MesasNoche from './components/pages/Categorías/Dormitorios/Subcategorias/Mesas de Noche/MesasNocheProducto';
 
 function App() { 
-return ( 
-  <AuthProvider> 
-    <CartProvider> 
-      <Router> 
-        <MainRoutes /> 
-      </Router> 
-    </CartProvider> 
-  </AuthProvider> ); }
-    
-  function MainRoutes() { 
-    const { user } = useContext(AuthContext); 
+  return ( 
+    <AuthProvider> 
+      <CartProvider> 
+        <Router> 
+          <MainRoutes /> 
+        </Router> 
+      </CartProvider> 
+    </AuthProvider>
+  ); 
+}
 
-    const location = useLocation();
-
-    const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
+function MainRoutes() { 
+  const { user } = useContext(AuthContext); 
+  const location = useLocation();
+ 
+  const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
 
   // Verifica si la ruta actual es una de las que no debe mostrar el Navbar
   const isNoNavbarRoute = noNavbarRoutes.includes(location.pathname);
 
   // Mostrar el Navbar solo si no estamos en una ruta prohibida
   // Aseguramos que el Navbar siempre se muestre en cualquier ruta de productos, incluso si no hay usuario autenticado
+  const publicRoutes = [
+    "/productos/accesorios/relojes",
+    "/productos/accesorios/lamparas",
+    "/productos/accesorios/espejos",
+    "/productos/salas/sofas",
+    "/productos/salas/muebles-para-tv",
+    "/productos/salas/mesas-de-centro",
+    "/productos/muebles-de-patio/mesas-de-exterior",
+    "/productos/muebles-de-patio/sillas-de-exterior",
+    "/productos/muebles-de-patio/toldos",
+    "/productos/muebles-de-oficina/escritorios",
+    "/productos/muebles-de-oficina/libreros",
+    "/productos/muebles-de-oficina/sillas-de-estudio",
+    "/productos/comedores/juego-comedor",
+    "/productos/comedores/mesas",
+    "/productos/comedores/sillas",
+    "/productos/dormitorios/camas",
+    "/productos/dormitorios/comodas-con-espejo",
+    "/productos/dormitorios/mesas-de-noche",
+    "/nosotros",
+    "/contacto",
+    "/resultados-busqueda",
+  ];
 
-    const publicRoutes = [
-      "/productos/accesorios/relojes",
-      "/productos/accesorios/lamparas",
-      "/productos/accesorios/espejos",
-      "/productos/salas/sofas",
-      "/productos/salas/muebles-para-tv",
-      "/productos/salas/mesas-de-centro",
-      "/productos/muebles-de-patio/mesas-de-exterior",
-      "/productos/muebles-de-patio/sillas-de-exterior",
-      "/productos/muebles-de-patio/toldos",
-      "/productos/muebles-de-oficina/escritorios",
-      "/productos/muebles-de-oficina/libreros",
-      "/productos/muebles-de-oficina/sillas-de-estudio",
-      "/productos/comedores/juego-comedor",
-      "/productos/comedores/mesas",
-      "/productos/comedores/sillas",
-      "/productos/dormitorios/camas",
-      "/productos/dormitorios/comodas-con-espejo",
-      "/productos/dormitorios/mesas-de-noche",
-      "/nosotros",
-      "/contacto",
-      "/resultados-busqueda",
-    ];
-    const showNavbar = !isNoNavbarRoute || location.pathname.startsWith(publicRoutes);
-  
-    return (
-      <>
-        {/* Solo renderiza el Navbar si se debe mostrar */}
-        {showNavbar && <Navbar />}
-        <Routes>
-                    {/* Ruta inicial para mostrar el Navbar sin autenticación */}
-                    <Route
-  path="/"
-  element={
-    user === undefined
-      ? null
-      : !user
-      ? null // No renderizamos otro Navbar aquí
-      : (<Navigate to={user.type === 'admin' ? "/interfazadmin" : "/user"} replace />)
-  }
-/>
+  const showNavbar = !isNoNavbarRoute || location.pathname.startsWith(publicRoutes);
 
+  return (
+    <>
+      {/* Solo renderiza el Navbar si se debe mostrar */}
+      {showNavbar && <Navbar />}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            (() => {
+              console.log("User en ruta inicial:", user); // Verificar que el valor de 'user' es correcto
 
-          {/* Rutas públicas */}
+              if (user === null) {
+                return <Navigate to="/" replace />;
+              } else if (user.type === 'admin') {
+                return <Navigate to="/interfazadmin" replace />;
+              } else {
+                return <Navigate to="/user" replace />;
+              }
+            })()
+          }
+        />
+
+        {/* Rutas públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/resultados-busqueda" element={<ResultadosBusqueda />} />
-        
+
         {/* Rutas de productos agrupadas por categorías */}
         <Route path="/productos/accesorios/relojes" element={<Relojes />} />
         <Route path="/productos/accesorios/lamparas" element={<Lamparas />} />
@@ -130,7 +135,7 @@ return (
         <Route path="/productos/dormitorios/camas" element={<Camas />} />
         <Route path="/productos/dormitorios/comodas-con-espejo" element={<ComodasConEspejo />} />
         <Route path="/productos/dormitorios/mesas-de-noche" element={<MesasNoche />} />
-        
+
         {/* Ruta independiente para InterfazAdmin sin Navbar */}
         <Route path="/interfazadmin" element={<ProtectedRoute userType="admin"><InterfazAdmin /></ProtectedRoute>} />
 
@@ -138,9 +143,9 @@ return (
         <Route path="/productoslist" element={<ProtectedRoute userType="admin"><ListaProductos /></ProtectedRoute>} />
         <Route path="/crearproducto" element={<ProtectedRoute userType="admin"><CrearProducto /></ProtectedRoute>} />
         <Route path="/actproducto" element={<ProtectedRoute userType="admin"><ActualizarProducto /></ProtectedRoute>} />
-        
+
         {/* Rutas protegidas para cliente */}
-        <Route path="/*" element={<ProtectedRoute userType="cliente"><ClienteRoutes /></ProtectedRoute>} />
+        <Route path="/*" element={<ProtectedRoute userType="client"><ClienteRoutes /></ProtectedRoute>} />
       </Routes>
     </>
   );
