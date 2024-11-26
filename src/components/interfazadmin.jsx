@@ -1,44 +1,77 @@
+// Importa useState y useEffect de React para manejar el estado y los efectos secundarios
 import React, { useState, useEffect } from 'react';
+
+// Importa axios para realizar solicitudes HTTP
 import axios from 'axios';
+
+// Importa useNavigate de react-router-dom para la navegación del enrutador
 import { useNavigate } from 'react-router-dom';
 
 function InterfazAdmin() {
-    const navigate = useNavigate();
-    const handleLogout = () => navigate('/login');
+   // Hook de navegación de react-router-dom para redirigir a diferentes rutas
+const navigate = useNavigate();
 
-    const [categories, setCategories] = useState([]);
-    const [subcategories, setSubcategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [showCategoryForm, setShowCategoryForm] = useState(false);
-    const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
-    const [isUpdate, setIsUpdate] = useState(false);
-    const [currentCategoryId, setCurrentCategoryId] = useState(null);
-    const [newName, setNewName] = useState('');
-    const [selectedCategoryName, setSelectedCategoryName] = useState('');
+// Función para manejar el cierre de sesión, redirige a la página de login
+const handleLogout = () => navigate('/login');
 
-    // Fetch categories and subcategories
+// Estado para almacenar las categorías
+const [categories, setCategories] = useState([]);
+
+// Estado para almacenar las subcategorías
+const [subcategories, setSubcategories] = useState([]);
+
+// Estado para la categoría seleccionada
+const [selectedCategory, setSelectedCategory] = useState(null);
+
+// Estado para controlar la visibilidad del formulario de categoría
+const [showCategoryForm, setShowCategoryForm] = useState(false);
+
+// Estado para controlar la visibilidad del formulario de subcategoría
+const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
+
+// Estado para determinar si se está actualizando una categoría
+const [isUpdate, setIsUpdate] = useState(false);
+
+// Estado para almacenar el ID de la categoría actual
+const [currentCategoryId, setCurrentCategoryId] = useState(null);
+
+// Estado para el nuevo nombre de la categoría
+const [newName, setNewName] = useState('');
+
+// Estado para el nombre de la categoría seleccionada
+const [selectedCategoryName, setSelectedCategoryName] = useState('');
+
+    // Efecto para obtener las categorías y subcategorías al montar el componente
     useEffect(() => {
         fetchCategories();
         fetchSubcategories();
     }, []);
 
-    const fetchCategories = async () => {
-        try {
-            const response = await axios.get('http://localhost:8000/api/user-profile/categories');
-            setCategories(response.data);
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-        }
-    };
+   // Función para obtener las categorías de la API
+const fetchCategories = async () => {
+    try {
+        // Solicitud GET a la API para obtener las categorías
+        const response = await axios.get('http://localhost:8000/api/user-profile/categories');
+        // Actualiza el estado con los datos de las categorías
+        setCategories(response.data);
+    } catch (error) {
+        // Manejo de errores al obtener las categorías
+        console.error('Error fetching categories:', error);
+    }
+};
 
-    const fetchSubcategories = async () => {
-        try {
-            const response = await axios.get('http://localhost:8000/api/user-profile/subcategories');
-            setSubcategories(response.data);
-        } catch (error) {
-            console.error('Error fetching subcategories:', error);
-        }
-    };
+// Función para obtener las subcategorías de la API
+const fetchSubcategories = async () => {
+    try {
+        // Solicitud GET a la API para obtener las subcategorías
+        const response = await axios.get('http://localhost:8000/api/user-profile/subcategories');
+        // Actualiza el estado con los datos de las subcategorías
+        setSubcategories(response.data);
+    } catch (error) {
+        // Manejo de errores al obtener las subcategorías
+        console.error('Error fetching subcategories:', error);
+    }
+};
 
     // Form submission logic
     const handleSubmit = async (e) => {

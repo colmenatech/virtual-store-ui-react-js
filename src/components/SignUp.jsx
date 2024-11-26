@@ -7,12 +7,12 @@ const SignUp = () => {
 
   // Estado para los datos del formulario y los mensajes de error
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: ''  // Asegúrate de que coincida con el atributo name en tu campo de entrada.
+    name: '', // Campo para el nombre
+    email: '', // Campo para el correo electrónico
+    password: '', // Campo para la contraseña
+    password_confirmation: ''  // Asegúrate de que coincida con el atributo name en tu campo de entrada
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); // Estado para manejar los errores
 
   const handleLoginClick = () => {
     navigate('/login'); // Redirige a la página de inicio de sesión
@@ -22,39 +22,39 @@ const SignUp = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value // Actualiza el estado del formulario con el nuevo valor
     });
   };
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ // Función para manejar el envío del formulario
+const handleSubmit = async (e) => {
+  e.preventDefault(); // Previene la acción por defecto del formulario (recargar la página)
 
-    if (formData.password !== formData.password_confirmation) {
-      setError("Las contraseñas no coinciden.");
-      return;
-    }
+  if (formData.password !== formData.password_confirmation) {
+    setError("Las contraseñas no coinciden."); // Establece el mensaje de error si las contraseñas no coinciden
+    return;
+  }
 
-    try {
-      // Limpia el mensaje de error
-      setError('');
+  try {
+    // Limpia el mensaje de error
+    setError('');
 
-      // Realiza la solicitud POST a la API de registro en Laravel
-      const response = await axios.post('http://localhost:8000/api/register', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        password_confirmation: formData.password_confirmation
-      });
-      console.log(response.data); // Muestra la respuesta de la API en consola
+    // Realiza la solicitud POST a la API de registro en Laravel
+    const response = await axios.post('http://localhost:8000/api/register', {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      password_confirmation: formData.password_confirmation
+    });
+    console.log(response.data); // Muestra la respuesta de la API en consola
 
-      // Redirige al usuario a la página de inicio de sesión después del registro exitoso
-      navigate('/login');
-    } catch (error) {
-      console.error("Error en el registro:", error);
-      setError("Hubo un problema con el registro.");
-    }
-  };
+    // Redirige al usuario a la página de inicio de sesión después del registro exitoso
+    navigate('/login');
+  } catch (error) {
+    console.error("Error en el registro:", error); // Muestra el error en consola
+    setError("Hubo un problema con el registro."); // Establece un mensaje de error para mostrar al usuario
+  }
+};
 
   return (
     <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">
