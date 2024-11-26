@@ -1,74 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 function InterfazAdmin() {
+    // Hook de navegación de react-router-dom para redirigir a diferentes rutas
     const navigate = useNavigate();
+
+    // Función para manejar el cierre de sesión, redirige a la página de login
     const handleLogout = () => {
         // Eliminar las cookies
         Cookies.remove('token');
         Cookies.remove('user');
-      
+        
         // Redirigir al login
         navigate('/login');
-      };
-      
+    };
 
-    const [subcategories, setSubcategories] = useState([
-        { id: 1, name: 'Sofas', categoryId: 1 },
-        { id: 2, name: 'Muebles TV', categoryId: 1 },
-        { id: 3, name: 'Mesas de Centro', categoryId: 1 },
-        { id: 4, name: 'Juegos de Comedor', categoryId: 2 },
-        { id: 5, name: 'Mesas', categoryId: 2 },
-        { id: 6, name: 'Sillas', categoryId: 2 },
-        { id: 7, name: 'Camas', categoryId: 3 },
-        { id: 8, name: 'Cómodas con Espejo', categoryId: 3 },
-        { id: 9, name: 'Mesas de Noche', categoryId: 3 },
-        { id: 10, name: 'Mesas de Exterior', categoryId: 4 },
-        { id: 11, name: 'Sillas de Exterior', categoryId: 4 },
-        { id: 12, name: 'Toldos', categoryId: 4 },
-        { id: 13, name: 'Escritorios', categoryId: 5 },
-        { id: 14, name: 'Libreros', categoryId: 5 },
-        { id: 15, name: 'Sillas de Estudio', categoryId: 5 },
-        { id: 16, name: 'Relojes', categoryId: 6 },
-        { id: 17, name: 'Lámparas', categoryId: 6 },
-        { id: 18, name: 'Espejos', categoryId: 6 },
-    ]);
+    // Estado para almacenar las categorías
+    const [categories, setCategories] = useState([]);
+    // Estado para almacenar las subcategorías
+    const [subcategories, setSubcategories] = useState([]);
+    // Estado para la categoría seleccionada
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    // Estado para controlar la visibilidad del formulario de categoría
+    const [showCategoryForm, setShowCategoryForm] = useState(false);
+    // Estado para controlar la visibilidad del formulario de subcategoría
+    const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
+    // Estado para determinar si se está actualizando una categoría
+    const [isUpdate, setIsUpdate] = useState(false);
+    // Estado para almacenar el ID de la categoría actual
+    const [currentCategoryId, setCurrentCategoryId] = useState(null);
+    // Estado para el nuevo nombre de la categoría
+    const [newName, setNewName] = useState('');
+    // Estado para el nombre de la categoría seleccionada
+    const [selectedCategoryName, setSelectedCategoryName] = useState('');
 
-    const [categories, setCategories] = useState([
-        { id: 1, name: 'Salas' },
-        { id: 2, name: 'Comedores' },
-        { id: 3, name: 'Dormitorios' },
-        { id: 4, name: 'Muebles de Patio' },
-        { id: 5, name: 'Muebles de Oficina' },
-        { id: 6, name: 'Accesorios' },
-    ]);
+    // Efecto para obtener las categorías y subcategorías al montar el componente
+    useEffect(() => {
+        fetchCategories();
+        fetchSubcategories();
+    }, []);
 
-    const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+    // Función para obtener las categorías de la API
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/user-profile/categories');
+            setCategories(response.data);
+            setSelectedCategory(response.data[0]); // Establecer la primera categoría como seleccionada por defecto
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    // Función para obtener las subcategorías de la API
+    const fetchSubcategories = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/user-profile/subcategories');
+            setSubcategories(response.data);
+        } catch (error) {
+            console.error('Error fetching subcategories:', error);
+        }
+    };
+
+    // Filtrar las subcategorías basadas en la categoría seleccionada
     const filteredSubcategories = selectedCategory
         ? subcategories.filter(subcategory => subcategory.categoryId === selectedCategory.id)
         : subcategories;
 
-    const [showCategoryForm, setShowCategoryForm] = useState(false);
-    const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
-    const [isUpdate, setIsUpdate] = useState(false);
-    const [currentCategory, setCurrentCategory] = useState('');
-    const [newName, setNewName] = useState('');
-    const [selectedCategoryName, setSelectedCategoryName] = useState('');
-
+    // Maneja la adición de una nueva categoría
     const handleAddCategory = () => {
         setIsUpdate(false);
         setNewName('');
         setShowCategoryForm(true);
     };
 
-    const handleUpdateCategory = (categoryName) => {
+    // Maneja la actualización de una categoría existente
+    const handleUpdateCategory = (categoryName, categoryId) => {
         setIsUpdate(true);
-        setCurrentCategory(categoryName);
+        setCurrentCategoryId(categoryId);
         setNewName(categoryName);
         setShowCategoryForm(true);
     };
 
+    // Maneja la adición de una nueva subcategoría
     const handleAddSubcategory = () => {
         setIsUpdate(false);
         setNewName('');
@@ -76,16 +91,17 @@ function InterfazAdmin() {
         setShowSubcategoryForm(true);
     };
 
+    // Maneja la actualización de una subcategoría existente
     const handleUpdateSubcategory = (subcategoryName) => {
         setIsUpdate(true);
-        setCurrentCategory(subcategoryName);
         setNewName(subcategoryName);
-        setSelectedCategoryName('');
         setShowSubcategoryForm(true);
     };
 
+    // Redirigir a la lista de productos
     const handleProductosList = () => navigate('/productoslist');
 
+    // Maneja el envío de los formularios de categoría y subcategoría
     const handleFormSubmit = (e) => {
         e.preventDefault();
         alert(`${isUpdate ? 'Actualizar' : 'Agregar'}: ${newName}`);
@@ -112,7 +128,7 @@ function InterfazAdmin() {
                         <div key={category.id} className="bg-white p-4 rounded-lg shadow-md text-center">
                             <h3 className="text-lg font-semibold">{category.name}</h3>
                             <div className="mt-4">
-                                <button className="bg-gray-400 text-white px-3 py-1 rounded-md mr-2 hover:bg-gray-600" onClick={() => handleUpdateCategory(category.name)}>
+                                <button className="bg-gray-400 text-white px-3 py-1 rounded-md mr-2 hover:bg-gray-600" onClick={() => handleUpdateCategory(category.name, category.id)}>
                                     Actualizar
                                 </button>
                                 <button className="bg-[#5d0909] text-white px-3 py-1 rounded-md hover:bg-red-600">
@@ -197,16 +213,6 @@ function InterfazAdmin() {
                             onChange={(e) => setNewName(e.target.value)}
                             className="w-full p-2 mb-4 border border-gray-300 rounded-md"
                         />
-                        <select
-                            className="w-full p-2 mb-4 rounded-md border border-gray-300"
-                            value={selectedCategoryName}
-                            onChange={(e) => setSelectedCategoryName(e.target.value)}
-                        >
-                            <option value="">Seleccionar Categoría</option>
-                            {categories.map(category => (
-                                <option key={category.id} value={category.name}>{category.name}</option>
-                            ))}
-                        </select>
                         <button type="submit" className="bg-[#7A3939] text-white px-4 py-2 rounded-md hover:bg-[#5E2B2B]">
                             {isUpdate ? 'Actualizar' : 'Agregar'}
                         </button>
