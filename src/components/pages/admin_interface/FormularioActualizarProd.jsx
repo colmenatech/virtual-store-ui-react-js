@@ -1,118 +1,246 @@
-// Importa React y los hooks useState y useEffect para manejar estado y efectos secundarios.
 import React, { useState, useEffect } from 'react';
-// Importa useNavigate de react-router-dom para la navegación entre rutas.
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
-// Componente funcional para el formulario de actualización de productos.
-const FormularioActualizarProducto = ({ productoInicial }) => {
-    // Estado local para manejar los datos del producto que se actualiza.
+const FormularioActualizarProducto = () => {
     const [producto, setProducto] = useState({
-        id: '', // ID del producto.
-        nombre: '', // Nombre del producto.
-        descripcion: '', // Descripción del producto.
-        precio: '', // Precio del producto.
-        stock: '', // Cantidad en stock del producto.
-        categoria: '', // Categoría del producto.
-        subcategoria: '', // Subcategoría del producto.
-        estado: '', // Estado del producto (Activo/Inactivo).
-        imagen: null, // Archivo de imagen asociado al producto.
+        nombre: '',
+        descripcion: '',
+        precio: '',
+        stock: '',
+        subcategoria: '',
+        estado: '',
+        imagen: '',
     });
+    const [cargando, setCargando] = useState(true); // Estado para controlar la carga de datos
 
-    // Efecto para cargar los datos iniciales del producto cuando se reciben como prop.
-    useEffect(() => {
-        if (productoInicial) { // Verifica si hay datos iniciales.
-            setProducto(productoInicial); // Actualiza el estado con los datos iniciales.
-        }
-    }, [productoInicial]); // Se ejecuta cada vez que cambia productoInicial.
-
-    const navigate = useNavigate();// Hook para la navegación entre páginas.
-    const handleLogout = () => navigate('/productoslist');// Función para manejar el regreso a la lista de productos.
-    const categorias = ['Accesorios', 'Sala', 'Muebles de patio', 'Muebles de oficina', 'Comedores', 'Dormitorios'];// Lista de categorías disponibles.
-
-    // Objeto que define las subcategorías por cada categoría.
     const subcategorias = {
-        Accesorios: ['Relojes', 'Lampáras', 'Espejos'], // Categoría: "Accesorios". Contiene subcategorías relacionadas con accesorios decorativos y funcionales.
-        Sala: ['Sofas', 'Muebles para TV', 'Mesas de centro'], // Categoría: "Sala". Subcategorías con elementos típicos para salas de estar.
-        Mueblesdepatio: ['Mesas de exterior', 'Sillas de exterior', 'Toldos'], // Categoría: "Muebles de patio". Subcategorías enfocadas en muebles para uso al aire libre.
-        Mueblesdeoficina: ['Escritorios', 'Libreros', 'Sillas de estudio'],  // Categoría: "Muebles de oficina". Subcategorías que agrupan muebles utilizados en espacios de trabajo.
-        Comedores: ['Juegos de comedor', 'Mesas', 'Sillas'], // Categoría: "Comedores". Subcategorías relacionadas con muebles y accesorios para comedores.
-        Dormitorios: ['Camas', 'Cómodas con espejo', 'Mesas de noche'], // Categoría: "Dormitorios". Subcategorías que incluyen elementos comunes para habitaciones.
+        'Relojes': 17,
+        'Lámparas': 18,
+        'Espejos': 19,
+        'Sofás': 14,
+        'Muebles para TV': 15,
+        'Mesas de centro': 16,
+        'Mesas de exterior': 12,
+        'Sillas de exterior': 11,
+        'Toldos': 13,
+        'Escritorios': 8,
+        'Libreros': 9,
+        'Sillas de estudio': 10,
+        'Juegos de comedor': 5,
+        'Mesas': 6,
+        'Sillas': 7,
+        'Camas': 2,
+        'Cómodas con espejo': 3,
+        'Mesas de noche': 4,
     };
 
-    // Lista de estados posibles para el producto.
-    const estados = ['Activo', 'Inactivo'];
+    const estados = ['activo', 'inactivo'];
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-    // Manejador para cambios en los campos del formulario.
+    useEffect(() => {
+        const token = Cookies.get('token');
+        if (!token) {
+            console.error('No estás autenticado');
+            return;
+        }
+
+        axios.get(`http://localhost:8000/api/user-profile/products/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                const data = response.data.product; // Asegúrate de acceder a `product`
+                setProducto({
+                    nombre: data.name,
+                    descripcion: data.description,
+                    precio: data.price,
+                    stock: data.stock,
+                    subcategoria: data.subcategory_id,
+                    estado: data.status,
+                    imagen: data.image_url,
+                });
+                setCargando(false); // Marcar que los datos están cargados
+            })
+            .catch((error) => {
+                console.error('Error al cargar los datos del producto:', error);
+            });
+    }, [id]);
+
+    const handleLogout = () => navigate('/productoslist');
+
     const handleChange = (e) => {
-        const { name, value } = e.target; // Obtiene el nombre y valor del campo modificado.
-        setProducto({ ...producto, [name]: value }); // Actualiza el estado del producto.
-        if (name === 'categoria') { // Si cambia la categoría...
-            setProducto((prev) => ({ ...prev, subcategoria: '' })); // Resetea la subcategoría.
+        const { name, value } = e.target;
+        setProducto(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const token = Cookies.get('token');
+        if (!token) {
+            console.error('No estás autenticado');
+            return;
         }
-    };
+        console.log(producto);
 
-    // Manejador para cambios en el campo de imagen.
-    const handleImageChange = (e) => {
-        const file = e.target.files[0]; // Obtiene el archivo seleccionado.
-        setProducto({ ...producto, imagen: file }); // Actualiza el estado con la nueva imagen.
-    };
 
-    // Manejador para cambios en el campo de precio, permitiendo solo números.
-    const handlePriceChange = (e) => {
-        const value = e.target.value.replace(/\D/g, ''); // Elimina caracteres no numéricos.
-        setProducto({ ...producto, precio: value }); // Actualiza el precio del producto.
-    };
-
-    // Manejador para enviar el formulario.
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Previene el comportamiento por defecto del formulario.
-        console.log('Producto actualizado:', producto); // Imprime los datos del producto en la consola.
-
-        // Crea un objeto FormData para enviar datos, incluidos archivos.
         const formData = new FormData();
-        formData.append('id', producto.id); // Identificador único del producto.
-        formData.append('nombre', producto.nombre); // Nombre del producto.
-        formData.append('descripcion', producto.descripcion); // Descripción del producto.
-        formData.append('precio', producto.precio);  // Precio del producto.
-        formData.append('stock', producto.stock); // Cantidad de unidades disponibles.
-        formData.append('categoria', producto.categoria); // Categoría a la que pertenece el producto.
-        formData.append('subcategoria', producto.subcategoria); // Subcategoría del producto.
-        formData.append('estado', producto.estado); // Estado del producto.
-        // Se verifica si el producto incluye una imagen. Esto es importante para evitar errores al intentar añadir un archivo que podría no existir.
-        if (producto.imagen) { // Solo agrega la imagen si está definida.
-            formData.append('imagen', producto.imagen);
+        formData.append('name', producto.nombre);
+        formData.append('description', producto.descripcion);
+        formData.append('price', producto.precio);
+        formData.append('stock', producto.stock);
+        formData.append('subcategory_id', producto.subcategoria);  // subcategoria_id
+        formData.append('status', producto.estado);
+        formData.append('image_url', producto.imagen);  // image_url
+        
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/api/user-profile/products/${id}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                console.log('Producto actualizado correctamente');
+                navigate('/productoslist');
+            }
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
         }
-        // Aquí podrías hacer la petición PUT o PATCH para actualizar el producto usando fetch o axios.
     };
 
-    // Retorna el formulario para actualizar los datos del producto.
+    if (cargando) {
+        return <p>Cargando...</p>; // O un spinner
+    }
+
     return (
-        // El formulario está configurado con un evento `onSubmit` que ejecutará la función `handleSubmit` cuando se envíe.
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-5 bg-white rounded-lg shadow-lg">
-            {/* Botón para regresar a la lista de productos */}
-            <nav className="absolute top-4 right-0 -translate-x-0 px-4">
-                <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500]" onClick={handleLogout}>
+            <nav className="absolute top-0 right-0 p-9">
+                <button
+                    type="button"
+                    className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500]"
+                    onClick={handleLogout}
+                >
                     Regresar
                 </button>
             </nav>
-
-            <h2 className="text-center text-2xl mb-5 text-red-800">Actualizar Producto</h2>
-            {/* Campo para seleccionar una imagen */}
-            <label className="block mb-2 font-bold text-gray-800">Producto (Imagen):
-                <input 
-                    type="file"// Especifica que este campo acepta archivos.
-                    name="imagen" // Nombre del campo, útil para identificarlo en el backend.
-                    accept="image/*" // Restringe el tipo de archivos aceptados a imágenes (jpg, png, etc.).
-                    onChange={handleImageChange} // Asocia un evento `onChange` para manejar la selección de la imagen.
-                    className="w-full p-2 mb-4 border border-red-900 rounded bg-red-100 text-gray-800"
+    
+            <h2 className="text-center text-2xl mb-5 text-vino-800">Actualizar Producto</h2>
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Producto (Imagen):
+                <input
+                    type="text"
+                    name="imagen"
+                    value={producto.imagen}
+                    onChange={handleChange}
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                    placeholder="Introduce la URL de la imagen"
                 />
             </label>
-
-            {/* Los demás campos del formulario están definidos de manera similar. */}
-            {/* Continúa con cada campo siguiendo el mismo formato. */}
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Nombre:
+                <input
+                    type="text"
+                    name="nombre"
+                    value={producto.nombre}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                />
+            </label>
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Descripción:
+                <textarea
+                    name="descripcion"
+                    value={producto.descripcion}
+                    onChange={handleChange}
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                />
+            </label>
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Precio:
+                <input
+                    type="text"
+                    name="precio"
+                    value={producto.precio}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                />
+            </label>
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Stock:
+                <input
+                    type="number"
+                    name="stock"
+                    value={producto.stock}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                />
+            </label>
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Subcategoría:
+                <select
+                    name="subcategoria"
+                    value={producto.subcategoria}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                >
+                    <option value="">Selecciona una subcategoría</option>
+                    {Object.keys(subcategorias).map((subcat, index) => (
+                        <option key={index} value={subcategorias[subcat]}>
+                            {subcat}
+                        </option>
+                    ))}
+                </select>
+            </label>
+    
+            <label className="block mb-2 font-bold text-gray-800">
+                Estado:
+                <select
+                    name="estado"
+                    value={producto.estado}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 mb-4 border border-vino-900 rounded bg-rose-100 text-gray-800"
+                >
+                    <option value="">Selecciona un estado</option>
+                    {estados.map((estado, index) => (
+                        <option key={index} value={estado}>
+                            {estado}
+                        </option>
+                    ))}
+                </select>
+            </label>
+    
+            <button
+                type="submit"
+                className="w-full p-3 bg-[#381008] text-white rounded hover:bg-[#960500] transition duration-300"
+            >
+                Actualizar Producto
+            </button>
         </form>
     );
-};
-
-// Exporta el componente para ser utilizado en otras partes de la aplicación.
-export default FormularioActualizarProducto;
+    };
+    
+    export default FormularioActualizarProducto;

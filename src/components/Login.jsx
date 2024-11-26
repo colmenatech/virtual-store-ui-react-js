@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const { login, setShowRandomProducts } = useContext(AuthContext);
@@ -16,29 +17,32 @@ const Login = () => {
     setShowRandomProducts(false);
   }, [setShowRandomProducts]);
 
-  // Manejo del login
+ 
+
   const handleLogin = async () => {
     if (!email || !password) {
       setError('Por favor, complete todos los campos');
       return;
     }
-
+  
     try {
       const response = await axios.post('http://localhost:8000/api/login', {
         email,
         password,
+      }, {
+        //withCredentials: true, // Esto asegura que las cookies se envíen y reciban automáticamente
       });
-
+  
       if (response.status === 200) {
         const { token, user } = response.data;
-
-        // Guardar token y datos del usuario en localStorage o un contexto global
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-
+  
+        // Guardar el token y los datos del usuario en cookies
+        Cookies.set('token', token, { expires: 2, path: '/' }); // Expira en 2 días
+        Cookies.set('user', JSON.stringify(user), { expires: 2, path: '/' });
+  
         // Actualizar contexto con la información del usuario
         login(user.email, user.roles[0]); // Suponiendo que roles es un array y tomamos el primer rol
-
+  
         // Redirigir según el rol del usuario
         if (user.roles.includes('admin')) {
           navigate('/interfazadmin');
@@ -55,10 +59,11 @@ const Login = () => {
       console.error('Error en el login:', error);
     }
   };
+  
 
   const handleSignUpClick = () => {
     navigate('/signup');
-  };
+  };  
 
   return (
     <div className="max-w-md p-10 mx-auto my-24 bg-gray-200 shadow-lg rounded-lg text-center">

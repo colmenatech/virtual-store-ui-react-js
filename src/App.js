@@ -54,10 +54,10 @@ function MainRoutes() {
   const { user } = useContext(AuthContext); 
   const location = useLocation();
  
-  const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
+  const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto/:id", "/crearproducto", "/productoslist"];
 
   // Verifica si la ruta actual es una de las que no debe mostrar el Navbar
-  const isNoNavbarRoute = noNavbarRoutes.includes(location.pathname);
+  const isNoNavbarRoute = noNavbarRoutes.includes(location.pathname)||location.pathname.includes("/actproducto/");
 
   // Mostrar el Navbar solo si no estamos en una ruta prohibida
   // Aseguramos que el Navbar siempre se muestre en cualquier ruta de productos, incluso si no hay usuario autenticado
@@ -142,7 +142,7 @@ function MainRoutes() {
         {/* Rutas protegidas para administrador */}
         <Route path="/productoslist" element={<ProtectedRoute userType="admin"><ListaProductos /></ProtectedRoute>} />
         <Route path="/crearproducto" element={<ProtectedRoute userType="admin"><CrearProducto /></ProtectedRoute>} />
-        <Route path="/actproducto" element={<ProtectedRoute userType="admin"><ActualizarProducto /></ProtectedRoute>} />
+        <Route path="/actproducto/:id" element={<ProtectedRoute userType="admin"><ActualizarProducto /></ProtectedRoute>} />
 
         {/* Rutas protegidas para cliente */}
         <Route path="/*" element={<ProtectedRoute userType="client"><ClienteRoutes /></ProtectedRoute>} />
