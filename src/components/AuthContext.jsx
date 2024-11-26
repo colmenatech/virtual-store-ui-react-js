@@ -7,16 +7,13 @@ export const AuthProvider = ({ children }) => {
   const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar productos aleatorios
 
   useEffect(() => {
+    const user = localStorage.getItem('user')
     const token = localStorage.getItem('token');
-    if (token) {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      // Verificar si el token es válido (esto depende de tu lógica de backend)
-      if (storedUser) {
-        setUser(storedUser);
-      } else {
-        logout(); // Si no hay usuario válido, cerramos sesión
-      }
-    }
+    if (!token) { return; }
+    if (!user || user == 'undefined') { return logout(); }
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    // Verificar si el token es válido (esto depende de tu lógica de backend)
+    setUser(storedUser);
   }, []);
   
 
