@@ -1,17 +1,24 @@
+/* Importación de las reglas base de Tailwind CSS */
 @tailwind base;
+
+/* Importación de los componentes de Tailwind CSS */
 @tailwind components;
+
+/* Importación de las utilidades de Tailwind CSS */
 @tailwind utilities;
 
+/* Estilos globales para el cuerpo del documento */
 body {
-  margin: 0;
+  margin: 0; /* Elimina el margen por defecto del cuerpo */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    sans-serif; /* Define una lista de fuentes para usar en el cuerpo */
+  -webkit-font-smoothing: antialiased; /* Suaviza las fuentes en navegadores Webkit */
+  -moz-osx-font-smoothing: grayscale; /* Suaviza las fuentes en macOS */
 }
 
+/* Estilos para elementos de código */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+    monospace; /* Define una lista de fuentes monoespaciadas para el código */
+}    

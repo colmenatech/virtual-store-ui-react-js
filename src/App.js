@@ -38,20 +38,27 @@ import Camas from './components/pages/Categorías/Dormitorios/Subcategorias/Cama
 import ComodasConEspejo from './components/pages/Categorías/Dormitorios/Subcategorias/Comodas con espejo/ComodaEspejoProductos';
 import MesasNoche from './components/pages/Categorías/Dormitorios/Subcategorias/Mesas de Noche/MesasNocheProducto';
 
-function App() { 
-  return ( 
+function App() {
+  return (
+    // AuthProvider envuelve toda la aplicación para proporcionar autenticación a cualquier componente que lo necesite
     <AuthProvider> 
+      // CartProvider proporciona el contexto del carrito de compras a toda la aplicación
       <CartProvider> 
-        <Router> 
-          <MainRoutes /> 
-        </Router> 
-      </CartProvider> 
+        // Router maneja la navegación en la aplicación
+        <Router>
+          // MainRoutes contiene todas las rutas definidas para la aplicación
+          <MainRoutes />
+        </Router>
+      </CartProvider>
     </AuthProvider>
-  ); 
+  );
 }
 
 function MainRoutes() { 
-  const { user } = useContext(AuthContext); 
+  // Extrae 'user' del contexto de autenticación utilizando useContext
+  const { user } = useContext(AuthContext);
+
+  // Obtiene la ubicación actual de la aplicación utilizando useLocation
   const location = useLocation();
  
   const noNavbarRoutes = ["/login", "/signup", "/interfazadmin", "/actproducto", "/crearproducto", "/productoslist"];
@@ -151,10 +158,19 @@ function MainRoutes() {
   );
 }
 
+// Definición de la función ProtectedRoute, que toma como argumentos las propiedades userType y children
 function ProtectedRoute({ userType, children }) {
+  
+  // Uso del hook useContext para obtener el objeto user del contexto AuthContext
   const { user } = useContext(AuthContext);
+
+  // Verifica si el usuario no está autenticado. Si no lo está, redirige a la página de login
   if (!user) return <Navigate to="/login" />;
+
+  // Verifica si se ha especificado un tipo de usuario y si el tipo de usuario del usuario actual no coincide con el esperado. Si es así, redirige a la página de inicio
   if (userType && user.type !== userType) return <Navigate to="/" />;
+
+  // Si el usuario está autenticado y el tipo de usuario coincide (si se especificó), renderiza los componentes hijos
   return children;
 }
 

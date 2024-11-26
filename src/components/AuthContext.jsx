@@ -1,11 +1,14 @@
 import React, { createContext, useState, useEffect } from 'react';
 
+// Crea un contexto de autenticación
 export const AuthContext = createContext();
 
+// Proveedor de autenticación que envuelve los componentes hijos
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Estado para el usuario autenticado
   const [showRandomProducts, setShowRandomProducts] = useState(true); // Estado para mostrar productos aleatorios
 
+  // Hook de efecto que se ejecuta al montar el componente
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -35,16 +38,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
+    // Proveedor de AuthContext que envuelve los componentes hijos
     <AuthContext.Provider
       value={{
-        user,
-        login,
-        logout,
-        showRandomProducts,
-        setShowRandomProducts,
+        user,                  // Estado del usuario autenticado
+        login,                 // Función de inicio de sesión
+        logout,                // Función de cierre de sesión
+        showRandomProducts,    // Estado para mostrar productos aleatorios
+        setShowRandomProducts, // Función para actualizar el estado de mostrar productos aleatorios
       }}
     >
-      {children}
+      {children} 
     </AuthContext.Provider>
   );
 };
