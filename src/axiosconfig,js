@@ -1,0 +1,16 @@
+import axios from 'axios';
+
+axios.defaults.withCredentials = true; // Enviar cookies con cada solicitud
+
+axios.interceptors.request.use((config) => {
+    const xsrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('XSRF-TOKEN='))
+        ?.split('=')[1];
+    if (xsrfToken) {
+        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(xsrfToken);
+    }
+    return config;
+});
+
+export default axios;

@@ -1,36 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function InterfazAdmin() {
+    // Hook de navegación de react-router-dom para redirigir a diferentes rutas
     const navigate = useNavigate();
-    const handleLogout = () => navigate('/login');
 
+    // Función para manejar el cierre de sesión, redirige a la página de login
+    const handleLogout = () => {
+        // Eliminar las cookies
+        Cookies.remove('token');
+        Cookies.remove('user');
+        
+        // Redirigir al login
+        navigate('/login');
+    };
+
+    // Estado para almacenar las categorías
     const [categories, setCategories] = useState([]);
+    // Estado para almacenar las subcategorías
     const [subcategories, setSubcategories] = useState([]);
+    // Estado para la categoría seleccionada
     const [selectedCategory, setSelectedCategory] = useState(null);
+    // Estado para controlar la visibilidad del formulario de categoría
     const [showCategoryForm, setShowCategoryForm] = useState(false);
+    // Estado para controlar la visibilidad del formulario de subcategoría
     const [showSubcategoryForm, setShowSubcategoryForm] = useState(false);
+    // Estado para determinar si se está actualizando una categoría
     const [isUpdate, setIsUpdate] = useState(false);
+    // Estado para almacenar el ID de la categoría actual
     const [currentCategoryId, setCurrentCategoryId] = useState(null);
+    // Estado para el nuevo nombre de la categoría
     const [newName, setNewName] = useState('');
+    // Estado para el nombre de la categoría seleccionada
     const [selectedCategoryName, setSelectedCategoryName] = useState('');
 
-    // Fetch categories and subcategories
+    // Efecto para obtener las categorías y subcategorías al montar el componente
     useEffect(() => {
         fetchCategories();
         fetchSubcategories();
     }, []);
 
+    // Función para obtener las categorías de la API
     const fetchCategories = async () => {
         try {
             const response = await axios.get('http://localhost:8000/api/user-profile/categories');
             setCategories(response.data);
+            setSelectedCategory(response.data[0]); // Establecer la primera categoría como seleccionada por defecto
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
     };
 
+    // Función para obtener las subcategorías de la API
     const fetchSubcategories = async () => {
         try {
             const response = await axios.get('http://localhost:8000/api/user-profile/subcategories');
@@ -40,60 +63,51 @@ function InterfazAdmin() {
         }
     };
 
-    // Form submission logic
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        try {
-            // Define URL and method based on whether it's an update or create
-            const url = currentCategoryId
-                ? `http://localhost:8000/api/user-profile/${showCategoryForm ? 'categories' : 'subcategories'}/${currentCategoryId}`
-                : `http://localhost:8000/api/user-profile/${showCategoryForm ? 'categories' : 'subcategories'}`;
-            
-            const method = isUpdate ? 'put' : 'post';
-            
-            // Only include category_id if creating a subcategory
-            const data = {
-                name: newName,
-                ...(showSubcategoryForm && { category_id: selectedCategory?.id })
-            };
-
-            await axios({
-                method: method,
-                url: url,
-                data: data,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            // Reset form and reload data
-            setShowCategoryForm(false);
-            setShowSubcategoryForm(false);
-            setIsUpdate(false);
-            setCurrentCategoryId(null);
-            setNewName('');
-            fetchCategories();
-            fetchSubcategories();
-        } catch (error) {
-            console.error('Error al enviar el formulario:', error);
-        }
-    };
-
-    const handleDelete = async (id, isCategory) => {
-        try {
-            const url = `http://localhost:8000/api/user-profile/${isCategory ? 'categories' : 'subcategories'}/${id}`;
-            await axios.delete(url);
-            fetchCategories();
-            fetchSubcategories();
-        } catch (error) {
-            console.error('Error deleting item:', error);
-        }
-    };
-
+    // Filtrar las subcategorías basadas en la categoría seleccionada
     const filteredSubcategories = selectedCategory
-        ? subcategories.filter(subcategory => subcategory.category_id === selectedCategory.id)
+        ? subcategories.filter(subcategory => subcategory.categoryId === selectedCategory.id)
         : subcategories;
+
+    // Maneja la adición de una nueva categoría
+    const handleAddCategory = () => {
+        setIsUpdate(false);
+        setNewName('');
+        setShowCategoryForm(true);
+    };
+
+    // Maneja la actualización de una categoría existente
+    const handleUpdateCategory = (categoryName, categoryId) => {
+        setIsUpdate(true);
+        setCurrentCategoryId(categoryId);
+        setNewName(categoryName);
+        setShowCategoryForm(true);
+    };
+
+    // Maneja la adición de una nueva subcategoría
+    const handleAddSubcategory = () => {
+        setIsUpdate(false);
+        setNewName('');
+        setSelectedCategoryName('');
+        setShowSubcategoryForm(true);
+    };
+
+    // Maneja la actualización de una subcategoría existente
+    const handleUpdateSubcategory = (subcategoryName) => {
+        setIsUpdate(true);
+        setNewName(subcategoryName);
+        setShowSubcategoryForm(true);
+    };
+
+    // Redirigir a la lista de productos
+    const handleProductosList = () => navigate('/productoslist');
+
+    // Maneja el envío de los formularios de categoría y subcategoría
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        alert(`${isUpdate ? 'Actualizar' : 'Agregar'}: ${newName}`);
+        setShowCategoryForm(false);
+        setShowSubcategoryForm(false);
+    };
 
     return (
         <div className="p-5">
@@ -104,10 +118,9 @@ function InterfazAdmin() {
                 </button>
             </header>
 
-            {/* Categories */}
             <div className="mt-10 bg-white p-5 rounded-lg shadow-md">
                 <h2 className="text-xl font-bold mb-4">Gestionar Categorías</h2>
-                <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500] mb-4" onClick={() => setShowCategoryForm(true)}>
+                <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500] mb-4" onClick={handleAddCategory}>
                     Agregar Categoría
                 </button>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -115,21 +128,10 @@ function InterfazAdmin() {
                         <div key={category.id} className="bg-white p-4 rounded-lg shadow-md text-center">
                             <h3 className="text-lg font-semibold">{category.name}</h3>
                             <div className="mt-4">
-                                <button
-                                    className="bg-gray-400 text-white px-3 py-1 rounded-md mr-2 hover:bg-gray-600"
-                                    onClick={() => {
-                                        setIsUpdate(true);
-                                        setCurrentCategoryId(category.id);
-                                        setNewName(category.name);
-                                        setShowCategoryForm(true);
-                                    }}
-                                >
+                                <button className="bg-gray-400 text-white px-3 py-1 rounded-md mr-2 hover:bg-gray-600" onClick={() => handleUpdateCategory(category.name, category.id)}>
                                     Actualizar
                                 </button>
-                                <button
-                                    className="bg-[#5d0909] text-white px-3 py-1 rounded-md hover:bg-red-600"
-                                    onClick={() => handleDelete(category.id, true)}
-                                >
+                                <button className="bg-[#5d0909] text-white px-3 py-1 rounded-md hover:bg-red-600">
                                     Eliminar
                                 </button>
                             </div>
@@ -138,11 +140,31 @@ function InterfazAdmin() {
                 </div>
             </div>
 
-            {/* Subcategories */}
+            {showCategoryForm && (
+                <form className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 p-5" onSubmit={handleFormSubmit}>
+                    <div className="bg-[#F0F0F0] p-5 rounded-lg shadow-lg w-full max-w-sm text-center">
+                        <h3 className="text-lg font-bold mb-3">{isUpdate ? 'Actualizar Categoría' : 'Agregar Categoría'}</h3>
+                        <input
+                            type="text"
+                            placeholder="Nombre de la Categoría"
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+                        />
+                        <button type="submit" className="bg-[#7A3939] text-white px-4 py-2 rounded-md hover:bg-[#5E2B2B]">
+                            {isUpdate ? 'Actualizar' : 'Agregar'}
+                        </button>
+                    </div>
+                </form>
+            )}
+
             <div className="mt-10 bg-white p-5 rounded-lg shadow-md">
                 <h2 className="text-xl font-bold mb-4">Gestionar Subcategorías</h2>
-                <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500] mb-4" onClick={() => setShowSubcategoryForm(true)}>
+                <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500] mb-4 mr-4" onClick={handleAddSubcategory}>
                     Agregar Subcategoría
+                </button>
+                <button className="bg-[#381008] text-white px-4 py-2 rounded-md hover:bg-[#960500] mb-4" onClick={handleProductosList}>
+                    Lista de Productos
                 </button>
 
                 <div className="mb-4">
@@ -168,22 +190,10 @@ function InterfazAdmin() {
                         <div key={subcategory.id} className="bg-white p-4 rounded-lg shadow-md text-center">
                             <h3 className="text-lg font-semibold">{subcategory.name}</h3>
                             <div className="mt-4">
-                                <button
-                                    className="bg-gray-400 text-white px-3 py-1 rounded-md mr-2 hover:bg-gray-600"
-                                    onClick={() => {
-                                        setIsUpdate(true);
-                                        setCurrentCategoryId(subcategory.id);
-                                        setNewName(subcategory.name);
-                                        setSelectedCategoryName(categories.find(cat => cat.id === subcategory.category_id)?.name || '');
-                                        setShowSubcategoryForm(true);
-                                    }}
-                                >
+                                <button className="bg-gray-400 text-white px-3 py-1 rounded-md mr-2 hover:bg-gray-600" onClick={() => handleUpdateSubcategory(subcategory.name)}>
                                     Actualizar
                                 </button>
-                                <button
-                                    className="bg-[#5d0909] text-white px-3 py-1 rounded-md hover:bg-red-600"
-                                    onClick={() => handleDelete(subcategory.id, false)}
-                                >
+                                <button className="bg-[#5d0909] text-white px-3 py-1 rounded-md hover:bg-red-600">
                                     Eliminar
                                 </button>
                             </div>
@@ -192,32 +202,19 @@ function InterfazAdmin() {
                 </div>
             </div>
 
-            {/* Forms */}
-            {(showCategoryForm || showSubcategoryForm) && (
-                <form className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 p-5" onSubmit={handleSubmit}>
-                <div className="bg-[#F0F0F0] p-5 rounded-lg shadow-lg w-full max-w-sm text-center">
-                    <h3 className="text-lg font-bold mb-3">{isUpdate ? 'Actualizar' : 'Agregar'} {showCategoryForm ? 'Categoría' : 'Subcategoría'}</h3>
-                    <input
-                        type="text"
-                        placeholder="Nombre"
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                        className="w-full p-2 mb-4 border border-gray-300 rounded-md"
-                    />
-                        {showSubcategoryForm && (
-                            <select
-                                className="w-full p-2 mb-4 rounded-md border border-gray-300"
-                                value={selectedCategoryName}
-                                onChange={(e) => setSelectedCategoryName(e.target.value)}
-                            >
-                                <option value="">Seleccionar Categoría</option>
-                                {categories.map(category => (
-                                    <option key={category.id} value={category.name}>{category.name}</option>
-                                ))}
-                            </select>
-                        )}
-                        <button type="submit" className="bg-[#7A3939] text-white px-4 py-2 rounded-md hover:bg-[#5d0909]">
-                            {isUpdate ? 'Actualizar' : 'Guardar'}
+            {showSubcategoryForm && (
+                <form className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 p-5" onSubmit={handleFormSubmit}>
+                    <div className="bg-[#F0F0F0] p-5 rounded-lg shadow-lg w-full max-w-sm text-center">
+                        <h3 className="text-lg font-bold mb-3">{isUpdate ? 'Actualizar Subcategoría' : 'Agregar Subcategoría'}</h3>
+                        <input
+                            type="text"
+                            placeholder="Nombre de la Subcategoría"
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+                        />
+                        <button type="submit" className="bg-[#7A3939] text-white px-4 py-2 rounded-md hover:bg-[#5E2B2B]">
+                            {isUpdate ? 'Actualizar' : 'Agregar'}
                         </button>
                     </div>
                 </form>

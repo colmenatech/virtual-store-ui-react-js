@@ -23,148 +23,153 @@ export default function Navbar() {
 
   const categories = [
     {
-      name: 'Accesorios',
-      to: '/productos/accesorios', 
+      name: 'Accesorios', // Nombre de la categoría
+      to: '/productos/accesorios', // Ruta de la categoría
       subcategories: [
-        { name: 'Relojes', to: '/productos/accesorios/relojes' },
-        { name: 'Lámparas', to: '/productos/accesorios/lamparas' },
-        { name: 'Espejos', to: '/productos/accesorios/espejos' }
+        { name: 'Relojes', to: '/productos/accesorios/relojes' }, // Subcategoría y su ruta
+        { name: 'Lámparas', to: '/productos/accesorios/lamparas' }, // Subcategoría y su ruta
+        { name: 'Espejos', to: '/productos/accesorios/espejos' } // Subcategoría y su ruta
       ]
     },
     {
-      name: 'Sala',
-      to: '/productos/salas',
+      name: 'Sala', // Nombre de la categoría
+      to: '/productos/salas', // Ruta de la categoría
       subcategories: [
-        { name: 'Sofás', to: '/productos/salas/sofas' },
-        { name: 'Muebles TV', to: '/productos/salas/muebles-para-tv' },
-        { name: 'Mesas de centro', to: '/productos/salas/mesas-de-centro' }
+        { name: 'Sofás', to: '/productos/salas/sofas' }, // Subcategoría y su ruta
+        { name: 'Muebles TV', to: '/productos/salas/muebles-para-tv' }, // Subcategoría y su ruta
+        { name: 'Mesas de centro', to: '/productos/salas/mesas-de-centro' } // Subcategoría y su ruta
       ]
     },
     {
-      name: 'Muebles de patio',
-      to: '/productos/muebles-de-patio',
+      name: 'Muebles de patio', // Nombre de la categoría
+      to: '/productos/muebles-de-patio', // Ruta de la categoría
       subcategories: [
-        { name: 'Mesas de exterior', to: '/productos/muebles-de-patio/mesas-de-exterior' },
-        { name: 'Sillas de exterior', to: '/productos/muebles-de-patio/sillas-de-exterior' },
-        { name: 'Toldos', to: '/productos/muebles-de-patio/toldos' }
+        { name: 'Mesas de exterior', to: '/productos/muebles-de-patio/mesas-de-exterior' }, // Subcategoría y su ruta
+        { name: 'Sillas de exterior', to: '/productos/muebles-de-patio/sillas-de-exterior' }, // Subcategoría y su ruta
+        { name: 'Toldos', to: '/productos/muebles-de-patio/toldos' } // Subcategoría y su ruta
       ]
     },
     {
-      name: 'Muebles de oficina',
-      to: '/productos/muebles-de-oficina',
+      name: 'Muebles de oficina', // Nombre de la categoría
+      to: '/productos/muebles-de-oficina', // Ruta de la categoría
       subcategories: [
-        { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios' },
-        { name: 'Libreros', to: '/productos/muebles-de-oficina/libreros' },
-        { name: 'Sillas de estudio', to: '/productos/muebles-de-oficina/sillas-de-estudio' }
+        { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios' }, // Subcategoría y su ruta
+        { name: 'Libreros', to: '/productos/muebles-de-oficina/libreros' }, // Subcategoría y su ruta
+        { name: 'Sillas de estudio', to: '/productos/muebles-de-oficina/sillas-de-estudio' } // Subcategoría y su ruta
       ]
     },
     {
-      name: 'Comedores',
-      to: '/productos/comedores',
+      name: 'Comedores', // Nombre de la categoría
+      to: '/productos/comedores', // Ruta de la categoría
       subcategories: [
-        { name: 'Juego de comedor', to: '/productos/comedores/juego-comedor' },
-        { name: 'Mesas', to: '/productos/comedores/mesas' },
-        { name: 'Sillas', to: '/productos/comedores/sillas' }
+        { name: 'Juego de comedor', to: '/productos/comedores/juego-comedor' }, // Subcategoría y su ruta
+        { name: 'Mesas', to: '/productos/comedores/mesas' }, // Subcategoría y su ruta
+        { name: 'Sillas', to: '/productos/comedores/sillas' } // Subcategoría y su ruta
       ]
     },
     {
-      name: 'Dormitorios',
-     
+      name: 'Dormitorios', // Nombre de la categoría
       subcategories: [
-        { name: 'Camas', to: '/productos/dormitorios/camas' },
-        { name: 'Comodas con espejo', to: '/productos/dormitorios/comodas-con-espejo' },
-        { name: 'Mesas de noche', to: '/productos/dormitorios/mesas-de-noche' }
+        { name: 'Camas', to: '/productos/dormitorios/camas' }, // Subcategoría y su ruta
+        { name: 'Comodas con espejo', to: '/productos/dormitorios/comodas-con-espejo' }, // Subcategoría y su ruta
+        { name: 'Mesas de noche', to: '/productos/dormitorios/mesas-de-noche' } // Subcategoría y su ruta
       ]
     }
   ];
+  
+  // Función para manejar el clic en la categoría
   const handleCategoryClickkk = (index) => {
     setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
   };
   
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
-
-  const handleRegisterClick = () => {
-    navigate('/signup');
-  };
-
-  useEffect(() => {
-    if (location.pathname === '/factura' || location.pathname === '/carrito-checkout') {
-      setShowRandomProducts(false);
-    }
-  }, [location.pathname]);
-
-  const handleProductClick = () => {
-    //setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
-    setShowRandomProducts(false); // Oculta los productos aleatorios
-  };
-
-  const handleCategoryClick = (index) => {
-    setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
-    setShowRandomProducts(false); // Oculta los productos aleatorios
-  };
+    const handleLogout = () => {
+      logout(); // Llama a la función de cierre de sesión
+      navigate('/'); // Redirige a la página principal
+    };
+    
+    const handleLoginClick = () => {
+      navigate('/login'); // Redirige a la página de inicio de sesión
+    };
+    
+    const handleRegisterClick = () => {
+      navigate('/signup'); // Redirige a la página de registro
+    };
+    
+    useEffect(() => {
+      if (location.pathname === '/factura' || location.pathname === '/carrito-checkout') {
+        setShowRandomProducts(false); // Oculta los productos aleatorios en las rutas de factura y checkout
+      }
+    }, [location.pathname]);
+    
+    const handleProductClick = () => {
+      // setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías (actualmente comentado)
+      setShowRandomProducts(false); // Oculta los productos aleatorios
+    };
+    
+    const handleCategoryClick = (index) => {
+      setOpenCategoryIndex(openCategoryIndex === index ? null : index); // Alterna entre abrir y cerrar el menú de categorías
+      setShowRandomProducts(false); // Oculta los productos aleatorios
+    };
   
   
-  
 
-  const handleSearch = (event) => {
-    const term = event.target.value.toLowerCase();
-    setSearchTerm(term);
-
-    if (term) {
-      const results = [];
-      categories.forEach((category) => {
-        category.subcategories.forEach((subcategory) => {
-          if (subcategory.name.toLowerCase().includes(term)) {
-            results.push({ ...subcategory, category: category.name });
-          }
+    const handleSearch = (event) => {
+      const term = event.target.value.toLowerCase(); // Convierte el término de búsqueda a minúsculas
+      setSearchTerm(term); // Actualiza el estado con el término de búsqueda
+    
+      if (term) { // Si hay un término de búsqueda
+        const results = []; // Array para almacenar los resultados
+        categories.forEach((category) => { // Itera sobre cada categoría
+          category.subcategories.forEach((subcategory) => { // Itera sobre cada subcategoría de la categoría
+            if (subcategory.name.toLowerCase().includes(term)) { // Si el nombre de la subcategoría incluye el término de búsqueda
+              results.push({ ...subcategory, category: category.name }); // Añade la subcategoría a los resultados, incluyendo el nombre de la categoría
+            }
+          });
         });
-      });
-      setSearchResults(results);
-      setShowSearchResults(results.length > 0);
-    } else {
-      setSearchResults([]);
-      setShowSearchResults(false);
-    }
-  };
-
-  const handleSearchIconClick = () => {
-    navigate('/resultados-busqueda', { state: { results: searchResults } });
-    setShowSearchResults(false);
-  };
-  useEffect(() => {
-    // Muestra RandomProducts en las rutas deseadas
-    if (location.pathname === '/' || location.pathname === '/user') {
-      setShowRandomProducts(true);
-    } else {
-      setShowRandomProducts(false);
-    }
-  }, [location.pathname]);
-  
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Verificar si el clic está fuera del input de búsqueda
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResults(results); // Actualiza el estado con los resultados de búsqueda
+        setShowSearchResults(results.length > 0); // Muestra los resultados de búsqueda si hay alguno
+      } else { // Si no hay término de búsqueda
+        setSearchResults([]); // Limpia los resultados de búsqueda
         setShowSearchResults(false); // Oculta los resultados de búsqueda
       }
-  
-      // Verificar si el clic está fuera del menú de categorías
-      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
-        setOpenCategoryIndex(null); // Oculta el menú de categorías
+    };
+
+    const handleSearchIconClick = () => {
+      navigate('/resultados-busqueda', { state: { results: searchResults } }); // Redirige a la página de resultados de búsqueda con los resultados como estado
+      setShowSearchResults(false); // Oculta los resultados de búsqueda
+    };
+    
+    useEffect(() => {
+      // Muestra RandomProducts en las rutas deseadas
+      if (location.pathname === '/' || location.pathname === '/user') {
+        setShowRandomProducts(true); // Muestra productos aleatorios en la página de inicio y en la página de usuario
+      } else {
+        setShowRandomProducts(false); // Oculta productos aleatorios en otras rutas
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside); // Limpiar el event listener
-    };
-  }, []);
+    }, [location.pathname]); // Efecto dependiente de la ruta actual
+  
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        // Verificar si el clic está fuera del input de búsqueda
+        if (searchRef.current && !searchRef.current.contains(event.target)) {
+          setShowSearchResults(false); // Oculta los resultados de búsqueda
+        }
+    
+        // Verificar si el clic está fuera del menú de categorías
+        if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+          setOpenCategoryIndex(null); // Oculta el menú de categorías
+        }
+      };
+    
+      // Añadir un event listener para detectar clics fuera del elemento
+      document.addEventListener('mousedown', handleClickOutside);
+    
+      // Limpieza del event listener al desmontar el componente
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside); // Limpiar el event listener
+      };
+    }, []);
 
   return (
     <header className="bg-fondo shadow-md flex flex-col relative">
