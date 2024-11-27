@@ -3,7 +3,7 @@ import applepay from './img/applepay.png'; // Importa la imagen de Apple Pay
 import visa from './img/Visa.png'; // Importa la imagen de Visa
 import mastercard from './img/mastercard.png'; // Importa la imagen de Mastercard
 import paypal from './img/paypal.png'; // Importa la imagen de PayPal
-
+import axios from 'axios';
 const ProfileUser = () => { // Define el componente ProfileUser
   // Define varios estados para la gestión de datos de usuario y configuración
   const [editMode, setEditMode] = useState(false); // Modo de edición para el nombre de usuario
@@ -52,44 +52,54 @@ const ProfileUser = () => { // Define el componente ProfileUser
     }
   }, [theme]); // Ejecutar el efecto cuando el tema cambie
 
-  const handleAddCard = () => { // Función para agregar una tarjeta a la lista
-    let isValid = false;
-    if (cardType === 'visa' && cardNumber.startsWith('4') && cardNumber.length === 16) {
-      isValid = true;
-    } else if (['bcr', 'bn', 'bac'].includes(cardType) && (cardNumber.startsWith('4') || cardNumber.startsWith('5')) && cardNumber.length === 16) {
-      isValid = true;
-    }
 
-    if (isValid) {
-      const cardData = { number: cardNumber, type: cardType.toUpperCase() }; // Crear un objeto con la tarjeta
+
+const handleAddCard = async () => { // Añadido 'async' para manejar la solicitud asíncrona
+  let isValid = false;
+
+  // Validar el número de tarjeta según el tipo seleccionado
+  if (cardNumber.length === 16) {
+    isValid = true; // Aquí puedes agregar más validaciones según necesites
+  }
+
+  if (isValid) {
+    const cardData = { number: cardNumber, type: cardType.toUpperCase() }; // Crear un objeto con la tarjeta
+
+    try {
+      let response;
       if (editingIndex !== null) {
-        const updatedCards = [...cardList]; // Si se está editando una tarjeta, se actualiza en la lista
-        updatedCards[editingIndex] = cardData;
+        // Realiza una solicitud PUT para actualizar la tarjeta existente en la base de datos
+        response = await axios.put(`http://localhost:8000/api/cards/${cardList[editingIndex].id}`, cardData, {
+          headers: {
+            Authorization: ` Bearer ${authToken}`, // Asegúrate de que authToken contenga el token JWT de autenticación
+          },
+        });
+        const updatedCards = [...cardList];
+        updatedCards[editingIndex] = response.data; // Actualiza la tarjeta en la lista con los datos del servidor
         setCardList(updatedCards);
         setEditingIndex(null);
       } else {
-        setCardList([...cardList, cardData]); // Añadir la tarjeta a la lista
+        // Realiza una solicitud POST para añadir una nueva tarjeta a la base de datos
+        response = await axios.post(`http://localhost:8000/api/cards`, cardData, {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Asegúrate de que authToken contenga el token JWT de autenticación
+          },
+        });
+        setCardList([...cardList, response.data]); // Añade la tarjeta a la lista con los datos del servidor
       }
+
+      // Resetea los campos del formulario
       setCardNumber('');
       setCardType('');
       setShowInput(false);
-    } else {
-      alert('Número de tarjeta inválido según el tipo seleccionado.'); // Alerta si el número de tarjeta es inválido
+    } catch (error) {
+      console.error('Error al guardar la tarjeta:', error); // Manejo de errores
+      alert('Hubo un error al guardar la tarjeta. Inténtalo de nuevo más tarde.');
     }
-  };
-
-  const handleEditCard = (index) => { // Función para editar una tarjeta existente
-    setCardNumber(cardList[index].number);
-    setCardType(cardList[index].type);
-    setEditingIndex(index);
-    setShowInput(true);
-  };
-
-  const handleDeleteCard = (index) => { // Función para eliminar una tarjeta de la lista
-    const updatedCards = cardList.filter((_, i) => i !== index);
-    setCardList(updatedCards);
-  };
-
+  } else {
+    alert('Número de tarjeta inválido según el tipo seleccionado.');
+  }
+};
   const handleDeleteWishlistItem = (id) => { // Función para eliminar un item de la lista de deseos
     const updatedWishlist = wishlist.filter(item => item.id !== id);
     setWishlist(updatedWishlist);
