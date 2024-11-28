@@ -15,17 +15,10 @@ const ProfileUser = () => { // Define el componente ProfileUser
   const [cardList, setCardList] = useState([]); // Lista de tarjetas añadidas
   const [editingIndex, setEditingIndex] = useState(null); // Índice de la tarjeta que se está editando
   const [showInput, setShowInput] = useState(false); // Estado para mostrar el formulario de añadir tarjeta
-  const [wishlist, setWishlist] = useState([ // Lista de deseos con productos
-    { id: 1, name: 'Producto 1', description: 'Descripción del Producto 1' },
-    { id: 2, name: 'Producto 2', description: 'Descripción del Producto 2' },
-    { id: 3, name: 'Producto 3', description: 'Descripción del Producto 3' },
-  ]);
   const [userName, setUserName] = useState('Nombre de Usuario');// Nombre del usuario
   const [profilePic, setProfilePic] = useState('https://via.placeholder.com/100'); // Foto de perfil del usuario
 
    // Refs para desplazarse a las secciones del perfil
-  const ordersRef = useRef(null);
-  const wishlistRef = useRef(null);
   const paymentRef = useRef(null);
   const notificationsRef = useRef(null);
   const settingsRef = useRef(null);
@@ -94,20 +87,11 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
       setShowInput(false);
     } catch (error) {
       console.error('Error al guardar la tarjeta:', error); // Manejo de errores
-      alert('Hubo un error al guardar la tarjeta. Inténtalo de nuevo más tarde.');
     }
   } else {
     alert('Número de tarjeta inválido según el tipo seleccionado.');
   }
 };
-  const handleDeleteWishlistItem = (id) => { // Función para eliminar un item de la lista de deseos
-    const updatedWishlist = wishlist.filter(item => item.id !== id);
-    setWishlist(updatedWishlist);
-  };
-
-  const handleViewWishlistItem = (item) => { // Función para ver los detalles de un item de la lista de deseos
-    alert(`Nombre: ${item.name}\nDescripción: ${item.description}`);
-  };
 
   const handleProfilePicChange = (e) => { // Función para cambiar la foto de perfil
     const file = e.target.files[0];
@@ -124,7 +108,8 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
     setProfilePic('https://via.placeholder.com/100');
   };
 
-  return ( // Devuelve la estructura JSX del componente
+  // Devuelve la estructura JSX del componente
+  return ( 
     <div className={`flex ${theme === 'gray' ? 'bg-[#B2B3BD]' : theme === 'light' ? 'bg-[#FFFFFF]' : 'bg-[#3E3E4A]'} text-gray-800 font-sans`}>
       {/* Barra lateral con las opciones del perfil */}
       <div className="w-64 p-5 bg-white border-r border-gray-300 shadow-lg">
@@ -162,8 +147,6 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
 
         {/* Menú lateral con enlaces */}
         <ul className="mt-6 space-y-2">
-          <li className="cursor-pointer p-2 rounded-md bg-[#9E9E9E] text-white hover:bg-[#7C7C7C]" onClick={() => scrollToSection(ordersRef)}>Mis Órdenes</li>
-          <li className="cursor-pointer p-2 rounded-md bg-[#9E9E9E] text-white hover:bg-[#7C7C7C]" onClick={() => scrollToSection(wishlistRef)}>Wishlist</li>
           <li className="cursor-pointer p-2 rounded-md bg-[#9E9E9E] text-white hover:bg-[#7C7C7C]" onClick={() => scrollToSection(paymentRef)}>Métodos de Pago</li>
           <li className="cursor-pointer p-2 rounded-md bg-[#9E9E9E] text-white hover:bg-[#7C7C7C]" onClick={() => scrollToSection(notificationsRef)}>Notificaciones</li>
           <li className="cursor-pointer p-2 rounded-md bg-[#9E9E9E] text-white hover:bg-[#7C7C7C]" onClick={() => scrollToSection(settingsRef)}>Configuración</li>
@@ -174,30 +157,6 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
 
       {/* Sección de contenido */}
       <div className="flex-1 p-8 space-y-6">
-        <section ref={ordersRef} className="p-5 rounded-lg bg-white shadow-md">
-          <h3 className="text-xl font-bold text-[#5A0A09]">Mis Órdenes</h3>
-          <p>Resumen de tus órdenes anteriores...</p>
-        </section>
-
-        {/* Wishlist */}
-        <section ref={wishlistRef} className="p-5 rounded-lg bg-white shadow-md">
-          <h3 className="text-xl font-bold text-[#5A0A09]">Wishlist</h3>
-          {wishlist.length > 0 ? (
-            <ul className="space-y-3">
-              {wishlist.map(item => (
-                <li key={item.id} className="flex justify-between">
-                  <span>{item.name}</span>
-                  <div>
-                    <button onClick={() => handleViewWishlistItem(item)} className="bg-[#5A0A09] text-white px-4 py-1 rounded-md hover:bg-[#430704] transition">Ver</button>
-                    <button onClick={() => handleDeleteWishlistItem(item.id)} className="bg-[#5D0909] text-white px-4 py-1 rounded-md hover:bg-[#4B0606] transition ml-2">Eliminar</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No tienes productos en tu wishlist</p>
-          )}
-        </section>
 
         {/* Métodos de Pago */}
         <section ref={paymentRef} className="p-5 rounded-lg bg-white shadow-md">
@@ -281,12 +240,12 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
           <div>
             <label className="flex items-center">
               <input type="radio" value="light" checked={theme === 'light'} onChange={() => handleThemeChange('light')} />
-              <span className="ml-2">Tema Claro</span>
+              <span className="ml-2">Modo Claro</span>
             </label>
             
             <label className="flex items-center">
-              <input type="radio" value="gray" checked={theme === 'gray'} onChange={() => handleThemeChange('gray')} />
-              <span className="ml-2">Tema Gris</span>
+              <input type="radio" value="black" checked={theme === 'black'} onChange={() => handleThemeChange('black')} />
+              <span className="ml-2">Modo Oscuro</span>
             </label>
           </div>
         </section>
