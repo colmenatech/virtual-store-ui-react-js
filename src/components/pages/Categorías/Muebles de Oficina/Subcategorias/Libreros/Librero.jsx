@@ -1,58 +1,65 @@
-import React from 'react';// Importa React para definir un componente funcional.
-import './Librero.css';  // Importa el archivo CSS para los estilos específicos del componente
-import { FaShoppingCart } from 'react-icons/fa';  // Importa el icono de carrito de compras desde la librería react-icons
-import { useCart } from '../../../../shopping_cart/CartContext'; // Importa el hook useCart desde el contexto de carrito, que permite interactuar con el carrito de compras 
+import React, { useEffect, useState } from 'react';
+import { FaShoppingCart } from 'react-icons/fa';
+import { useCart } from '../../../../shopping_cart/CartContext';   
+import axios from 'axios';
+import Cookies from 'js-cookie';  // Importa la librería para manejar las cookies
 
-// Componente ProductoItem que recibe un objeto producto como prop
 const ProductoItem = ({ producto }) => {
-    const { dispatch } = useCart();  // Extrae la función dispatch desde el hook useCart para actualizar el estado del carrito
-    const addToCart = () => { // Función que maneja la acción de agregar un producto al carrito
-        dispatch({ type: 'ADD_TO_CART', payload: producto }); // Dispara una acción al contexto de carrito para agregar el producto
-    };
+    const { dispatch } = useCart();
     
-    // Retorna la estructura JSX que representa el producto en una tarjeta
+    const addToCart = () => {
+        dispatch({ type: 'ADD_TO_CART', payload: producto });
+    };
+
     return (
-        <div className="product-card"> {/* Muestra la imagen del producto. Utiliza el src y alt desde el objeto producto */}
-            <img src={producto.img} alt={producto.nombre} />  {/* Muestra el nombre del producto */}
-            <h3>{producto.nombre}</h3>   {/* Muestra una breve descripción del producto */}
-            <p>{producto.descripcion}</p>   {/* Muestra el precio del producto en formato numérico con símbolo de dólar */} 
-            <p>${producto.precio}</p>  {/* Botón para agregar el producto al carrito, al hacer click se llama a la función addToCart */}
-            <button onClick={addToCart} className="add-to-cart-button">  {/* Icono de carrito de compras */}
+        <div className="product-card">
+            <img src={producto.image_url} alt={producto.name} /> {/* Cambié 'producto.img' por 'producto.image_url' */}
+            <h3>{producto.name}</h3> {/* Cambié 'producto.descripcion' por 'producto.name' */}
+            <h4>{producto.description}</h4>
+            <p>${producto.price}</p> {/* Cambié 'producto.precio' por 'producto.price' */}
+            <button onClick={addToCart} className="add-to-cart-button">
                 <FaShoppingCart /> Agregar al carrito
             </button>
         </div>
     );
 };
 
-// Define el componente LibreroProducto que lista todos los productos de tipo Libreros.
-const LibreroProducto = () => {
-    // Define una lista de productos con sus propiedades id, nombre, precio e imagen.
-const productos = [
-    { id: 1, nombre: 'Librero con forma de arbol', precio: 700, img: require('./img/librero_arbol.jpg') }, // Primer producto: Librero con forma de árbol, precio 700, y una imagen asociada.
-    { id: 2, nombre: 'Librero flotante de pared', precio: 600, img: require('./img/librero_flotante.jpg') }, // Segundo producto: Librero flotante de pared, precio 600, y su imagen.
-    { id: 3, nombre: 'Librero extra grande', precio: 500, img: require('./img/librero_grande.jpg') }, // Tercer producto: Librero extra grande, precio 500, y la imagen correspondiente
-    { id: 4, nombre: 'Librero color gris', precio: 750, img: require('./img/librero_gris.jpg') }, // Cuarto producto: Librero color gris, precio 750, con su imagen
-    { id: 5, nombre: 'Librero forma irregular', precio: 650, img: require('./img/librero_irregular.jpg') }, // Quinto producto: Librero con forma irregular, precio 650, e imagen asociada
-    { id: 6, nombre: 'Librero con forma de manzana', precio: 900, img: require('./img/librero_manzana.jpg') },  // Sexto producto: Librero con forma de manzana, precio 900, e imagen
-    { id: 7, nombre: 'Librero con forma de mariposa pequeña', precio: 900, img: require('./img/librero_mariposa_pequeño.jpg') },  // Séptimo producto: Librero con forma de mariposa pequeña, precio 900, y su imagen
-    { id: 8, nombre: 'Librero color negro', precio: 900, img: require('./img/librero_negro.jpg') }, // Octavo producto: Librero color negro, precio 900, e imagen asociada
-    { id: 9, nombre: 'Librero con pisos', precio: 900, img: require('./img/librero_pisos.jpg') },  // Noveno producto: Librero con pisos, precio 900, con su imagen
-    { id: 10, nombre: 'Librero con forma de Yin Yang', precio: 900, img: require('./img/librero_yingyang.jpg') }, // Décimo producto: Librero con forma de Yin Yang, precio 900, e imagen
-    { id: 11, nombre: 'Set de libreros', precio: 900, img: require('./img/set_libreros.jpg') },  // Undécimo producto: Set de libreros, precio 900, con su imagen
-    { id: 12, nombre: 'Librero Mariposa', precio: 900, img: require('./img/librero_mariposa.jpg') }  // Duodécimo producto: Librero Mariposa, precio 900, y su imagen correspondiente
-];
+const LibreroProducto= () => {
+    const [productos, setProductos] = useState([]);  // Estado para almacenar los productos obtenidos.
 
-    // Renderiza el componente. Muestra un título y un grid de productos que son mapeados desde el array de productos.
+    useEffect(() => {
+        const token = Cookies.get('token');  // Obtener el token de las cookies
+
+        if (!token) {
+            console.error('No estás autenticado');
+            return;
+        }
+
+        axios.get('http://localhost:8000/api/user-profile/products/subcategory/9', {
+            headers: {
+                Authorization: `Bearer ${token}`,  // Incluir el token en los headers
+            },
+        })
+        .then(response => {
+            setProductos(response.data.products);  // Aquí se accede a 'products' en la respuesta.
+        })
+        .catch(error => {
+            console.error('Hubo un error al obtener los productos:', error);
+        });
+    }, []);  // Se ejecuta solo una vez cuando el componente se monta.
+
     return (
         <div className="sala-productos">
-            <div className="title-container"> {/* Contenedor del título */}
-            <h1>Productos de Muebles de Oficina</h1> {/* Título principal de la sección que indica que se trata de productos de muebles de oficina */}
-            <div className="decorative-line"></div> {/* Línea decorativa */}
+            <div className="title-container">
+                <h1>Libreros</h1>
+                <div className="decorative-line"></div>
             </div>
-            <div className="productos-grid">  {/* cuadrícula de productos */}
-                {productos.map((producto) => (  // Mapea los productos para crear un componente ProductoItem por cada uno.
-                    <ProductoItem key={producto.id} producto={producto} />  // Se pasa el producto como prop y se utiliza el id como clave.
-                ))}
+            <div className="productos-grid">
+                {productos.length > 0 && 
+                    productos.map((producto) => (
+                        <ProductoItem key={producto.id} producto={producto} />
+                    ))
+                }
             </div>
         </div>
     );

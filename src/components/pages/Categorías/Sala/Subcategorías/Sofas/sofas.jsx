@@ -1,22 +1,22 @@
-// Importa React y el componente ProductoItem para utilizar dentro de la lista de productos.
-import React from 'react';
-import './sofas.css'; // Importa el archivo CSS correctamente
+import React, { useEffect, useState } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
-import { useCart } from '../../../../shopping_cart/CartContext';
-// Componente ProductoItem
+import { useCart } from '../../../../shopping_cart/CartContext';   
+import axios from 'axios';
+import Cookies from 'js-cookie';  // Importa la librería para manejar las cookies
+
 const ProductoItem = ({ producto }) => {
     const { dispatch } = useCart();
     
-    // Función para agregar un producto al carrito
     const addToCart = () => {
         dispatch({ type: 'ADD_TO_CART', payload: producto });
     };
+
     return (
         <div className="product-card">
-            <img src={producto.img} alt={producto.nombre} />
-            <h3>{producto.nombre}</h3>
-            <p>{producto.descripcion}</p>
-            <p>${producto.precio}</p>
+            <img src={producto.image_url} alt={producto.name} /> {/* Cambié 'producto.img' por 'producto.image_url' */}
+            <h3>{producto.name}</h3> {/* Cambié 'producto.descripcion' por 'producto.name' */}
+            <h4>{producto.description}</h4>
+            <p>${producto.price}</p> {/* Cambié 'producto.precio' por 'producto.price' */}
             <button onClick={addToCart} className="add-to-cart-button">
                 <FaShoppingCart /> Agregar al carrito
             </button>
@@ -24,42 +24,44 @@ const ProductoItem = ({ producto }) => {
     );
 };
 
-// Define el componente sofas, que representará una lista de productos específicos de sala.
-const Sofas = () => {
-    // Lista de productos que contiene información básica sobre cada uno, 
-    // incluye un id, nombre, precio e imagen asociada a cada producto.
-    const productos = [
-        { id: 1, nombre: 'Sofá de 3 café', precio: 500, img: require('./img/conjunto_sofas_cafes.jpg') },
-        { id: 2, nombre: 'Conjunto sofas sencillo', precio: 300, img: require('./img/conjunto_sofas.jpg') },
-        { id: 3, nombre: 'Sofá capehorn reclinable', precio: 150, img: require('./img/sofa_capehorn_reclinable.jpg') },
-        { id: 4, nombre: 'Conjunto Sofás Reclinables', precio: 400, img: require('./img/conjunto_sofas_reclinables.jpg') },
-        { id: 5, nombre: 'Conjunto de sofas azul', precio: 250, img: require('./img/conjunto_sofas_azul.jpg') },
-        { id: 6, nombre: 'Sofá de 3 azul', precio: 700, img: require('./img/sofa_de_tres_azul.jpg') },
-        { id: 7, nombre: 'Sofá de 3 negro', precio: 120, img: require('./img/sofa_de_tres_negro.jpg') },
-        { id: 8, nombre: 'Sofá de 3 sencillo', precio: 400, img: require('./img/sofa_de_tres.jpg') },
-        { id: 9, nombre: 'Sofá Harleson', precio: 350, img: require('./img/sofa_harleson.jpg') },
-        { id: 10, nombre: 'Sofá reclinable electrico', precio: 90, img: require('./img/sofa_reclinable_electrico.jpg') },
-        { id: 11, nombre: 'Sofá reclinable', precio: 50, img: require('./img/sofa_reclinable.jpg') },
-        { id: 12, nombre: 'Loveseat Sofa', precio: 200, img: require('./img/sofa_y_loveseat.jpg') },
-    ];
+const Sofas= () => {
+    const [productos, setProductos] = useState([]);  // Estado para almacenar los productos obtenidos.
 
-    // Renderiza el componente sofas. Muestra título y un grid de productos,
-    // Cada producto se renderiza utilizando el componente ProductoItem.
+    useEffect(() => {
+        const token = Cookies.get('token');  // Obtener el token de las cookies
+
+        if (!token) {
+            console.error('No estás autenticado');
+            return;
+        }
+
+        axios.get('http://localhost:8000/api/user-profile/products/subcategory/14', {
+            headers: {
+                Authorization: `Bearer ${token}`,  // Incluir el token en los headers
+            },
+        })
+        .then(response => {
+            setProductos(response.data.products);  // Aquí se accede a 'products' en la respuesta.
+        })
+        .catch(error => {
+            console.error('Hubo un error al obtener los productos:', error);
+        });
+    }, []);  // Se ejecuta solo una vez cuando el componente se monta.
+
     return (
         <div className="sala-productos">
-            <div className="title-container"> {/* Contenedor del título */}
-            <h1>Productos de Sala</h1>
-            <div className="decorative-line"></div> {/* Línea decorativa */}
+            <div className="title-container">
+                <h1>Sofás</h1>
+                <div className="decorative-line"></div>
             </div>
             <div className="productos-grid">
-                {productos.map((producto) => (
-                    // Mapea los productos para crear un componente ProductoItem por cada uno.
-                    // Se pasa el producto como prop y se utiliza el id como clave.
-                    <ProductoItem key={producto.id} producto={producto} />
-                ))}
+                {productos.length > 0 && 
+                    productos.map((producto) => (
+                        <ProductoItem key={producto.id} producto={producto} />
+                    ))
+                }
             </div>
         </div>
     );
 };
-
 export default Sofas;
