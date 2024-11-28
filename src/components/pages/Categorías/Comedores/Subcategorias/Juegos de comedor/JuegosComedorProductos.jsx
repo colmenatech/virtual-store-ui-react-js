@@ -1,61 +1,65 @@
-// Importa React para definir un componente funcional.
-import React from 'react';
-import './JuegosComedor.css'; // Importa el archivo CSS correctamente
+import React, { useEffect, useState } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
-import { useCart } from '../../../../shopping_cart/CartContext';
-// Componente ProductoItem
+import { useCart } from '../../../../shopping_cart/CartContext';   
+import axios from 'axios';
+import Cookies from 'js-cookie';  // Importa la librería para manejar las cookies
+
 const ProductoItem = ({ producto }) => {
     const { dispatch } = useCart();
     
-    // Función para agregar un producto al carrito
     const addToCart = () => {
-        // Despacha una acción para agregar el producto al carrito, pasando el producto como payload
         dispatch({ type: 'ADD_TO_CART', payload: producto });
     };
+
     return (
-        <div className="product-card"> {/* Contenedor de la tarjeta del producto */}
-            <img src={producto.img} alt={producto.nombre} />  {/* Muestra la imagen del producto */}
-            <h3>{producto.nombre}</h3>  {/* Muestra el nombre del producto */}
-            <p>{producto.descripcion}</p>  {/* Muestra la descripción del producto */}
-            <p>${producto.precio}</p>  {/* Muestra el precio del producto con un símbolo de dólar */}
-            <button onClick={addToCart} className="add-to-cart-button"> {/* Botón para agregar el producto al carrito */}
-                <FaShoppingCart /> Agregar al carrito  {/* Ícono y texto del botón */}
+        <div className="product-card">
+            <img src={producto.image_url} alt={producto.name} /> {/* Cambié 'producto.img' por 'producto.image_url' */}
+            <h3>{producto.name}</h3> {/* Cambié 'producto.descripcion' por 'producto.name' */}
+            <h4>{producto.description}</h4>
+            <p>${producto.price}</p> {/* Cambié 'producto.precio' por 'producto.price' */}
+            <button onClick={addToCart} className="add-to-cart-button">
+                <FaShoppingCart /> Agregar al carrito
             </button>
         </div>
     );
 };
 
-// Define el componente JuegoComedorProducto que lista todos los productos de tipo Lamparas.
 const JuegoComedorProducto = () => {
-    // Define una lista de productos con sus propiedades id, nombre, precio e imagen.
-    const productos = [
-        { id: 1, nombre: 'Comedor Bancabrids', precio: 400000, img: require('./img/comedor_bancabridson.jpg') }, // Comedor Bancabrids: precio 400,000, imagen del comedor Bancabrids
-        { id: 2, nombre: 'Comedor Bar Bridson', precio: 300000, img: require('./img/comedor_bar_bridson.jpg') }, // Comedor Bar Bridson: precio 300,000, imagen del comedor Bar Bridson
-        { id: 3, nombre: 'Comedor Bar Odium', precio: 150000, img: require('./img/comedor_bar_odium.jpg') }, // Comedor Bar Odium: precio 150,000, imagen del comedor Bar Odium
-        { id: 4, nombre: 'Comedor Bar Skempton', precio: 400000, img: require('./img/comedor_bar_skempton.jpg') }, // Comedor Bar Skempton: precio 400,000, imagen del comedor Bar Skempton
-        { id: 5, nombre: 'Comedor Benox', precio: 250000, img: require('./img/comedor_benox.jpg') }, // Comedor Benox: precio 250,000, imagen del comedor Benox
-        { id: 6, nombre: 'Comedor Caitbrook', precio: 700000, img: require('./img/comedor_caitbrook.jpg') }, // Comedor Caitbrook: precio 700,000, imagen del comedor Caitbrook
-        { id: 7, nombre: 'Comedor Hallanden', precio: 120000, img: require('./img/comedor_hallanden.jpg') }, // Comedor Hallanden: precio 120,000, imagen del comedor Hallanden
-        { id: 8, nombre: 'Comedor Hyndell', precio: 300000, img: require('./img/comedor_hyndell.jpg') }, // Comedor Hyndell: precio 300,000, imagen del comedor Hyndell
-        { id: 9, nombre: 'Comedor Maysville', precio: 350000, img: require('./img/comedor_maysville.jpg') }, // Comedor Maysville: precio 350,000, imagen del comedor Maysville
-        { id: 10, nombre: 'Comedor Sanbriar', precio: 120000, img: require('./img/comedor_sanbriar.jpg') }, // Comedor Sanbriar: precio 120,000, imagen del comedor Sanbriar
-        { id: 11, nombre: 'Comedor Skempton', precio: 150000, img: require('./img/comedor_skempton.jpg') }, // Comedor Skempton: precio 150,000, imagen del comedor Skempton
-        { id: 12, nombre: 'Comedor Stonehollow', precio: 200000, img: require('./img/comedor_stonehollow.jpg') }, // Comedor Stonehollow: precio 200,000, imagen del comedor Stonehollow
-    ];
+    const [productos, setProductos] = useState([]);  // Estado para almacenar los productos obtenidos.
 
-    // Renderiza el componente. Muestra un título y un grid de productos que son mapeados desde el array de productos.
+    useEffect(() => {
+        const token = Cookies.get('token');  // Obtener el token de las cookies
+
+        if (!token) {
+            console.error('No estás autenticado');
+            return;
+        }
+
+        axios.get('http://localhost:8000/api/user-profile/products/subcategory/5', {
+            headers: {
+                Authorization: `Bearer ${token}`,  // Incluir el token en los headers
+            },
+        })
+        .then(response => {
+            setProductos(response.data.products);  // Aquí se accede a 'products' en la respuesta.
+        })
+        .catch(error => {
+            console.error('Hubo un error al obtener los productos:', error);
+        });
+    }, []);  // Se ejecuta solo una vez cuando el componente se monta.
+
     return (
         <div className="sala-productos">
-            <div className="title-container"> {/* Contenedor del título */}
-            <h1>Juegos de comedor</h1>
-            <div className="decorative-line"></div> {/* Línea decorativa */}
+            <div className="title-container">
+                <h1>Juegos de Comedor</h1>
+                <div className="decorative-line"></div>
             </div>
-            {/* Renderiza la lista de productos dentro de un contenedor de grid. */}
             <div className="productos-grid">
-                {/* Recorre la lista de productos y para cada uno renderiza un componente JuegosComedorItem */}
-                {productos.map((producto) => (
-                    <ProductoItem key={producto.id} producto={producto} />
-                ))}
+                {productos.length > 0 && 
+                    productos.map((producto) => (
+                        <ProductoItem key={producto.id} producto={producto} />
+                    ))
+                }
             </div>
         </div>
     );
