@@ -66,10 +66,10 @@ const SobreNosotros = () => {
     {/* Front-end Team */}
     <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
       <h5 style={{ marginBottom: '10px' }}>Front-end</h5> {/* Añadir margen al subtítulo */}
-      <li>Valery</li>
-      <li>Allison</li>
+      <li>Valery Castillo Berrios</li>
+      <li>Allison Valenzuela Torres</li>
       <li>Johayling Meléndez Corea</li>
-      <li>Konny</li>
+      <li>Konny Agüero Díaz</li>
       <li>Esteban Noguera Jiménez</li>
     </ul>
 
