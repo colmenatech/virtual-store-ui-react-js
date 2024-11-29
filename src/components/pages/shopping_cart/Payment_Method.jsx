@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Cookies from "js-cookie";  // For handling cookies
 
 const SHIPPING_COST = 2500;
 
 const OrderSummary = () => {
+  const navigate = useNavigate();
   const { cart, dispatch } = useCart();
   const [paymentMethod, setPaymentMethod] = useState('creditCard');
   const [coupon, setCoupon] = useState('');
   const [discount, setDiscount] = useState(0);
   const [savedCards, setSavedCards] = useState([]);
-  const [showCardForm, setShowCardForm] = useState(false);
-  const [useSavedCard, setUseSavedCard] = useState(null);
+  const [showCardForm, setShowCardForm] = useState(null);
+  const [useSavedCard, setUseSavedCard] = useState(null); // Usamos null para indicar que no hay tarjeta seleccionada aún
   const [newCard, setNewCard] = useState({
-    
-  number: "",
-  expiryDate: "",
-  cvv: "",
-  name: "",
-  type: "creditCard",
-  
+    number: "",
+    expiryDate: "",
+    cvv: "",
+    name: "",
+    type: "creditCard",
   });
 
   // Apply coupon logic
@@ -55,49 +55,59 @@ const OrderSummary = () => {
   const discountAmount = subtotal * discount;
   const total = subtotal - discountAmount + SHIPPING_COST;
 
-  // Get saved cards when the component mounts
   useEffect(() => {
     const fetchSavedCards = async () => {
-      const token = Cookies.get('token');  // Get token from cookies
+      const token = Cookies.get('token'); // Obtén el token
       if (!token) {
-        alert("You must be logged in to view your saved cards");
+        // No mostrar nada o manejarlo sin alertas
         return;
       }
-
       try {
         const response = await axios.get("http://localhost:8000/api/user-profile/cards", {
-          headers: { Authorization: `Bearer ${token}` }  // Attach token to the request
+          headers: { Authorization: `Bearer ${token}` },
         });
-        setSavedCards(response.data);
+        if (response.data && Array.isArray(response.data)) {
+          setSavedCards(response.data);
+        } else {
+          setSavedCards([]);
+        }
       } catch (error) {
-        console.error("Error fetching saved cards:", error);
-        alert("Failed to load saved cards. Please try again.");
+        // Evitar mostrar errores si la solicitud falla
+        console.error("Error al obtener las tarjetas:", error.message);
       }
     };
+  
     fetchSavedCards();
   }, []);
+; // Solo se ejecuta una vez cuando el componente se monta
 
-  // Handle purchase button click
   const handlePurchaseClick = () => {
-    if (savedCards.length > 0) {
-      const confirmation = window.confirm("¿Quieres usar una tarjeta guardada?");
-      if (confirmation) {
-        setUseSavedCard(true);
-        setShowCardForm(false);
-      } else {
-        setUseSavedCard(false);
-        setShowCardForm(true);
-      }
-    } else {
-      setShowCardForm(true);
-    }
+
+      console.log("Botón de 'Añadir Tarjeta' clickeado");
+     
+    
+    // Siempre mostrar el formulario de agregar tarjeta sin importar si hay tarjetas guardadas o no.
+    setShowCardForm(true);
+    console.log("Estado showCardForm después de hacer clic:", showCardForm);  // Verifica el valor de showCardForm
+
+  };
+  
+  
+  // Función para manejar la selección de tarjeta guardada
+  const handleSavedCardSelect = (cardId) => {
+    const selectedCard = savedCards.find(card => card.id === cardId);
+    setUseSavedCard(selectedCard);
   };
 
-  // Handle changes in the new card form
+  // Función para manejar los cambios en el formulario de nueva tarjeta
   const handleNewCardChange = (e) => {
     const { name, value } = e.target;
-    setNewCard({ ...newCard, [name]: value });
+    setNewCard(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
+
 
   // Handle new card submission
   const handleNewCardSubmit = async () => {
@@ -116,7 +126,7 @@ const OrderSummary = () => {
       );
       alert("Tarjeta agregada exitosamente");
       setShowCardForm(false);
-      setUseSavedCard(false);
+      setUseSavedCard(null); // Reseteamos la tarjeta seleccionada
     } catch (error) {
       // Manejo extendido de errores
       if (error.response && error.response.data) {
@@ -128,9 +138,66 @@ const OrderSummary = () => {
       }
     }
   };
+
+  const processPayment = async () => {
+    const token = Cookies.get('token');
+    if (!token) {
+      alert("Debes iniciar sesión para procesar el pago");
+      return;
+    }
   
-
-
+    // Verificar que useSavedCard contenga una tarjeta seleccionada
+    const userId = useSavedCard ? useSavedCard.user_id : newCard.user_id;
+    if (!userId) {
+      alert("No se pudo obtener el user_id");
+      return;
+    }
+  
+    // Preparar los datos para el pago
+    const paymentData = {
+      user_id: userId,
+      products: cart.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      ...(useSavedCard ? { cardId: useSavedCard.id } : { ...newCard })
+    };
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/user-profile/checkout",
+        paymentData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    
+      console.log('Respuesta completa de la API:', response.data);  // Ver respuesta completa de la API
+    
+      if (response.data && response.data.message === "Compra finalizada y factura generada.") {
+        const invoiceId = response.data.invoice.id;  // Accediendo correctamente al ID de la factura
+    
+        console.log('ID de la factura:', invoiceId);  // Verifica si el ID de la factura es correcto
+    
+        if (invoiceId) {
+          alert("Pago procesado exitosamente");
+          navigate(`/factura/${invoiceId}`);  // Redirigir usando el ID de la factura
+        } else {
+          alert("Error: No se pudo obtener el ID de la factura.");
+        }
+      } else {
+        alert("Error al procesar la compra");
+        console.error('Respuesta del servidor:', response.data);  // Imprimir toda la respuesta para depuración
+      }
+    } catch (error) {
+      console.error("Error al procesar el pago:", error);
+      if (error.response) {
+        console.error('Detalles del error:', error.response.data);
+      }
+      alert("Error al procesar el pago. Inténtalo de nuevo.");
+    }
+    
+};    
+  
   return (
     <div className="container mx-auto p-2 font-serif">
      
@@ -213,38 +280,50 @@ const OrderSummary = () => {
 
        {/* Selección de método de pago */}
        <label className="flex items-center text-gray-700">
-        <input
-          type="radio"
-          name="paymentMethod"
-          value="creditCard"
-          checked={paymentMethod === "creditCard"}
-          onChange={(e) => setPaymentMethod(e.target.value)}
-          className="mr-2"
-        />
-        Mastercard
-      </label>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="mastercard"
+        checked={paymentMethod === "mastercard"}
+        onChange={(e) => {
+          const selectedType = e.target.value;
+          setPaymentMethod(selectedType);
+          setNewCard((prev) => ({ ...prev, type: selectedType }));
+        }}
+        className="mr-2"
+      />
+      Mastercard
+    </label>
       <label className="flex items-center text-gray-700">
-        <input
-          type="radio"
-          name="paymentMethod"
-          value="paypal"
-          checked={paymentMethod === "paypal"}
-          onChange={(e) => setPaymentMethod(e.target.value)}
-          className="mr-2"
-        />
-        PayPal
-      </label>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="paypal"
+        checked={paymentMethod === "paypal"}
+        onChange={(e) => {
+          const selectedType = e.target.value;
+          setPaymentMethod(selectedType);
+          setNewCard((prev) => ({ ...prev, type: selectedType }));
+        }}
+        className="mr-2"
+      />
+      PayPal
+    </label>
       <label className="flex items-center text-gray-700">
-        <input
-          type="radio"
-          name="paymentMethod"
-          value="bankTransfer"
-          checked={paymentMethod === "bankTransfer"}
-          onChange={(e) => setPaymentMethod(e.target.value)}
-          className="mr-2"
-        />
-        Visa
-      </label>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="applepay"
+        checked={paymentMethod === "applepay"}
+        onChange={(e) => {
+          const selectedType = e.target.value;
+          setPaymentMethod(selectedType);
+          setNewCard((prev) => ({ ...prev, type: selectedType }));
+        }}
+        className="mr-2"
+      />
+      ApplePay
+    </label>
       <label className="flex items-center text-gray-700">
       <input
         type="radio"
@@ -261,69 +340,104 @@ const OrderSummary = () => {
       Visa
     </label>
  
+{/* Botón de compra */}
+<div className="mt-6 text-left">
+  <button
+    onClick={handlePurchaseClick} // Este es el manejador que activa el estado showCardForm a true
+    className="bg-[#381008] text-white py-2 px-6 rounded-lg hover:bg-[#DFCCC8]"
+  >
+    Añadir Tarjeta
+  </button>
+</div>
 
-      {/* Botón de compra */}
-      <div className="mt-6 text-left">
-        <button
-          onClick={handlePurchaseClick}
-          className="bg-[#381008] text-white py-2 px-6 rounded-lg hover:bg-[#DFCCC8]"
-        >
-          Comprar ahora ({cart.length})
-        </button>
-      </div>
+{/* Mostrar formulario para agregar una nueva tarjeta, siempre que showCardForm sea true */}
+{showCardForm && (
+   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+   <div className="bg-white p-6 rounded-lg max-w-md w-full">
+     <h3 className="text-lg font-bold">Agregar nueva tarjeta</h3>
+     <div className="mb-4">
+       <label className="block text-gray-700">Número de tarjeta</label>
+       <input
+         type="text"
+         name="number"
+         value={newCard.number}
+         onChange={handleNewCardChange}
+         className="w-full p-2 border rounded-lg"
+       />
+     </div>
+     <div className="mb-4">
+       <label className="block text-gray-700">Fecha de expiración (MM/AA)</label>
+       <input
+         type="text"
+         name="expiryDate"
+         value={newCard.expiryDate}
+         onChange={handleNewCardChange}
+         className="w-full p-2 border rounded-lg"
+         placeholder="MM/AA"
+       />
+     </div>
+     <div className="mb-4">
+       <label className="block text-gray-700">CVV</label>
+       <input
+         type="text"
+         name="cvv"
+         value={newCard.cvv}
+         onChange={handleNewCardChange}
+         className="w-full p-2 border rounded-lg"
+       />
+     </div>
+     <div className="mb-4">
+       <label className="block text-gray-700">Nombre</label>
+       <input
+         type="text"
+         name="name"
+         value={newCard.name}
+         onChange={handleNewCardChange}
+         className="w-full p-2 border rounded-lg"
+       />
+     </div>
+     <button
+       onClick={handleNewCardSubmit}
+       className="bg-[#381008] text-white py-2 px-6 rounded-lg hover:bg-[#DFCCC8] mt-2"
+     >
+       Guardar tarjeta
+     </button>
+   </div>
+ </div>
+)}
 
-      {/* Formulario de tarjeta */}
-      {showCardForm && (
-        <div className="mt-4 border p-4 rounded-lg">
-          <h3 className="text-lg font-bold">Agregar nueva tarjeta</h3>
-          <div className="mb-4">
-            <label className="block text-gray-700">Número de tarjeta</label>
+{/* Mostrar tarjetas guardadas si existen */}
+{savedCards.length > 0 && (
+  <div className="mt-4">
+    <h3 className="text-lg font-bold">O Selecciona una tarjeta guardada</h3>
+    <ul>
+      {savedCards.map((card) => (
+        <li key={card.id} className="mb-2">
+          <label className="flex items-center">
             <input
-              type="text"
-              name="number"
-              value={newCard.number}
-              onChange={handleNewCardChange}
-              className="w-full p-2 border rounded-lg"
+              type="radio"
+              name="savedCard"
+              value={card.id}
+              onChange={() => handleSavedCardSelect(card.id)}
+              className="mr-2"
             />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Fecha de expiración</label>
-            <input
-              type="text"
-              name="expiryDate"
-              value={newCard.expiryDate}
-              onChange={handleNewCardChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">CVV</label>
-            <input
-              type="text"
-              name="cvv"
-              value={newCard.cvv}
-              onChange={handleNewCardChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Nombre</label>
-            <input
-              type="text"
-              name="name"
-              value={newCard.name}
-              onChange={handleNewCardChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <button
-            onClick={handleNewCardSubmit}
-            className="bg-[#381008] text-white py-2 px-6 rounded-lg hover:bg-[#DFCCC8]"
-          >
-            Guardar tarjeta
-          </button>
-        </div>
-      )}
+            {`**** **** **** ${card.number.slice(-4)}, Titular: ${card.name}`}
+          </label>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+{/* Botón de "Comprar ahora", solo se muestra si hay tarjetas guardadas */}
+{savedCards.length > 0 && (
+  <button
+    onClick={processPayment}
+    className="bg-[#381008] text-white py-2 px-6 rounded-lg hover:bg-[#DFCCC8] mt-4"
+  >
+    Comprar ahora ({cart.length})
+  </button>
+)}
 
       {/* Cupón de descuento */}
       <h3 className="text-lg font-bold mt-6 mb-2">Cupón de Descuento</h3>

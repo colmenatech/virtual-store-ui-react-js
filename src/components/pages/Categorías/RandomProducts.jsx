@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import ImgSlide1 from '../../assets/img/banner1.jpg';
 import ImgSlide2 from '../../assets/img/banner2.jpg';
@@ -6,18 +6,19 @@ import ImgSlide3 from '../../assets/img/banner3.jpg';
 import { useCart } from '../shopping_cart/CartContext';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Cookies from "js-cookie";  // For handling cookies
 
 
 const RandomProductsWithBanner = () => {
-  // Estado para controlar la visibilidad del banner, productos aleatorios y footer
   const [isVisible, setIsVisible] = useState(true);
-  const location = useLocation(); // Obtener la ubicación actual
-
+  const location = useLocation();
   const { dispatch } = useCart();
-  
-  // Estado para controlar qué slide se muestra
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [currentCategory, setCurrentCategory] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentCategory, setCurrentCategory] = useState(0);
+  const [randomProducts, setRandomProducts] = useState([]);
+  const [categories, setCategories] = useState([]);  // Estado para las categorías
+  const [loading, setLoading] = useState(true);
 
 
   // Datos de los slides del carrusel
@@ -44,79 +45,94 @@ const RandomProductsWithBanner = () => {
   ];
 
   
-  const categories = [
-    { name: 'Relojes', to: '/productos/accesorios/relojes', img: require('../../assets/img/reloj.png')},
-    { name: 'Sofás', to: '/productos/salas/sofas', img: require('../../assets/img/sofa.png')},
-    { name: 'Toldos', to: '/productos/muebles-de-patio/toldos', img: require('../../assets/img/toldo.png') },
-    { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios', img: require('../../assets/img/escritorio.png') },
-    { name: 'Camas', to: '/productos/dormitorios/camas', img: require('../../assets/img/cama.png') },
-    { name: 'Mesas', to: '/productos/comedores/mesas', img: require('../../assets/img/mesa.png')},
-    { name: 'Sillas', to: '/productos/comedores/sillas', img: require('../../assets/img/silla.png')},
-    { name: 'Lámparas', to: '/productos/accesorios/lamparas', img: require('../../assets/img/lampara.png')},
-  ]
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
-  }
-
-  const nextCategory = () => {
-    setCurrentCategory((prev) => (prev === categories.length - 1 ? 0 : prev + 1))
-  }
-
-  const prevCategory = () => {
-    setCurrentCategory((prev) => (prev === 0 ? categories.length - 1 : prev - 1))
-  }
-
-
-
-  // Datos iniciales de los productos aleatorios
-  const initialRandomProducts = useMemo(() => [
-    { id: 1, nombre: 'Espejo baño cuadrado', precio: 500, img: '/placeholder.svg?height=200&width=200' },
-    { id: 2, nombre: 'Espejo champague italiano', precio: 300, img: '/placeholder.svg?height=200&width=200' },
-    { id: 3, nombre: 'Espejo cuadrado negro', precio: 150, img: '/placeholder.svg?height=200&width=200' },
-    { id: 4, nombre: 'Espejo para escritorio', precio: 400, img: '/placeholder.svg?height=200&width=200' },
-    { id: 5, nombre: 'Espejo de pie', precio: 250, },
-    { id: 6, nombre: 'Espejo irregular negro', precio: 700, },
-    { id: 7, nombre: 'Espejo irregular rosado', precio: 120, },
-    { id: 8, nombre: 'Espejo con marco de madera', precio: 400, },
-    { id: 9, nombre: 'Espejo moderno para recibidor', precio: 350, },
-    { id: 10, nombre: 'Espejo redondo dorado', precio: 90, },
-    { id: 11, nombre: 'Espejo redondo con luz led', precio: 50, },
-    { id: 12, nombre: 'Espejo redondo sencillo', precio: 200, },
-    { id: 13, nombre: 'Lámpara Biconica', precio: 500, },
-    { id: 14, nombre: 'Lámpara Blanca', precio: 300, },
-  ], []);
-
-  const [randomProducts, setRandomProducts] = useState(initialRandomProducts.slice(0, 4)); 
-
-
- // Función para actualizar los productos aleatorios cada 5 segundos
-useEffect(() => {
-  const updateProducts = () => {
-    const shuffledProducts = [...initialRandomProducts].sort(() => Math.random() - 0.5);
-    setRandomProducts(shuffledProducts.slice(0, 4)); // Aseguramos que solo se muestren 4 productos
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
 
-  const productTimer = setInterval(updateProducts, 5000);
-  return () => clearInterval(productTimer);
-}, [initialRandomProducts]); // Ahora 'initialRandomProducts' es una dependencia
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
 
+  const nextCategory = () => {
+    setCurrentCategory((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
+  };
 
+  const prevCategory = () => {
+    setCurrentCategory((prev) => (prev === 0 ? categories.length - 1 : prev - 1));
+  };
+  const shuffleArray = (array) => {
+    // Algoritmo de Fisher-Yates para mezclar el array
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));  // Obtiene un índice aleatorio
+      [array[i], array[j]] = [array[j], array[i]];  // Intercambia los elementos
+    }
+    return array;
+  };
 
+  const fetchRandomProducts = async () => {
+    const token = Cookies.get('token');  // Obtener el token de las cookies
 
-useEffect(() => {
-  // Al cambiar la ruta, restauramos la visibilidad a true
-  if (location.pathname !== "/nosotros" && !categories.some(category => location.pathname === category.to)) {
-    setIsVisible(true);
-  } 
-}, [location.pathname]); // Dependemos de la ruta para restaurar la visibilidad
+    if (!token) {
+      console.error('No estás autenticado');
+      return;
+    }
 
-  // Función para ocultar la interfaz cuando se hace clic en el enlace
+    try {
+      const response = await axios.get('http://localhost:8000/api/user-profile/products', {
+        headers: {
+          Authorization: `Bearer ${token}`,  // Incluir el token en los headers
+        },
+      });
+
+      const shuffledProducts = shuffleArray(response.data.products);
+      setRandomProducts(shuffledProducts.slice(0, 4));  // Tomar los primeros 4 productos de la lista mezclada
+      setLoading(false);  // Desactivar el loading
+    } catch (error) {
+      console.error('Hubo un error al obtener los productos:', error);
+    }
+  };
+  const fetchCategories = async () => {
+    const token = Cookies.get('token');  // Obtener el token de las cookies
+
+    if (!token) {
+      console.error('No estás autenticado');
+      return;
+    }
+
+    try {
+      const response = await axios.get('http://localhost:8000/api/user-profile/categories', {
+        headers: {
+          Authorization: `Bearer ${token}`,  // Incluir el token en los headers
+        },
+      });
+
+      setCategories(response.data.categories);  // Guardar las categorías en el estado
+    } catch (error) {
+      console.error('Hubo un error al obtener las categorías:', error);
+    }
+  };
+  useEffect(() => {
+    fetchRandomProducts();  // Cargar productos al montar el componente
+    fetchCategories();  // Cargar categorías al montar el componente
+
+    const productTimer = setInterval(() => {
+      fetchRandomProducts();  // Refrescar productos cada 5 segundos
+    }, 10000);
+
+    return () => clearInterval(productTimer); // Limpiar el intervalo al desmontar el componente
+  }, []);  // Se ejecuta solo una vez cuando el componente se monta.
+
+  useEffect(() => {
+    if (
+      location.pathname !== '/nosotros' &&
+      !slides.some((slide) => location.pathname.includes(slide.title))
+    ) {
+      setIsVisible(true);
+    }
+  }, [location.pathname]);
+
   const handleLinkClick = () => {
-    setIsVisible(false); // Ocultar la interfaz (productos y banner)
+    setIsVisible(false);
   };
 
   return (
@@ -209,7 +225,9 @@ useEffect(() => {
                         >
                         <div className="relative aspect-square w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100 p-4 transition-all duration-300 group-hover:shadow-lg">
                         <img
-                        src={category.img}
+                        src={category.image_url
+                          
+                        }
                         alt=""
                         className="h-full w-full object-contain transition-all duration-300 group-hover:scale-110"
                          />
@@ -251,11 +269,11 @@ useEffect(() => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {randomProducts.map((producto) => (
               <div key={producto.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src={producto.img} alt={producto.nombre} className="w-full h-48 object-cover" />
+                <img src={producto.image_url} alt={producto.name} className="w-full h-48 object-cover" />
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">{producto.nombre}</h3>
+                  <h3 className="text-lg font-semibold text-gray-800">{producto.name}</h3>
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="text-xl font-bold text-gray-800">${producto.precio.toFixed(2)}</span>
+                    <span className="text-xl font-bold text-gray-800">${producto.price}</span>
                     <button
                       onClick={() => dispatch({ type: 'ADD_TO_CART', payload: { ...producto, quantity: 1 } })}
                       className="p-2 rounded-full bg-primario text-white hover:bg-acento transition-colors"

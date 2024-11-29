@@ -181,7 +181,7 @@ function ClienteRoutes() {
       <Route path="/perfil" element={<MiPerfil />} />
       <Route path="/carrito" element={<Cart />} />
       <Route path="/carrito-checkout" element={<CartPay />} />
-      <Route path="/factura" element={<Factura />} />
+      <Route path="/factura/:invoiceId" element={<Factura />} />
     </Routes>
   );
 }
