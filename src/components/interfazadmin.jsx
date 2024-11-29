@@ -288,21 +288,7 @@ function InterfazAdmin() {
                     Lista de Productos
                 </button>
 
-                {/* Filtro de subcategorías */}
-                <div className="mb-4">
-                    <label htmlFor="categorySelect" className="mr-2 font-semibold">Filtrar por Categoría:</label>
-                    <select
-                        id="categorySelect"
-                        onChange={handleCategoryFilterChange}
-                        className="p-2 rounded-md border border-gray-300"
-                    >
-                        <option value="">Todas</option>
-                        {categories.map(category => (
-                            <option key={category.id} value={category.id}>{category.name}</option>
-                        ))}
-                    </select>
-                </div>
-
+             
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {filteredSubcategories.map(subcategory => (
                         <div key={subcategory.id} className="bg-white p-4 rounded-lg shadow-md text-center">
