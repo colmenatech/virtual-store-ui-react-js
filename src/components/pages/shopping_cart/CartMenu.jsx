@@ -1,31 +1,51 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
-import { AuthContext } from '../../AuthContext'; // Importa AuthContext
+import { AuthContext } from '../../AuthContext';
 
 const CartMenu = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { cart, dispatch } = useCart();
-  const { user } = useContext(AuthContext); // Obtén el usuario del contexto de autenticación
-  const navigate = useNavigate(); // Para redirigir si no hay autenticación
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const cartMenuRef = useRef(null); // Referencia para el contenedor del carrito
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  // Maneja el clic en el icono del carrito
   const handleCartClick = () => {
     if (!user) {
       alert("Debes iniciar sesión para acceder al carrito.");
-      navigate("/Login"); // Redirige al usuario a la página de inicio de sesión si no está autenticado
+      navigate("/Login");
     } else {
-      setIsCartOpen(!isCartOpen); // Cambia el estado solo si está autenticado
+      setIsCartOpen(!isCartOpen);
     }
   };
 
+  // Detectar clic fuera del menú del carrito
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cartMenuRef.current && !cartMenuRef.current.contains(event.target)) {
+        setIsCartOpen(false); // Cierra el carrito si se hace clic fuera de él
+      }
+    };
+
+    if (isCartOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isCartOpen]);
+
   return (
-    <div className="relative">
-      {/* Icono del carrito y número de artículos */}
+    <div className="relative" ref={cartMenuRef}>
+      {/* Icono del carrito */}
       <button className="p-2 relative" onClick={handleCartClick}>
         <ShoppingCart className="text-texto_color" size={24} />
         {totalItems > 0 && (
@@ -58,8 +78,6 @@ const CartMenu = () => {
                     </li>
                   ))}
                 </ul>
-
-                {/* Totales */}
                 <div className="mt-4 text-right text-texto_color">
                   <div className="flex justify-between mb-2">
                     <span>Transporte</span>
@@ -70,8 +88,6 @@ const CartMenu = () => {
                     <span>₡{totalPrice + 2500}</span>
                   </div>
                 </div>
-
-                {/* Botón de confirmar */}
                 <Link to="/carrito-checkout" className="block mt-4 text-center py-2 bg-primario text-white font-semibold rounded">
                   CONFIRMAR
                 </Link>
