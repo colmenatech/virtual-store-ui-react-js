@@ -2,45 +2,49 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-
+// Componente funcional para manejar el formulario de producto
 const FormularioProducto = () => {
-        const [producto, setProducto] = useState({
-            nombre: '',
-            descripcion: '',
-            precio: '',
-            stock: '',
-            subcategoria: '',  // Solo subcategoría aquí
-            estado: '',
-            imagen: '',
-        });
-    
-        // Subcategorías con sus IDs
-        const subcategorias = {
-            'Relojes': 17,
-            'Lámparas': 18,
-            'Espejos': 19,
-            'Sofás': 14,
-            'Muebles para TV': 15,
-            'Mesas de centro': 16,
-            'Mesas de exterior': 12,
-            'Sillas de exterior': 11,
-            'Toldos': 13,
-            'Escritorios': 8,
-            'Libreros': 9,
-            'Sillas de estudio': 10,
-            'Juegos de comedor': 5,
-            'Mesas': 6,
-            'Sillas': 7,
-            'Camas': 2,
-            'Cómodas con espejo': 3,
-            'Mesas de noche': 4,
-        };
-    
+    // Estado local para almacenar los datos del producto
+    const [producto, setProducto] = useState({
+        nombre: '',          // Nombre del producto
+        descripcion: '',     // Descripción del producto
+        precio: '',          // Precio del producto
+        stock: '',           // Cantidad disponible en stock
+        subcategoria: '',    // Subcategoría seleccionada (ID)
+        estado: '',          // Estado del producto (activo/inactivo)
+        imagen: '',          // URL o referencia a la imagen del producto
+    });
 
-    const estados = ['activo', 'inactivo'];
+    // Objeto que contiene las subcategorías con sus respectivos IDs
+    const subcategorias = {
+        'Relojes': 17,
+        'Lámparas': 18,
+        'Espejos': 19,
+        'Sofás': 14,
+        'Muebles para TV': 15,
+        'Mesas de centro': 16,
+        'Mesas de exterior': 12,
+        'Sillas de exterior': 11,
+        'Toldos': 13,
+        'Escritorios': 8,
+        'Libreros': 9,
+        'Sillas de estudio': 10,
+        'Juegos de comedor': 5,
+        'Mesas': 6,
+        'Sillas': 7,
+        'Camas': 2,
+        'Cómodas con espejo': 3,
+        'Mesas de noche': 4,
+    };
+
+    // Array de estados posibles para el producto
+    const estados = ['activo', 'inactivo']; // Estados válidos del producto
+
+    // Hook para manejar la navegación entre rutas
     const navigate = useNavigate();
 
-    const handleLogout = () => navigate('/productoslist');
+    // Función para manejar la salida o navegación a la lista de productos
+    const handleLogout = () => navigate('/productoslist'); // Redirige a la lista de productos
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,32 +76,38 @@ const FormularioProducto = () => {
         formData.append("status", producto.estado);  // Cambiar 'estado' a 'status'
         formData.append("image_url", producto.imagen);  // Enviar la URL de la imagen
     
-            if (!token) {
-              setError('No estás autenticado');
-              return;
-            }
-        
-            try {
-                const response = await axios.post(
-                    'http://localhost:8000/api/user-profile/products', 
-                    formData,  // Usar formData aquí
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Agregar el token en los encabezados de la solicitud
-                        },
-                    }
-                );
-        
-              if (response.status === 201) {
-                // Lógica después de crear el producto con éxito
-                console.log('Producto creado correctamente');
-                navigate('/products'); // Redirigir a la lista de productos o cualquier otra página
-              }
-            } catch (error) {
-              setError('Hubo un error al crear el producto');
-              console.error('Error en la creación del producto:', error);
-            }
-          };
+           // Verifica si el token de autenticación existe
+if (!token) {
+    setError('No estás autenticado'); // Establece un mensaje de error si no hay token
+    return; // Detiene la ejecución si el usuario no está autenticado
+}
+
+try {
+    // Realiza una solicitud POST para crear un producto
+    const response = await axios.post(
+        'http://localhost:8000/api/user-profile/products', // Endpoint para crear el producto
+        formData, // Datos del producto encapsulados en un objeto FormData
+        {
+            headers: {
+                Authorization: `Bearer ${token}`, // Incluye el token de autenticación
+                // Nota: No es necesario especificar el `Content-Type` con `FormData`,
+                // Axios lo configura automáticamente.
+            },
+        }
+    );
+
+    // Si el producto se crea correctamente (status 201)
+    if (response.status === 201) {
+        console.log('Producto creado correctamente'); // Mensaje de éxito en la consola
+        navigate('/products'); // Redirige al usuario a la lista de productos o una página relacionada
+    }
+} catch (error) {
+    // Manejo de errores
+    setError('Hubo un error al crear el producto'); // Establece un mensaje de error para el usuario
+    console.error('Error en la creación del producto:', error); // Muestra detalles del error en la consola
+}
+
+        };
         
 
     return (

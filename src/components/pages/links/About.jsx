@@ -68,18 +68,18 @@ const SobreNosotros = () => {
       <h5 style={{ marginBottom: '10px' }}>Front-end</h5> {/* Añadir margen al subtítulo */}
       <li>Valery</li>
       <li>Allison</li>
-      <li>Johayling</li>
+      <li>Johayling Meléndez Corea</li>
       <li>Konny</li>
-      <li>Esteban</li>
+      <li>Esteban Noguera Jiménez</li>
     </ul>
 
     {/* Back-end Team */}
     <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
       <h5 style={{ marginBottom: '10px' }}>Back-end</h5> {/* Añadir margen al subtítulo */}
-      <li>Veronica</li>
-      <li>Lucia</li>
-      <li>Bianca</li>
-      <li>Danna</li>
+      <li>Verónica Loaiza Martínez</li>
+      <li>Lucía Garay García</li>
+      <li>Bianca Oviedo Arroyo</li>
+      <li>Danna Quirós Sánchez</li>
     </ul>
   </div>
 </section>

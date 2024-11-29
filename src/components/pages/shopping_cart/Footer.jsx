@@ -1,7 +1,6 @@
 import React from 'react';
 import './Footer.css';
 
- 
 const Footer = () => {
     return (
       <footer className="footer" style={{ fontSize: '16px', padding: '50px', backgroundColor: '#eeebeb' }}>

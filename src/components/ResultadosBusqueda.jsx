@@ -1,8 +1,8 @@
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';  // Se importan hooks y componentes necesarios
 
 export default function ResultadosBusqueda() {
-  const location = useLocation();
-  const results = location.state?.results || [];
+  const location = useLocation();  // Obtiene la ubicación actual
+  const results = location.state?.results || [];  // Accede a los resultados pasados como estado, si existen
 
   return (
     <div className="container mx-auto px-4 py-8 bg-white shadow-md rounded-md">

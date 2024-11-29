@@ -7,200 +7,272 @@ import Cookies from "js-cookie";  // For handling cookies
 const SHIPPING_COST = 2500;
 
 const OrderSummary = () => {
+  // Hook para navegar a diferentes rutas en la aplicación.
   const navigate = useNavigate();
+  // Hook personalizado para obtener el carrito de compras y su función de despacho
+  //para manejar acciones relacionadas con el carrito.
   const { cart, dispatch } = useCart();
+   // Estado para almacenar el método de pago seleccionado por el usuario.
   const [paymentMethod, setPaymentMethod] = useState('creditCard');
+   // Estado para guardar el cupón ingresado por el usuario.
   const [coupon, setCoupon] = useState('');
+  // Estado para almacenar el descuento aplicado basado en el cupón u otras condiciones.
   const [discount, setDiscount] = useState(0);
+   // Estado para almacenar las tarjetas guardadas del usuario.
   const [savedCards, setSavedCards] = useState([]);
+   // Estado booleano para mostrar u ocultar el formulario de una nueva tarjeta.
   const [showCardForm, setShowCardForm] = useState(null);
-  const [useSavedCard, setUseSavedCard] = useState(null); // Usamos null para indicar que no hay tarjeta seleccionada aún
+   // Estado booleano para determinar si el usuario quiere usar una tarjeta guardada.
+  const [useSavedCard, setUseSavedCard] = useState(null);
+  // Estado para almacenar los datos de una nueva tarjeta ingresada por el usuario.
   const [newCard, setNewCard] = useState({
-    number: "",
-    expiryDate: "",
-    cvv: "",
-    name: "",
-    type: "creditCard",
+    number: "", // Número de la tarjeta.
+    expiryDate: "", // Fecha de expiración de la tarjeta.
+    cvv: "", // Código de seguridad de la tarjeta.
+    name: "", // Nombre del titular de la tarjeta.
+    type: "creditCard", // Tipo de tarjeta, por defecto es 'creditCard'.
   });
 
-  // Apply coupon logic
+
   const applyCoupon = () => {
+     // Si el cupón es válido, establece un descuento del 30% (0.3 en decimal).
     if (coupon === 'DESCUENTO30') {
       setDiscount(0.3);
+      // Si el cupón no es válido, se asegura de que el descuento sea 0.
     } else {
+      // Muestra un mensaje de alerta al usuario indicando que el cupón es inválido.
       setDiscount(0);
       alert('Cupón inválido');
     }
   };
 
-  // Cart update functions
-  const increaseQuantity = (id) => {
-    dispatch({ type: 'ADD_TO_CART', payload: { id } });
-  };
+// Incrementa la cantidad de un producto en el carrito.
+// Incrementa la cantidad de un producto en el carrito.
+const increaseQuantity = (id) => { 
+  // Envía una acción al contexto o estado global para añadir una unidad del producto especificado por su 'id'.
+  dispatch({ type: 'ADD_TO_CART', payload: { id } }); 
+};
 
-  const decreaseQuantity = (id) => {
-    dispatch({ type: 'DECREASE_QUANTITY', payload: { id } });
-  };
+// Decrementa la cantidad de un producto en el carrito.
+const decreaseQuantity = (id) => {
+  // Envía una acción al contexto o estado global para disminuir una unidad del producto especificado por su 'id'.
+  dispatch({ type: 'DECREASE_QUANTITY', payload: { id } }); 
+};
 
-  const removeFromCart = (id) => {
-    dispatch({ type: 'REMOVE_FROM_CART', payload: { id } });
-  };
+// Elimina un producto del carrito.
+const removeFromCart = (id) => {
+  // Envía una acción al contexto o estado global para quitar completamente el producto especificado por su 'id' del carrito.
+  dispatch({ type: 'REMOVE_FROM_CART', payload: { id } }); 
+};
 
-  // Subtotal and total calculations
-  const subtotal = cart.reduce((total, item) => {
-    const validPrice = !isNaN(parseFloat(item.price)) ? parseFloat(item.price) : 0;
-    return total + validPrice * (item.quantity || 1);
-  }, 0);
+  
+ // Calcula el subtotal del carrito sumando el precio de cada producto multiplicado por su cantidad.
+const subtotal = cart.reduce((total, item) => { 
+  // Verifica si el precio del producto es un número válido. Si no lo es, asigna 0 como precio.
+  const validPrice = !isNaN(parseFloat(item.price)) ? parseFloat(item.price) : 0; 
+  // Suma al total el precio válido multiplicado por la cantidad del producto. Si no hay cantidad definida, se asume 1.
+  return total + validPrice * (item.quantity || 1); 
+}, 0); // Inicializa el acumulador del subtotal en 0.
 
-  const discountAmount = subtotal * discount;
-  const total = subtotal - discountAmount + SHIPPING_COST;
+// Calcula el monto del descuento basado en el subtotal y el descuento actual.
+const discountAmount = subtotal * discount; 
 
-  useEffect(() => {
-    const fetchSavedCards = async () => {
-      const token = Cookies.get('token'); // Obtén el token
+// Calcula el total sumando el subtotal, restando el monto del descuento y añadiendo el costo de envío.
+const total = subtotal - discountAmount + SHIPPING_COST; 
+
+
+useEffect(() => { 
+  // Función asíncrona para obtener las tarjetas guardadas del usuario desde una API.
+  const fetchSavedCards = async () => {
+      const token = Cookies.get('token'); // Obtiene el token de autenticación almacenado en las cookies.
       if (!token) {
-        // No mostrar nada o manejarlo sin alertas
-        return;
+          // Si no hay token, no se realiza la solicitud y se detiene la ejecución.
+          // Maneja esta situación silenciosamente sin alertas al usuario.
+          return; 
       }
       try {
-        const response = await axios.get("http://localhost:8000/api/user-profile/cards", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (response.data && Array.isArray(response.data)) {
-          setSavedCards(response.data);
-        } else {
-          setSavedCards([]);
-        }
+          // Realiza una solicitud GET a la API para obtener las tarjetas guardadas del usuario.
+          const response = await axios.get("http://localhost:8000/api/user-profile/cards", {
+              headers: { Authorization: `Bearer ${token}` }, // Incluye el token en los encabezados para autenticación.
+          });
+          
+          // Si la respuesta contiene datos válidos (y es un array), establece esas tarjetas en el estado.
+          if (response.data && Array.isArray(response.data)) {
+              setSavedCards(response.data); 
+          } else {
+              // Si no hay datos o la estructura no es la esperada, establece el estado como un array vacío.
+              setSavedCards([]); 
+          }
       } catch (error) {
-        // Evitar mostrar errores si la solicitud falla
-        console.error("Error al obtener las tarjetas:", error.message);
+          // En caso de error en la solicitud, lo registra en la consola, pero no interrumpe la experiencia del usuario.
+          console.error("Error al obtener las tarjetas:", error.message); 
       }
-    };
-  
-    fetchSavedCards();
-  }, []);
-; // Solo se ejecuta una vez cuando el componente se monta
-
-  const handlePurchaseClick = () => {
-
-      console.log("Botón de 'Añadir Tarjeta' clickeado");
-     
-    
-    // Siempre mostrar el formulario de agregar tarjeta sin importar si hay tarjetas guardadas o no.
-    setShowCardForm(true);
-    console.log("Estado showCardForm después de hacer clic:", showCardForm);  // Verifica el valor de showCardForm
-
-  };
-  
-  
-  // Función para manejar la selección de tarjeta guardada
-  const handleSavedCardSelect = (cardId) => {
-    const selectedCard = savedCards.find(card => card.id === cardId);
-    setUseSavedCard(selectedCard);
   };
 
-  // Función para manejar los cambios en el formulario de nueva tarjeta
-  const handleNewCardChange = (e) => {
-    const { name, value } = e.target;
-    setNewCard(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
+  // Llama a la función fetchSavedCards cuando el componente se monta.
+  fetchSavedCards();
+}, []); // El array vacío indica que este efecto solo se ejecutará una vez al montar el componente.
 
 
-  // Handle new card submission
-  const handleNewCardSubmit = async () => {
-    const token = Cookies.get('token');  // Obtiene el token de las cookies
-    if (!token) {
-      alert("You must be logged in to add a card");
-      return;
-    }
-    console.log('Datos enviados:', newCard);
+ // Maneja el clic en el botón para añadir una nueva tarjeta
+const handlePurchaseClick = () => { 
+  // Muestra un mensaje en la consola indicando que el botón fue clickeado.
+  console.log("Botón de 'Añadir Tarjeta' clickeado");
 
-    try {
+  // Cambia el estado `showCardForm` a `true` para mostrar el formulario de agregar una nueva tarjeta,
+  // sin importar si ya hay tarjetas guardadas.
+  setShowCardForm(true);
+
+  // Registra en la consola el valor actual de `showCardForm` después de modificarlo.
+  console.log("Estado showCardForm después de hacer clic:", showCardForm);
+};
+
+// Maneja la selección de una tarjeta guardada por su `cardId`.
+const handleSavedCardSelect = (cardId) => {
+  // Busca la tarjeta seleccionada en la lista de tarjetas guardadas utilizando su ID.
+  const selectedCard = savedCards.find(card => card.id === cardId);
+
+  // Establece la tarjeta seleccionada en el estado `useSavedCard`.
+  setUseSavedCard(selectedCard);
+};
+
+// Maneja los cambios en el formulario para agregar una nueva tarjeta.
+const handleNewCardChange = (e) => {
+  // Extrae el nombre del campo (`name`) y su valor (`value`) del evento del formulario.
+  const { name, value } = e.target;
+
+  // Actualiza el estado `newCard` con el nuevo valor del campo correspondiente.
+  setNewCard(prevState => ({
+      ...prevState, // Copia el estado actual para no sobrescribir otros campos.
+      [name]: value // Actualiza solo el campo que cambió.
+  }));
+};
+
+const handleNewCardSubmit = async () => { 
+  // Obtiene el token de autenticación almacenado en las cookies.
+  const token = Cookies.get('token');  
+  if (!token) {
+      // Si no hay token, muestra una alerta indicando que el usuario debe iniciar sesión.
+      alert("Iniciar sesión para crear una cuenta");
+      return; // Termina la ejecución de la función.
+  }
+
+  // Muestra en la consola los datos de la nueva tarjeta que se enviarán.
+  console.log('Datos enviados:', newCard);
+
+  try {
+      // Realiza una solicitud POST a la API para agregar una nueva tarjeta.
       const response = await axios.post(
-        "http://localhost:8000/api/user-profile/cards", 
-        newCard, 
-        { headers: { Authorization: `Bearer ${token}` } } // Adjunta el token a la solicitud
+          "http://localhost:8000/api/user-profile/cards", 
+          newCard, // Los datos de la nueva tarjeta que se enviarán en el cuerpo de la solicitud.
+          { headers: { Authorization: `Bearer ${token}` } } // Adjunta el token en los encabezados para autenticación.
       );
-      alert("Tarjeta agregada exitosamente");
-      setShowCardForm(false);
-      setUseSavedCard(null); // Reseteamos la tarjeta seleccionada
-    } catch (error) {
-      // Manejo extendido de errores
-      if (error.response && error.response.data) {
-        console.error('Errores del servidor:', error.response.data.errors);
-        alert(`Errores de validación: ${JSON.stringify(error.response.data.errors)}`);
-      } else {
-        console.error('Error desconocido:', error.message);
-        alert("Error al agregar la tarjeta");
-      }
-    }
-  };
 
-  const processPayment = async () => {
-    const token = Cookies.get('token');
-    if (!token) {
+      // Si la solicitud es exitosa, muestra una alerta de confirmación al usuario.
+      alert("Tarjeta agregada exitosamente");
+
+      // Oculta el formulario de agregar tarjeta.
+      setShowCardForm(false);
+
+      // Resetea la tarjeta seleccionada para asegurarse de que no quede ninguna tarjeta preseleccionada.
+      setUseSavedCard(null); 
+  } catch (error) {
+      // Manejo extendido de errores en caso de que la solicitud falle.
+      if (error.response && error.response.data) {
+          // Si el error tiene una respuesta del servidor, muestra los detalles de los errores de validación.
+          console.error('Errores del servidor:', error.response.data.errors);
+          alert(`Errores de validación: ${JSON.stringify(error.response.data.errors)}`);
+      } else {
+          // Si no hay una respuesta clara del servidor, muestra un mensaje genérico de error.
+          console.error('Error desconocido:', error.message);
+          alert("Error al agregar la tarjeta");
+      }
+  }
+};
+
+
+const processPayment = async () => {
+  // Obtiene el token de autenticación almacenado en las cookies.
+  const token = Cookies.get('token'); 
+  if (!token) {
+      // Si no hay token, muestra un mensaje y detiene la ejecución.
       alert("Debes iniciar sesión para procesar el pago");
-      return;
-    }
+      return; 
+  }
   
-    // Verificar que useSavedCard contenga una tarjeta seleccionada
+    // Determina el `user_id` dependiendo de si se usa una tarjeta guardada o una nueva.
     const userId = useSavedCard ? useSavedCard.user_id : newCard.user_id;
     if (!userId) {
-      alert("No se pudo obtener el user_id");
-      return;
+        // Si no se puede obtener el `user_id`, muestra un mensaje de error y detiene la ejecución.
+        alert("No se pudo obtener el user_id");
+        return;
     }
   
-    // Preparar los datos para el pago
-    const paymentData = {
-      user_id: userId,
-      products: cart.map(item => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      ...(useSavedCard ? { cardId: useSavedCard.id } : { ...newCard })
+
+   // Prepara los datos de pago para enviarlos a la API.
+  const paymentData = {
+    user_id: userId, // ID del usuario que realiza el pago.
+    products: cart.map(item => ({
+        product_id: item.id,        // ID del producto.
+        quantity: item.quantity,   // Cantidad del producto.
+        price: item.price          // Precio del producto.
+    })),
+    // Si se usa una tarjeta guardada, agrega su ID; de lo contrario, incluye los datos de la nueva tarjeta.
+    ...(useSavedCard ? { cardId: useSavedCard.id } : { ...newCard })
     };
   
     try {
+      // Realiza una solicitud POST a la API para procesar el pago.
       const response = await axios.post(
-        "http://localhost:8000/api/user-profile/checkout",
-        paymentData,
-        { headers: { Authorization: `Bearer ${token}` } }
+          "http://localhost:8000/api/user-profile/checkout", // Endpoint de la API para el proceso de checkout.
+          paymentData, // Datos de pago construidos previamente.
+          { headers: { Authorization: `Bearer ${token}` } } // Incluye el token en los encabezados para autenticar la solicitud.
       );
     
-      console.log('Respuesta completa de la API:', response.data);  // Ver respuesta completa de la API
+      // Muestra en la consola la respuesta completa de la API para propósitos de depuración.
+    console.log('Respuesta completa de la API:', response.data);
+
+    // Verifica si la respuesta de la API contiene el mensaje esperado indicando éxito.
+    if (response.data && response.data.message === "Compra finalizada y factura generada.") {
+        // Obtiene el ID de la factura generado por la API.
+        const invoiceId = response.data.invoice.id;
     
-      if (response.data && response.data.message === "Compra finalizada y factura generada.") {
-        const invoiceId = response.data.invoice.id;  // Accediendo correctamente al ID de la factura
-    
-        console.log('ID de la factura:', invoiceId);  // Verifica si el ID de la factura es correcto
-    
-        if (invoiceId) {
+       // Muestra en la consola el ID de la factura para depuración.
+      console.log('ID de la factura:', invoiceId);
+
+      if (invoiceId) {
+           // Si hay un ID de factura, informa al usuario que el pago fue exitoso.
           alert("Pago procesado exitosamente");
-          navigate(`/factura/${invoiceId}`);  // Redirigir usando el ID de la factura
-        } else {
-          alert("Error: No se pudo obtener el ID de la factura.");
-        }
+
+           // Redirige al usuario a la página de la factura utilizando su ID.
+          navigate(`/factura/${invoiceId}`);
       } else {
-        alert("Error al procesar la compra");
-        console.error('Respuesta del servidor:', response.data);  // Imprimir toda la respuesta para depuración
+           // Si no se obtiene un ID de factura, informa al usuario del error.
+          alert("Error: No se pudo obtener el ID de la factura.");
       }
+  } else {
+       // Si la respuesta de la API no contiene el mensaje esperado, muestra un error genérico.
+      alert("Error al procesar la compra");
+       console.error('Respuesta del servidor:', response.data); // Registra la respuesta completa para analizar el error.
+  }
+
     } catch (error) {
-      console.error("Error al procesar el pago:", error);
-      if (error.response) {
+    // Manejo de errores en caso de que la solicitud a la API falle.
+    console.error("Error al procesar el pago:", error);
+
+    if (error.response) {
+        // Si el error incluye una respuesta del servidor, muestra detalles adicionales.
         console.error('Detalles del error:', error.response.data);
-      }
-      alert("Error al procesar el pago. Inténtalo de nuevo.");
     }
+
+    // Notifica al usuario que ocurrió un error durante el procesamiento del pago.
+    alert("Error al procesar el pago. Inténtalo de nuevo.");
+  }
     
 };    
   
   return (
     <div className="container mx-auto p-2 font-serif">
-     
       {/* mensaje de descuento */}
       <div className="flex flex-col items-center bg-[#5d0909] text-white text-center py-5">
         <p className="text-lg md:text-xm font-semibold">
@@ -279,7 +351,7 @@ const OrderSummary = () => {
         </div>
 
        {/* Selección de método de pago */}
-       <label className="flex items-center text-gray-700">
+      <label className="flex items-center text-gray-700">
       <input
         type="radio"
         name="paymentMethod"
@@ -339,7 +411,7 @@ const OrderSummary = () => {
       />
       Visa
     </label>
- 
+
 {/* Botón de compra */}
 <div className="mt-6 text-left">
   <button
@@ -352,22 +424,22 @@ const OrderSummary = () => {
 
 {/* Mostrar formulario para agregar una nueva tarjeta, siempre que showCardForm sea true */}
 {showCardForm && (
-   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-   <div className="bg-white p-6 rounded-lg max-w-md w-full">
-     <h3 className="text-lg font-bold">Agregar nueva tarjeta</h3>
-     <div className="mb-4">
-       <label className="block text-gray-700">Número de tarjeta</label>
-       <input
-         type="text"
-         name="number"
-         value={newCard.number}
-         onChange={handleNewCardChange}
-         className="w-full p-2 border rounded-lg"
-       />
-     </div>
-     <div className="mb-4">
-       <label className="block text-gray-700">Fecha de expiración (MM/AA)</label>
-       <input
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div className="bg-white p-6 rounded-lg max-w-md w-full">
+    <h3 className="text-lg font-bold">Agregar nueva tarjeta</h3>
+    <div className="mb-4">
+      <label className="block text-gray-700">Número de tarjeta</label>
+      <input
+        type="text"
+        name="number"
+        value={newCard.number}
+        onChange={handleNewCardChange}
+        className="w-full p-2 border rounded-lg"
+      />
+    </div>
+    <div className="mb-4">
+      <label className="block text-gray-700">Fecha de expiración (MM/AA)</label>
+      <input
          type="text"
          name="expiryDate"
          value={newCard.expiryDate}
