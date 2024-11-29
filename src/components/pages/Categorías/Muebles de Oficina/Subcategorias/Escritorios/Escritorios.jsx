@@ -35,7 +35,7 @@ const EscritorioProducto= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/8', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/8', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

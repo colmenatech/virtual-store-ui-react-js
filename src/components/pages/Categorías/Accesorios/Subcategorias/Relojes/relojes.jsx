@@ -35,7 +35,7 @@ const Relojes = () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/17', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/17', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

@@ -35,7 +35,7 @@ const SillasExteriorProducto= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/11', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/11', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

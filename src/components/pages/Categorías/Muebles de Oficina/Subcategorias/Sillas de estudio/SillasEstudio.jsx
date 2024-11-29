@@ -35,7 +35,7 @@ const SillasProducto= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/10', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/10', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

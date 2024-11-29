@@ -35,7 +35,7 @@ const MesasExteriorProducto= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/12', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/12', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

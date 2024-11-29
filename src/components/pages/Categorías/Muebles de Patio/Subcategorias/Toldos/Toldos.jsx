@@ -35,7 +35,7 @@ const ToldosProducto= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/13', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/13', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

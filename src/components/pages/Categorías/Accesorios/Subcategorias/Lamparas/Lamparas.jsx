@@ -35,7 +35,7 @@ const LamparasProducto = () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/18', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/18', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

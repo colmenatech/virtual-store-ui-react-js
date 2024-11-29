@@ -35,7 +35,7 @@ const MesasNocheProducto= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/4', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/4', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

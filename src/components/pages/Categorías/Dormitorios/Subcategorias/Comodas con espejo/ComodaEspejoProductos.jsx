@@ -35,7 +35,7 @@ const ComodaEspejoProductos= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/3', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/3', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

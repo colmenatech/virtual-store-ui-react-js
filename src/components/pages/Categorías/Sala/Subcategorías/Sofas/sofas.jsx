@@ -35,7 +35,7 @@ const Sofas= () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/14', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/14', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },

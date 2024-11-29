@@ -36,7 +36,7 @@ const EspejosProducto = () => {
             return;
         }
 
-        axios.get('http://localhost:8000/api/user-profile/products/subcategory/19', {
+        axios.get('http://localhost:8000/api/user-profile/products/subcategoryclient/19', {
             headers: {
                 Authorization: `Bearer ${token}`,  // Incluir el token en los headers
             },
