@@ -127,6 +127,7 @@ const handlePurchaseClick = () => {
   console.log("Estado showCardForm después de hacer clic:", showCardForm);
 };
 
+
 // Maneja la selección de una tarjeta guardada por su `cardId`.
 const handleSavedCardSelect = (cardId) => {
   // Busca la tarjeta seleccionada en la lista de tarjetas guardadas utilizando su ID.
@@ -204,7 +205,7 @@ const processPayment = async () => {
     const userId = useSavedCard ? useSavedCard.user_id : newCard.user_id;
     if (!userId) {
         // Si no se puede obtener el `user_id`, muestra un mensaje de error y detiene la ejecución.
-        alert("No se pudo obtener el user_id");
+        alert("Selecciona o agregue una tarjeta");
         return;
     }
   
@@ -468,12 +469,21 @@ const processPayment = async () => {
          className="w-full p-2 border rounded-lg"
        />
      </div>
+     <center>
      <button
        onClick={handleNewCardSubmit}
        className="bg-[#381008] text-white py-2 px-6 rounded-lg hover:bg-[#DFCCC8] mt-2"
      >
        Guardar tarjeta
      </button>
+     {" "}
+     <button
+            onClick={() => setShowCardForm(false)}
+            className="mt-4 bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-500"
+          >
+            Cerrar
+          </button>
+          </center>
    </div>
  </div>
 )}

@@ -116,13 +116,13 @@ function Factura() {
     doc.text(fechaHora, 10, 170);  // Muestra la fecha y hora en el PDF
 
     // Generar el PDF
-    doc.save('factura.pdf');  // Guarda el archivo PDF con el nombre 'factura.pdf'
+    doc.save('Factura Compra Comfort Haven.pdf');  // Guarda el archivo PDF con el nombre 'Factura Compra Comfort Haven.pdf'
   }
 
   return ( 
     <div id='principal' className="bg-no-repeat bg-right bg-cover h-screen p-4">  
       <div className="max-w-4xl mx-auto p-6 bg-white border-4 border-gray-300 rounded-lg shadow-xl font-sans">  
-        <h1 className="text-center text-3xl font-bold text-black mb-4">Su factura</h1>  
+        <h1 className="text-center text-3xl font-bold text-black mb-4">Su Factura</h1>  
 
         <div className="mb-6">
           <h2 className="text-xl font-semibold">Detalle</h2>
