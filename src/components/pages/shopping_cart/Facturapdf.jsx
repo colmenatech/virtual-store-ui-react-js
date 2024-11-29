@@ -53,7 +53,7 @@ function Factura() {  // Se define el componente funcional Factura
     doc.text(`Hora de compra: ${hora}`, 10, 180);  // Muestra la hora de la compra
 
     // Generar el PDF
-    doc.save('factura.pdf');  // Guarda el archivo PDF con el nombre 'factura.pdf'
+    doc.save('Factura Compra Comfort Haven.pdf');  // Guarda el archivo PDF con el nombre 'Factura Compra Comfort Haven.pdf'
   }
 
   return ( 
