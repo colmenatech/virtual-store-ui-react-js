@@ -88,9 +88,14 @@ const CartMenu = () => {
                     <span>₡{totalPrice + 2500}</span>
                   </div>
                 </div>
-                <Link to="/carrito-checkout" className="block mt-4 text-center py-2 bg-primario text-white font-semibold rounded">
-                  CONFIRMAR
-                </Link>
+                <button
+                onClick={() => {
+                  setIsCartOpen(false); // Cierra el carrito
+                  navigate("/carrito-checkout"); // Redirige al usuario a la página de checkout
+                  }}
+                  className="block mt-4 text-center py-2 bg-primario text-white font-semibold rounded">
+                    CONFIRMAR
+                </button>
               </>
             ) : (
               <p className="text-center text-secundario">El carrito está vacío</p>
