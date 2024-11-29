@@ -4,6 +4,8 @@ import visa from './img/Visa.png'; // Importa la imagen de Visa
 import mastercard from './img/mastercard.png'; // Importa la imagen de Mastercard
 import paypal from './img/paypal.png'; // Importa la imagen de PayPal
 import axios from 'axios';
+import Cookies from 'js-cookie';  // Importar js-cookie para leer las cookies
+
 const ProfileUser = () => { // Define el componente ProfileUser
   // Define varios estados para la gestión de datos de usuario y configuración
   const [editMode, setEditMode] = useState(false); // Modo de edición para el nombre de usuario
@@ -17,11 +19,89 @@ const ProfileUser = () => { // Define el componente ProfileUser
   const [showInput, setShowInput] = useState(false); // Estado para mostrar el formulario de añadir tarjeta
   const [userName, setUserName] = useState('Nombre de Usuario');// Nombre del usuario
   const [profilePic, setProfilePic] = useState('https://via.placeholder.com/100'); // Foto de perfil del usuario
+  const [savedCards, setSavedCards] = useState([]); // Estado para las tarjetas guardadas
+
 
    // Refs para desplazarse a las secciones del perfil
   const paymentRef = useRef(null);
   const notificationsRef = useRef(null);
   const settingsRef = useRef(null);
+
+  const handleDeleteCard = async (index) => {
+    const token = Cookies.get('token');
+    if (!token) {
+      alert("Debes estar autenticado para eliminar una tarjeta.");
+      return;
+    }
+  
+    // Verifica que el índice y la tarjeta sean válidos antes de acceder al id
+    if (!cardList[index]) {
+      alert("Tarjeta no encontrada.");
+      return;
+    }
+  
+    const cardId = cardList[index].id; // Obtener el ID de la tarjeta a eliminar
+    try {
+      await axios.delete(
+        `http://localhost:8000/api/user-profile/cards/${cardId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      const updatedCards = cardList.filter((_, idx) => idx !== index);
+      setCardList(updatedCards);
+      alert("Tarjeta eliminada con éxito.");
+    } catch (error) {
+      console.error('Error al eliminar la tarjeta:', error);
+      alert("Hubo un error al eliminar la tarjeta.");
+    }
+  };
+  
+  const handleEditCard = async (index) => {
+    const token = Cookies.get('token');
+    if (!token) {
+      alert("Debes estar autenticado para editar una tarjeta.");
+      return;
+    }
+  
+    // Verifica que el índice y la tarjeta sean válidos antes de acceder al id
+    if (!cardList[index]) {
+      alert("Tarjeta no encontrada.");
+      return;
+    }
+  
+    let isValid = false;
+    if (cardNumber.length === 16) {
+      isValid = true; // Validación básica
+    }
+  
+    if (isValid) {
+      const cardData = { number: cardNumber, type: cardType.toUpperCase() };
+      try {
+        const response = await axios.put(
+          `http://localhost:8000/api/user-profile/cards/${cardList[index].id}`,
+          cardData,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+  
+        const updatedCards = [...cardList];
+        updatedCards[index] = response.data;
+        setCardList(updatedCards);
+  
+        setCardNumber('');
+        setCardType('');
+        setShowInput(false);
+        setEditingIndex(null);
+  
+        alert("Tarjeta actualizada con éxito.");
+      } catch (error) {
+        console.error('Errores del servidor:', error.response.data.errors);
+        alert(`Errores de validación: ${JSON.stringify(error.response.data.errors)}`);
+      }
+    } else {
+      alert('Número de tarjeta inválido.');
+    }
+  };
+  
 
   const scrollToSection = (ref) => { // Función para desplazarse a una sección específica
     if (ref && ref.current) {
@@ -47,52 +127,71 @@ const ProfileUser = () => { // Define el componente ProfileUser
 
 
 
-const handleAddCard = async () => { // Añadido 'async' para manejar la solicitud asíncrona
-  let isValid = false;
-
-  // Validar el número de tarjeta según el tipo seleccionado
-  if (cardNumber.length === 16) {
-    isValid = true; // Aquí puedes agregar más validaciones según necesites
-  }
-
-  if (isValid) {
-    const cardData = { number: cardNumber, type: cardType.toUpperCase() }; // Crear un objeto con la tarjeta
-
-    try {
-      let response;
-      if (editingIndex !== null) {
-        // Realiza una solicitud PUT para actualizar la tarjeta existente en la base de datos
-        response = await axios.put(`http://localhost:8000/api/cards/${cardList[editingIndex].id}`, cardData, {
-          headers: {
-            Authorization: ` Bearer ${authToken}`, // Asegúrate de que authToken contenga el token JWT de autenticación
-          },
-        });
-        const updatedCards = [...cardList];
-        updatedCards[editingIndex] = response.data; // Actualiza la tarjeta en la lista con los datos del servidor
-        setCardList(updatedCards);
-        setEditingIndex(null);
-      } else {
-        // Realiza una solicitud POST para añadir una nueva tarjeta a la base de datos
-        response = await axios.post(`http://localhost:8000/api/cards`, cardData, {
-          headers: {
-            Authorization: `Bearer ${authToken}`, // Asegúrate de que authToken contenga el token JWT de autenticación
-          },
-        });
-        setCardList([...cardList, response.data]); // Añade la tarjeta a la lista con los datos del servidor
-      }
-
-      // Resetea los campos del formulario
-      setCardNumber('');
-      setCardType('');
-      setShowInput(false);
-    } catch (error) {
-      console.error('Error al guardar la tarjeta:', error); // Manejo de errores
+  const handleAddCard = async () => {
+    // Asegúrate de que el usuario esté autenticado
+    const token = Cookies.get('token');
+    if (!token) {
+      alert("Debes estar autenticado para agregar una tarjeta.");
+      return;
     }
-  } else {
-    alert('Número de tarjeta inválido según el tipo seleccionado.');
-  }
-};
-
+  
+    // Validar el número de tarjeta
+    let isValid = false;
+    if (cardNumber.length === 16) {
+      isValid = true; // Validación básica, puedes agregar más reglas
+    }
+  
+    if (isValid) {
+      const cardData = { number: cardNumber, type: cardType.toUpperCase() };
+  
+      try {
+        // Realizar la solicitud para agregar la tarjeta
+        let response;
+        if (editingIndex !== null) {
+          // Si estamos editando una tarjeta, usamos PUT
+          response = await axios.put(
+            `http://localhost:8000/api/user-profile/cards/${cardList[editingIndex].id}`, 
+            cardData, 
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          
+          // Actualiza la tarjeta en la lista
+          const updatedCards = [...cardList];
+          updatedCards[editingIndex] = response.data;
+          setCardList(updatedCards);
+          setEditingIndex(null);
+        } else {
+          // Si estamos añadiendo una nueva tarjeta, usamos POST
+          response = await axios.post(
+            "http://localhost:8000/api/user-profile/cards", 
+            cardData, 
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          
+          // Añadir la tarjeta a la lista local
+          setCardList([...cardList, response.data]);
+        }
+  
+        // Resetea los campos del formulario
+        setCardNumber('');
+        setCardType('');
+        setShowInput(false);
+        alert("Tarjeta añadida con éxito.");
+      } catch (error) {
+        // Manejo extendido de errores
+        if (error.response && error.response.data) {
+          console.error('Errores del servidor:', error.response.data.errors);
+          alert(`Errores de validación: ${JSON.stringify(error.response.data.errors)}`);
+        } else {
+          console.error('Error desconocido:', error.message);
+          alert("Hubo un error al agregar la tarjeta.");
+        }
+      }
+    } else {
+      alert('Número de tarjeta inválido según el tipo seleccionado.');
+    }
+  };
+  
   const handleProfilePicChange = (e) => { // Función para cambiar la foto de perfil
     const file = e.target.files[0];
     if (file) {
@@ -107,6 +206,34 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
   const handleRemoveProfilePic = () => { // Función para eliminar la foto de perfil
     setProfilePic('https://via.placeholder.com/100');
   };
+
+   // useEffect para cargar las tarjetas guardadas
+   useEffect(() => {
+    const fetchSavedCards = async () => {
+      const token = Cookies.get('token'); // Obtén el token
+      if (!token) {
+        // Si no hay token, no hacemos nada
+        return;
+      }
+      try {
+        const response = await axios.get("http://localhost:8000/api/user-profile/cards", {
+          headers: { Authorization: `Bearer ${token}` }, // Envía el token en las cabeceras
+        });
+        
+        if (response.data && Array.isArray(response.data)) {
+          setSavedCards(response.data); // Establece las tarjetas guardadas
+        } else {
+          setSavedCards([]); // Si no es una lista válida, establece un arreglo vacío
+        }
+      } catch (error) {
+        // No mostrar alerta, solo loguear el error
+        console.error("Error al obtener las tarjetas:", error.message);
+      }
+    };
+  
+    fetchSavedCards(); // Llamada a la función cuando el componente se monta
+  }, []); // El efecto se ejecuta solo una vez cuando el componente se monta
+
 
   // Devuelve la estructura JSX del componente
   return ( 
@@ -195,27 +322,28 @@ const handleAddCard = async () => { // Añadido 'async' para manejar la solicitu
           </button>
         </div>
       )}
-      <ul className="mt-4">
-        {/* Mostrar tarjetas añadidas */}
-        {cardList.length > 0 ? (
-          cardList.map((card, index) => (
-            <li key={index} className="flex justify-between items-center">
-              <span>{card.type}: {card.number}</span>
-              <div className="flex items-center space-x-2">
-                {card.type === 'applepay' && <img src={applepay} alt="Apple Pay" className="w-5 h-5" />}
-                {card.type === 'visa' && <img src={visa} alt="Visa" className="w-5 h-5" />}
-                {card.type === 'paypal' && <img src={paypal} alt="PayPal" className="w-5 h-5" />}
-                {card.type === 'mastercard' && <img src={mastercard} alt="Mastercard" className="w-5 h-5" />}
-                <button className='btn' onClick={() => handleEditCard(index)}>Editar</button>
-                <button className='btn' onClick={() => handleDeleteCard(index)}>Eliminar</button>
-              </div>
-            </li>
-          ))
+
+        <h3>Tarjetas guardadas</h3>
+        {savedCards.length > 0 ? (
+          <ul className="mt-4">
+            {savedCards.map((card, index) => (
+              <li key={index} className="flex justify-between items-center">
+                <span>{card.type}: {card.number}</span>
+                <div className="flex items-center space-x-2">
+                  {card.type === 'applepay' && <img src={applepay} alt="Apple Pay" className="w-5 h-5" />}
+                  {card.type === 'visa' && <img src={visa} alt="Visa" className="w-5 h-5" />}
+                  {card.type === 'paypal' && <img src={paypal} alt="PayPal" className="w-5 h-5" />}
+                  {card.type === 'mastercard' && <img src={mastercard} alt="Mastercard" className="w-5 h-5" />}
+                  <button className='btn' onClick={() => handleEditCard(index)}>Editar</button>
+                  <button className='btn' onClick={() => handleDeleteCard(index)}>Eliminar</button>
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <p>No hay métodos de pago guardados.</p>
+          <p>No tienes métodos de pago guardados.</p>
         )}
-      </ul>
-    </section>
+      </section>
 
     {/* Notificaciones */}
         <section ref={notificationsRef} className="p-5 rounded-lg bg-white shadow-md">

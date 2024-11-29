@@ -17,7 +17,6 @@ const RandomProductsWithBanner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentCategory, setCurrentCategory] = useState(0);
   const [randomProducts, setRandomProducts] = useState([]);
-  const [categories, setCategories] = useState([]);  // Estado para las categorías
   const [loading, setLoading] = useState(true);
 
 
@@ -43,6 +42,16 @@ const RandomProductsWithBanner = () => {
     },
 
   ];
+  const categories = [
+    { name: 'Relojes', to: '/productos/accesorios/relojes', img: require('../../assets/img/reloj.png')},
+    { name: 'Sofás', to: '/productos/salas/sofas', img: require('../../assets/img/sofa.png')},
+    { name: 'Toldos', to: '/productos/muebles-de-patio/toldos', img: require('../../assets/img/toldo.png') },
+    { name: 'Escritorios', to: '/productos/muebles-de-oficina/escritorios', img: require('../../assets/img/escritorio.png') },
+    { name: 'Camas', to: '/productos/dormitorios/camas', img: require('../../assets/img/cama.png') },
+    { name: 'Mesas', to: '/productos/comedores/mesas', img: require('../../assets/img/mesa.png')},
+    { name: 'Sillas', to: '/productos/comedores/sillas', img: require('../../assets/img/silla.png')},
+    { name: 'Lámparas', to: '/productos/accesorios/lamparas', img: require('../../assets/img/lampara.png')},
+  ]
 
   
   const nextSlide = () => {
@@ -91,29 +100,10 @@ const RandomProductsWithBanner = () => {
       console.error('Hubo un error al obtener los productos:', error);
     }
   };
-  const fetchCategories = async () => {
-    const token = Cookies.get('token');  // Obtener el token de las cookies
-
-    if (!token) {
-      console.error('No estás autenticado');
-      return;
-    }
-
-    try {
-      const response = await axios.get('http://localhost:8000/api/user-profile/categories', {
-        headers: {
-          Authorization: `Bearer ${token}`,  // Incluir el token en los headers
-        },
-      });
-
-      setCategories(response.data.categories);  // Guardar las categorías en el estado
-    } catch (error) {
-      console.error('Hubo un error al obtener las categorías:', error);
-    }
-  };
+  
   useEffect(() => {
     fetchRandomProducts();  // Cargar productos al montar el componente
-    fetchCategories();  // Cargar categorías al montar el componente
+    
 
     const productTimer = setInterval(() => {
       fetchRandomProducts();  // Refrescar productos cada 5 segundos
@@ -205,7 +195,7 @@ const RandomProductsWithBanner = () => {
         <div className="container px-4 md:px-6">
           <div className="mb-10 flex items-center justify-center gap-4">
             <div className="h-px flex-1 bg-acento" />
-            <h2 className="text-2xl font-semibold text-primario">Échale vistazo a nuestras categorías</h2>
+            <h2 className="text-2xl font-semibold text-primario">Échale vistazo a nuestras subcategorías</h2>
             <div className="h-px flex-1 bg-acento" />
           </div>
 
@@ -225,9 +215,7 @@ const RandomProductsWithBanner = () => {
                         >
                         <div className="relative aspect-square w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100 p-4 transition-all duration-300 group-hover:shadow-lg">
                         <img
-                        src={category.image_url
-                          
-                        }
+                        src={category.img}
                         alt=""
                         className="h-full w-full object-contain transition-all duration-300 group-hover:scale-110"
                          />

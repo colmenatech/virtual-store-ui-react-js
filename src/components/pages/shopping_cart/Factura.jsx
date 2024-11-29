@@ -8,17 +8,34 @@ import logo from './img/logo.png';  // Importar el logo de la empresa
 function Factura() {
   const { invoiceId } = useParams();  // Obtener el invoiceId desde los parámetros de la URL
   const [factura, setFactura] = useState(null);  // Establecer el estado para almacenar los datos de la factura
+  const [cliente, setCliente] = useState(null);  // Establecer el estado para almacenar los datos del cliente
+  const [fechaHora, setFechaHora] = useState("");  // Estado para almacenar la fecha y hora de la compra
 
   useEffect(() => {
-    // Verificar si hay un token en las cookies
     const token = Cookies.get('token');
     if (!token) {
-      // Si no hay token, redirigir al login (puedes usar react-router para redirigir)
+      // Si no hay token, redirigir al login
       window.location.href = '/login';
       return;
     }
 
-    // Asegurarse de que el invoiceId no sea nulo o vacío antes de hacer la solicitud
+    // Obtener los datos del cliente desde el backend utilizando el token
+    const obtenerCliente = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/user-profile', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCliente(response.data);  // Guardar los datos del cliente
+      } catch (error) {
+        console.error('Error al obtener el cliente', error);
+      }
+    };
+
+    obtenerCliente();
+
+    // Obtener los datos de la factura
     if (invoiceId && invoiceId !== 'null') {
       const obtenerFactura = async () => {
         try {
@@ -36,18 +53,31 @@ function Factura() {
         }
       };
 
-      obtenerFactura();  // Llamar a la función para obtener la factura
+      obtenerFactura();
     } else {
       console.error("El ID de la factura no es válido.");
     }
-  }, [invoiceId]);  // Dependencia en invoiceId
 
-  // Si los datos de la factura aún no han llegado, mostrar un mensaje de carga
- 
+    // Obtener la fecha y hora actual
+    const fechaActual = new Date();  // Obtenemos la fecha y hora actuales
+    const fecha = fechaActual.toLocaleDateString();  // Formateamos la fecha
+    const hora = fechaActual.toLocaleTimeString();  // Formateamos la hora
+    setFechaHora(`Fecha: ${fecha} | Hora: ${hora}`);  // Guardamos la fecha y hora en el estado
+  }, [invoiceId]);  // Ejecutar este efecto cuando cambie el invoiceId
+
+  // Si los datos de la factura o del cliente aún no han llegado, mostrar un mensaje de carga
+  if (!factura || !cliente) {
+    return <div>Loading...</div>;
+  }
+
+  // Verificar si la propiedad detailinvoices existe antes de continuar
+  if (!factura.detailinvoices || factura.detailinvoices.length === 0) {
+    return <div>No hay productos en esta factura.</div>;
+  }
 
   // Función para generar el PDF de la factura
   function generarFacturaPDF() {
-    if (!factura) return;  // Asegurarse de que los datos de la factura estén disponibles
+    if (!factura || !factura.detailinvoices) return;  // Asegurarse de que los datos de la factura estén disponibles
 
     const doc = new jsPDF();
 
@@ -65,15 +95,7 @@ function Factura() {
     doc.setFontSize(16);  // Cambia el tamaño de fuente para el título de la factura
     doc.text(`Factura número ${factura.id}`, 105, 40, null, null, 'center');  // Título centrado de la factura
     
-    doc.setFontSize(12);  // Cambia el tamaño de fuente para la información del cliente
-    doc.text('Cliente:', 10, 50);  // Etiqueta de "Cliente"
-
-    // Agregar información de cliente ficticio (si no hay cliente en la API)
-    const cliente = { nombre: 'Nombre Cliente', direccion: 'Dirección Cliente', telefono: 'Teléfono Cliente' };
-    doc.text(cliente.nombre, 30, 60);  // Mostrar el nombre del cliente
-    doc.text(`Dirección: ${cliente.direccion}`, 30, 70);  // Dirección del cliente
-    doc.text(`Teléfono: ${cliente.telefono}`, 30, 80);  // Teléfono del cliente
-    
+   
     doc.text('Detalle', 10, 100);  // Título de la sección de detalles
     
     // Tabla de productos
@@ -91,11 +113,7 @@ function Factura() {
     doc.text(`Total: $${factura.total}`, 10, 150);  // Muestra el total de la compra
 
     // Fecha y hora de la compra
-    const fechaActual = new Date();  // Crea un objeto de fecha actual
-    const fecha = fechaActual.toLocaleDateString();  // Convierte la fecha a una cadena legible
-    const hora = fechaActual.toLocaleTimeString();  // Convierte la hora a una cadena legible
-    doc.text(`Fecha de compra: ${fecha}`, 10, 170);  // Muestra la fecha de la compra
-    doc.text(`Hora de compra: ${hora}`, 10, 180);  // Muestra la hora de la compra
+    doc.text(fechaHora, 10, 170);  // Muestra la fecha y hora en el PDF
 
     // Generar el PDF
     doc.save('factura.pdf');  // Guarda el archivo PDF con el nombre 'factura.pdf'
@@ -105,14 +123,6 @@ function Factura() {
     <div id='principal' className="bg-no-repeat bg-right bg-cover h-screen p-4">  
       <div className="max-w-4xl mx-auto p-6 bg-white border-4 border-gray-300 rounded-lg shadow-xl font-sans">  
         <h1 className="text-center text-3xl font-bold text-black mb-4">Su factura</h1>  
-
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold">Cliente:</h2>
-          {/* Información del cliente ficticio */}
-          <p>{'Nombre Cliente'}</p>
-          <p>Dirección: {'Dirección Cliente'}</p>
-          <p>Teléfono: {'Teléfono Cliente'}</p>
-        </div>
 
         <div className="mb-6">
           <h2 className="text-xl font-semibold">Detalle</h2>
@@ -128,32 +138,29 @@ function Factura() {
             <tbody>
               {factura.detailinvoices.map((producto, index) => (
                 <tr key={index}>
-                  <td className="border border-gray-700 p-3">{`Producto ID: ${producto.product_id}`}</td>
+                  <td className="border border-gray-700 p-3">Item ID: {producto.product_id}</td>
                   <td className="border border-gray-700 p-3">{producto.quantity}</td>
                   <td className="border border-gray-700 p-3">${producto.price}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          <div className="mt-6">
+            <p className="font-bold text-lg">Total: ${factura.total}</p>
+            <p>{fechaHora}</p>  {/* Mostrar fecha y hora de la compra */}
+          </div>
         </div>
 
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold">Total: ${factura.total}</h2>
-        </div>
-
-        <div className="flex justify-center items-center mb-6">
-          <button 
-            className="bg-[#381008] text-white px-6 py-3 rounded-md hover:bg-[#960500] mb-4"
+        <div className="flex justify-center">
+          <button
             onClick={generarFacturaPDF}
+            className="bg-[#381008] text-white py-2 px-4 rounded-lg"
           >
             Descargar Factura
           </button>
         </div>
 
-      </div>
-
-      <div className="text-center italic text-white font-extrabold text-3xl mt-6">
-        <p>¡Gracias por su compra!</p>
       </div>
     </div>
   );
